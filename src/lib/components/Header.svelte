@@ -25,14 +25,9 @@
 
 <header class="app-header" class:is-home={planner.activeTab === 'home'}>
 	{#if planner.activeTab === 'home'}
-		<!-- Minimalist Home Branding -->
+		<!-- Minimalist Home Header -->
 		<div class="home-brand-bar">
-			<div class="brand-logo-circle">
-				<span class="brand-logo-text">ГБ</span>
-			</div>
-			<div class="brand-info">
-				<h1 class="brand-title">Галя Балувана</h1>
-			</div>
+			<h1 class="home-header-title">Шпаргалка, щоб не ламати голову</h1>
 		</div>
 	{:else}
 		<!-- Clean Subpage Top Navigation Bar -->
@@ -75,7 +70,7 @@
 	}
 
 	.app-header.is-home {
-		padding: 18px 20px 14px 20px;
+		padding: 14px 20px;
 	}
 
 	/* Home Brand Bar */
@@ -83,37 +78,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 12px;
+		text-align: center;
 	}
 
-	.brand-logo-circle {
-		width: 44px;
-		height: 44px;
-		border-radius: 14px;
-		background: linear-gradient(135deg, var(--color-brand-primary) 0%, #296d4f 100%);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-shadow: 0 4px 12px rgba(24, 67, 47, 0.22);
-		color: #ffffff;
-	}
-
-	.brand-logo-text {
-		font-weight: 800;
-		font-size: 18px;
-		letter-spacing: -0.04em;
-	}
-
-	.brand-info {
-		text-align: left;
-	}
-
-	.brand-title {
-		font-size: 19px;
+	.home-header-title {
+		font-size: 15px;
 		font-weight: 800;
 		color: var(--color-brand-primary);
-		line-height: 1.15;
+		letter-spacing: -0.01em;
 		margin: 0;
+		line-height: 1.25;
 	}
 
 	/* Subpage Top Bar */
