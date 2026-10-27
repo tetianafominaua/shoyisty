@@ -163,13 +163,10 @@
 
 			<!-- Stores Info Footer -->
 			<div class="stores-footer">
-				<div class="stores-title">📍 Де купити свіже в Одесі та Південному:</div>
-				<ul class="stores-list">
-					<li><strong>Одеса:</strong> вул. Сегедська, 6 (основне виробництво за склом)</li>
-					<li><strong>Одеса:</strong> вул. Ак. Корольова, 53 &bull; вул. Св. Ріхтера, 129а</li>
-					<li><strong>Південне:</strong> вул. Шевченка, 18/6 (виробництво з піччю та грилем)</li>
-					<li>📞 Телефон для замовлень: <a href="tel:+380506118570">+38 050 611 85 70</a></li>
-				</ul>
+				<button class="stores-map-btn" onclick={() => (planner.isLocationsOpen = true)}>
+					<span class="btn-text">📍 Наші 4 магазини на Google Картах</span>
+					<span class="btn-arrow">&rarr;</span>
+				</button>
 			</div>
 		</section>
 
@@ -491,29 +488,36 @@
 
 	/* Stores Info Footer */
 	.stores-footer {
-		padding: 14px 18px;
+		padding: 12px 18px;
 		background: #f0fdf4;
 		border-top: 1px dashed #bbf7d0;
-		font-size: 11px;
-		color: #166534;
 	}
 
-	.stores-title {
-		font-weight: 800;
-		margin-bottom: 6px;
-	}
-
-	.stores-list {
-		list-style: none;
+	.stores-map-btn {
+		width: 100%;
 		display: flex;
-		flex-direction: column;
-		gap: 3px;
-		padding: 0;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 14px;
+		background: #ffffff;
+		border: 1.5px solid #bbf7d0;
+		border-radius: var(--radius-md);
+		color: #166534;
+		font-size: 13px;
+		font-weight: 700;
+		cursor: pointer;
+		transition: all var(--transition-fast);
 	}
 
-	.stores-list a {
-		color: #166534;
-		font-weight: 700;
+	.stores-map-btn:hover {
+		background: #dcfce7;
+		border-color: #86efac;
+		transform: translateY(-1px);
+	}
+
+	.btn-arrow {
+		font-size: 15px;
+		font-weight: 800;
 	}
 
 	/* Grocery Groups */

@@ -30,7 +30,6 @@
 			</div>
 			<div class="brand-info">
 				<h1 class="brand-title">Галя Балувана</h1>
-				<span class="brand-geo">Одеса &bull; м. Південне</span>
 			</div>
 		</div>
 	{:else}
@@ -113,14 +112,6 @@
 		color: var(--color-brand-primary);
 		line-height: 1.15;
 		margin: 0;
-	}
-
-	.brand-geo {
-		font-size: 11px;
-		font-weight: 600;
-		color: var(--text-muted);
-		display: block;
-		letter-spacing: 0.02em;
 	}
 
 	/* Subpage Top Bar */

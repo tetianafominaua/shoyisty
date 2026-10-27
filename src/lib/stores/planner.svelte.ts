@@ -28,6 +28,7 @@ class PlannerStore {
 	selectedSetId = $state<string | null>(null);
 	activeSetId = $state<string | null>(null);
 	checkedItems = $state<Record<string, boolean>>({});
+	isLocationsOpen = $state<boolean>(false);
 	toastMessage = $state<string | null>(null);
 
 	private toastTimer: any = null;

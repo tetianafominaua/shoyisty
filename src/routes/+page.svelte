@@ -6,6 +6,7 @@
 	import WeekPlanner from '#lib/components/WeekPlanner.svelte';
 	import CartView from '#lib/components/CartView.svelte';
 	import DishModal from '#lib/components/DishModal.svelte';
+	import LocationsModal from '#lib/components/LocationsModal.svelte';
 	import Toast from '#lib/components/Toast.svelte';
 </script>
 
@@ -32,20 +33,34 @@
 		{/if}
 	</main>
 
-	<!-- Brand Footer -->
+	<!-- Minimalist Action Footer -->
 	<footer class="app-footer">
-		<div class="footer-brand">
-			<span class="footer-logo">🥟</span>
-			<span class="footer-name">Галя Балувана</span>
+		<div class="footer-actions-row">
+			<a
+				href="https://www.instagram.com/galyabaluvana_odesa/"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="footer-pill-btn instagram-btn"
+				title="Instagram @galyabaluvana_odesa"
+			>
+				<span class="pill-icon">📸</span>
+				<span>Instagram</span>
+			</a>
+
+			<button
+				class="footer-pill-btn maps-btn"
+				onclick={() => (planner.isLocationsOpen = true)}
+				title="Наші 4 адреси на карті"
+			>
+				<span class="pill-icon">📍</span>
+				<span>Google Карти</span>
+			</button>
 		</div>
-		<p class="footer-copy">
-			Домашні напівфабрикати ручної ліпки за склом.<br />
-			Одеса (вул. Сегедська, Корольова, Ріхтера) &bull; м. Південне (вул. Шевченка).
-		</p>
 	</footer>
 
 	<!-- Modals and Overlays -->
 	<DishModal />
+	<LocationsModal />
 	<Toast />
 </div>
 
@@ -57,33 +72,62 @@
 	}
 
 	.app-footer {
-		padding: 24px 20px;
-		background: var(--bg-surface-alt);
+		padding: 18px 20px 24px 20px;
+		background: #ffffff;
 		border-top: 1px solid var(--border-subtle);
-		text-align: center;
 		display: flex;
-		flex-direction: column;
+		justify-content: center;
 		align-items: center;
-		gap: 6px;
 	}
 
-	.footer-brand {
+	.footer-actions-row {
 		display: flex;
+		gap: 12px;
+		width: 100%;
+		max-width: 380px;
+		justify-content: center;
+	}
+
+	.footer-pill-btn {
+		flex: 1;
+		display: inline-flex;
 		align-items: center;
-		gap: 6px;
-		font-weight: 800;
+		justify-content: center;
+		gap: 8px;
+		padding: 10px 16px;
+		border-radius: var(--radius-full);
+		font-size: 13px;
+		font-weight: 700;
+		text-decoration: none;
+		border: 1.5px solid var(--border-subtle);
+		background: var(--bg-surface-alt);
+		color: var(--text-main);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.footer-pill-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+	}
+
+	.footer-pill-btn:active {
+		transform: translateY(0);
+	}
+
+	.instagram-btn:hover {
+		border-color: #e1306c;
+		color: #e1306c;
+		background: #fdf2f8;
+	}
+
+	.maps-btn:hover {
+		border-color: var(--color-brand-primary);
 		color: var(--color-brand-primary);
-		font-size: 14px;
+		background: #f0fdf4;
 	}
 
-	.footer-logo {
+	.pill-icon {
 		font-size: 16px;
-	}
-
-	.footer-copy {
-		font-size: 11px;
-		color: var(--text-muted);
-		line-height: 1.45;
-		margin: 0;
 	}
 </style>
