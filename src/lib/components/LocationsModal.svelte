@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
+	import MapPin from '@lucide/svelte/icons/map-pin';
+	import Phone from '@lucide/svelte/icons/phone';
+	import X from '@lucide/svelte/icons/x';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
 
 	interface LocationItem {
 		city: string;
@@ -60,11 +64,16 @@
 
 			<!-- Compact Header -->
 			<div class="sheet-header">
-				<h3 class="sheet-title">📍 Наші магазини на карті</h3>
-				<button class="sheet-close-btn" onclick={close} aria-label="Закрити">&times;</button>
+				<div class="sheet-title-row">
+					<MapPin size={18} class="header-icon" />
+					<h3 class="sheet-title">Наші магазини на карті</h3>
+				</div>
+				<button class="sheet-close-btn" onclick={close} aria-label="Закрити">
+					<X size={18} />
+				</button>
 			</div>
 
-			<!-- 4 Compact Locations (Zero scroll, fits 100% on any screen) -->
+			<!-- 4 Compact Locations (Unified layout: Type -> Address -> City) -->
 			<div class="locations-compact-list">
 				{#each LOCATIONS as loc}
 					<a
@@ -74,14 +83,15 @@
 						class="compact-loc-row"
 					>
 						<div class="loc-text-col">
-							<div class="loc-address-line">
-								<strong class="loc-address">{loc.address}</strong>
-								<span class="loc-badge">{loc.badge}</span>
-							</div>
+							<span class="loc-badge">{loc.badge}</span>
+							<strong class="loc-address">{loc.address}</strong>
 							<span class="loc-city">{loc.city}</span>
 						</div>
 
-						<span class="loc-route-pill">Карта ↗</span>
+						<span class="loc-route-pill">
+							<span>Карта</span>
+							<ExternalLink size={13} />
+						</span>
 					</a>
 				{/each}
 			</div>
@@ -89,7 +99,7 @@
 			<!-- Call Button (Strictly Single Line Guaranteed, No Wrapping) -->
 			<div class="sheet-call-wrapper">
 				<a href="tel:+380506118570" class="call-btn-single-line">
-					<span class="call-icon">📞</span>
+					<Phone size={16} class="call-icon" />
 					<span class="call-text">Зателефонувати в магазин: <strong>+38 050 611 85 70</strong></span>
 				</a>
 			</div>
@@ -138,6 +148,13 @@
 		border-bottom: 1px solid var(--border-subtle);
 	}
 
+	.sheet-title-row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: var(--color-brand-primary);
+	}
+
 	.sheet-title {
 		font-size: 15px;
 		font-weight: 800;
@@ -148,8 +165,6 @@
 	.sheet-close-btn {
 		background: var(--bg-surface-alt);
 		border: none;
-		font-size: 20px;
-		line-height: 1;
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
@@ -158,7 +173,7 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--text-muted);
-		transition: background var(--transition-fast);
+		transition: all var(--transition-fast);
 	}
 
 	.sheet-close-btn:hover {
@@ -166,7 +181,7 @@
 		color: var(--text-main);
 	}
 
-	/* Compact Locations List - 4 items guaranteed on 1 screen */
+	/* Compact Locations List - Unified 3-line cards: Type -> Address -> City */
 	.locations-compact-list {
 		display: flex;
 		flex-direction: column;
@@ -178,8 +193,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 8px;
-		padding: 8px 10px;
+		gap: 10px;
+		padding: 8px 12px;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--border-subtle);
 		background: #ffffff;
@@ -199,23 +214,9 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 1px;
+		align-items: flex-start;
+		gap: 2px;
 		min-width: 0;
-	}
-
-	.loc-address-line {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		flex-wrap: nowrap;
-		overflow: hidden;
-	}
-
-	.loc-address {
-		font-size: 13.5px;
-		font-weight: 800;
-		color: var(--text-main);
-		white-space: nowrap;
 	}
 
 	.loc-badge {
@@ -223,13 +224,22 @@
 		font-weight: 700;
 		color: var(--color-brand-primary);
 		background: rgba(24, 67, 47, 0.08);
-		padding: 1px 5px;
+		padding: 1px 6px;
 		border-radius: 4px;
-		white-space: nowrap;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		line-height: 1.2;
+	}
+
+	.loc-address {
+		font-size: 14.5px;
+		font-weight: 800;
+		color: var(--text-main);
+		line-height: 1.25;
 	}
 
 	.loc-city {
-		font-size: 11px;
+		font-size: 11.5px;
 		color: var(--text-muted);
 		font-weight: 500;
 		line-height: 1.2;
@@ -238,12 +248,12 @@
 	.loc-route-pill {
 		display: inline-flex;
 		align-items: center;
-		gap: 2px;
-		font-size: 11.5px;
-		font-weight: 800;
+		gap: 4px;
+		font-size: 12px;
+		font-weight: 700;
 		color: var(--color-brand-primary);
-		background: rgba(24, 67, 47, 0.07);
-		padding: 5px 10px;
+		background: rgba(24, 67, 47, 0.08);
+		padding: 6px 11px;
 		border-radius: var(--radius-full);
 		flex-shrink: 0;
 		white-space: nowrap;
@@ -265,8 +275,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 6px;
-		padding: 9px 10px;
+		gap: 8px;
+		padding: 9px 12px;
 		background: #f0fdf4;
 		border: 1.5px solid #a7f3d0;
 		border-radius: var(--radius-md);
@@ -284,11 +294,6 @@
 		background: #dcfce7;
 		border-color: #86efac;
 		transform: translateY(-1px);
-	}
-
-	.call-icon {
-		font-size: 14px;
-		flex-shrink: 0;
 	}
 
 	.call-text {

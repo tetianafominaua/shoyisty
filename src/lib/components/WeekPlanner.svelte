@@ -2,6 +2,19 @@
 	import { planner } from '#lib/stores/planner.svelte';
 	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
 	import type { DayKey, MealKey } from '#lib/types';
+	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import Sun from '@lucide/svelte/icons/sun';
+	import Soup from '@lucide/svelte/icons/soup';
+	import Utensils from '@lucide/svelte/icons/utensils';
+	import Clock from '@lucide/svelte/icons/clock';
+	import Flame from '@lucide/svelte/icons/flame';
+	import Edit2 from '@lucide/svelte/icons/edit-2';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import ChefHat from '@lucide/svelte/icons/chef-hat';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import Plus from '@lucide/svelte/icons/plus';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	const activeDay = $derived(planner.selectedDay);
 	const activeDayInfo = $derived(DAYS_LIST.find((d) => d.key === activeDay) || DAYS_LIST[0]);
@@ -31,6 +44,16 @@
 		planner.selectedDay = DAYS_LIST[prevIndex].key;
 	}
 </script>
+
+{#snippet mealIcon(key: string, size = 16)}
+	{#if key === 'breakfast'}
+		<Sun {size} />
+	{:else if key === 'lunch'}
+		<Soup {size} />
+	{:else}
+		<Utensils {size} />
+	{/if}
+{/snippet}
 
 <div class="week-planner-container animate-fade-in">
 	<!-- Header Titles -->
@@ -69,9 +92,10 @@
 	<!-- Current Day Status Banner -->
 	<div class="current-day-banner">
 		<div class="day-banner-left">
-			<button class="nav-arrow-btn" onclick={prevDay} aria-label="Попередній день">&lsaquo;</button>
+			<button class="nav-arrow-btn" onclick={prevDay} aria-label="Попередній день">
+				<ChevronLeft size={18} />
+			</button>
 			<div class="day-heading-box">
-				<span class="day-emoji">{activeDayInfo.accentEmoji}</span>
 				<div>
 					<h3 class="day-title">{activeDayInfo.fullName}</h3>
 					<span class="day-status-text">
@@ -79,7 +103,9 @@
 					</span>
 				</div>
 			</div>
-			<button class="nav-arrow-btn" onclick={nextDay} aria-label="Наступний день">&rsaquo;</button>
+			<button class="nav-arrow-btn" onclick={nextDay} aria-label="Наступний день">
+				<ChevronRight size={18} />
+			</button>
 		</div>
 
 		{#if planner.getDayDishesCount(activeDay) > 0}
@@ -106,7 +132,9 @@
 			<div class="meal-slot-wrapper">
 				<div class="slot-header">
 					<div class="slot-badge">
-						<span class="slot-icon">{meal.icon}</span>
+						<span class="slot-icon">
+							{@render mealIcon(meal.key, 15)}
+						</span>
 						<span class="slot-title">{meal.label}</span>
 					</div>
 					<span class="slot-time">{meal.suggestedTime}</span>
@@ -117,12 +145,20 @@
 					<div class="filled-dish-card animate-fade-in">
 						<div class="dish-card-main">
 							<div class="dish-card-left">
-								<div class="dish-icon-box">{dish.imageEmoji}</div>
+								<div class="dish-icon-box">
+									<Utensils size={20} color="var(--color-brand-primary)" />
+								</div>
 								<div class="dish-info-box">
 									<h4 class="dish-heading">{dish.name}</h4>
 									<div class="dish-pills-row">
-										<span class="dish-pill">⏱️ {dish.prepTimeMinutes} хв</span>
-										<span class="dish-pill">🔥 {dish.calories} ккал</span>
+										<span class="dish-pill">
+											<Clock size={11} />
+											<span>{dish.prepTimeMinutes} хв</span>
+										</span>
+										<span class="dish-pill">
+											<Flame size={11} />
+											<span>{dish.calories} ккал</span>
+										</span>
 									</div>
 								</div>
 							</div>
@@ -135,7 +171,7 @@
 									title="Замінити страву"
 									aria-label="Замінити страву"
 								>
-									✏️
+									<Edit2 size={14} />
 								</button>
 								<button
 									class="icon-action-btn delete"
@@ -143,7 +179,7 @@
 									title="Видалити"
 									aria-label="Видалити страву"
 								>
-									🗑️
+									<Trash2 size={14} />
 								</button>
 							</div>
 						</div>
@@ -152,7 +188,7 @@
 						{#if dish.isGalyaProduct && dish.galyaProduct}
 							<div class="galya-slot-bar">
 								<div class="galya-logo-title">
-									<span class="galya-icon">🥟</span>
+									<ChefHat size={14} color="var(--color-brand-primary)" />
 									<strong>Галя Балувана</strong>
 									<span class="galya-badge-pill">{dish.galyaProduct.badge}</span>
 								</div>
@@ -167,7 +203,10 @@
 						<!-- Supermarket Ingredients Hint -->
 						{#if dish.groceryItems.length > 0}
 							<div class="grocery-hint-box">
-								<span class="hint-label">🛒 У супермаркет:</span>
+								<span class="hint-label">
+									<ShoppingCart size={12} />
+									<span>У супермаркет:</span>
+								</span>
 								<span class="hint-text">
 									{dish.groceryItems.map((g) => g.name).join(', ')}
 								</span>
@@ -181,7 +220,9 @@
 						onclick={() => openDishPicker(meal.key)}
 						aria-label="Обрати страву на {meal.label}"
 					>
-						<span class="add-circle">+</span>
+						<span class="add-circle">
+							<Plus size={16} />
+						</span>
 						<div class="empty-slot-text">
 							<strong>Обрати страву на {meal.label.toLowerCase()}</strong>
 							<span>{meal.description}</span>
@@ -200,7 +241,7 @@
 			aria-label="Переглянути кошик"
 		>
 			<span>Переглянути кошик ({planner.totalDishesCount} страв)</span>
-			<span>🛒 &rarr;</span>
+			<ShoppingCart size={16} />
 		</button>
 	</div>
 </div>
@@ -332,10 +373,6 @@
 		gap: 10px;
 	}
 
-	.day-emoji {
-		font-size: 26px;
-	}
-
 	.day-title {
 		font-size: 17px;
 		font-weight: 800;
@@ -451,12 +488,16 @@
 		margin-bottom: 4px;
 	}
 
-	.dish-pills-row {
+	.slot-icon {
 		display: flex;
-		gap: 6px;
+		align-items: center;
+		color: var(--color-brand-primary);
 	}
 
 	.dish-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
 		font-size: 11px;
 		color: var(--text-muted);
 		background: var(--bg-surface-alt);

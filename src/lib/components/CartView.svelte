@@ -1,6 +1,23 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
 	import { GROCERY_CATEGORIES_UA } from '#lib/data/constants';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import ShoppingBag from '@lucide/svelte/icons/shopping-bag';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import Copy from '@lucide/svelte/icons/copy';
+	import Share2 from '@lucide/svelte/icons/share-2';
+	import ChefHat from '@lucide/svelte/icons/chef-hat';
+	import Check from '@lucide/svelte/icons/check';
+	import Info from '@lucide/svelte/icons/info';
+	import MapPin from '@lucide/svelte/icons/map-pin';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import Milk from '@lucide/svelte/icons/milk';
+	import Carrot from '@lucide/svelte/icons/carrot';
+	import Croissant from '@lucide/svelte/icons/croissant';
+	import Package from '@lucide/svelte/icons/package';
+	import Flame from '@lucide/svelte/icons/flame';
 
 	const cart = $derived(planner.getCartGrouped());
 
@@ -21,7 +38,7 @@
 				document.execCommand('copy');
 				document.body.removeChild(textArea);
 			}
-			planner.showToast('📋 Список скопійовано! Вставте у Telegram або Viber');
+			planner.showToast('Список скопійовано! Вставте у Telegram або Viber');
 		} catch (e) {
 			console.error('Copy failed', e);
 			planner.showToast('Помилка копіювання. Спробуйте вручну.');
@@ -45,6 +62,22 @@
 	}
 </script>
 
+{#snippet categoryIcon(catKey: string, size = 15)}
+	{#if catKey === 'dairy'}
+		<Milk {size} />
+	{:else if catKey === 'produce'}
+		<Carrot {size} />
+	{:else if catKey === 'bakery'}
+		<Croissant {size} />
+	{:else if catKey === 'grocery'}
+		<Package {size} />
+	{:else if catKey === 'sauces'}
+		<Flame {size} />
+	{:else}
+		<ShoppingBag {size} />
+	{/if}
+{/snippet}
+
 <div class="cart-container animate-fade-in">
 	<!-- Cart Top Header -->
 	<div class="cart-header">
@@ -59,17 +92,19 @@
 	{#if planner.totalDishesCount === 0}
 		<!-- Empty State -->
 		<div class="cart-empty-card">
-			<div class="empty-icon">🛒</div>
+			<div class="empty-icon">
+				<ShoppingCart size={40} color="var(--color-brand-primary)" />
+			</div>
 			<h3>Ваш кошик ще порожній</h3>
 			<p>Оберіть один із готових наборів або додайте страви у планувальник по днях тижня.</p>
 			<div class="empty-actions">
 				<button class="btn-primary" onclick={() => (planner.activeTab = 'sets')}>
 					<span>Обрати готовий набір</span>
-					<span>🍱</span>
+					<Sparkles size={16} />
 				</button>
 				<button class="btn-secondary" onclick={() => (planner.activeTab = 'week')}>
 					<span>Скласти по днях</span>
-					<span>📅</span>
+					<Calendar size={16} />
 				</button>
 			</div>
 		</div>
@@ -95,13 +130,13 @@
 		<!-- Action Sharing Buttons -->
 		<div class="share-actions-row">
 			<button class="btn-primary flex-1" onclick={copyToClipboard}>
+				<Copy size={16} />
 				<span>Скопіювати в Telegram / Viber</span>
-				<span>📋</span>
 			</button>
 
 			<button class="btn-secondary" onclick={shareList} title="Поділитися списком">
+				<Share2 size={16} />
 				<span>Поділитися</span>
-				<span>↗️</span>
 			</button>
 		</div>
 
@@ -109,7 +144,9 @@
 		<section class="cart-section galya-section">
 			<div class="section-header">
 				<div class="section-title-box">
-					<span class="section-icon">🥟</span>
+					<span class="section-icon">
+						<ChefHat size={20} color="var(--color-brand-primary)" />
+					</span>
 					<div>
 						<h3 class="section-title">1. Придбати в «Галя Балувана»</h3>
 						<span class="section-sub">
@@ -132,7 +169,9 @@
 							aria-label="Позначити купленим {item.product.name}"
 						>
 							<span class="check-box" class:active={isChecked}>
-								{isChecked ? '✓' : ''}
+								{#if isChecked}
+									<Check size={13} strokeWidth={3} />
+								{/if}
 							</span>
 						</button>
 
@@ -154,7 +193,8 @@
 							</div>
 
 							<div class="item-cook-hint">
-								💡 <em>{item.product.cookingMethod}</em>
+								<Info size={12} />
+								<em>{item.product.cookingMethod}</em>
 							</div>
 						</div>
 					</div>
@@ -164,8 +204,9 @@
 			<!-- Stores Info Footer -->
 			<div class="stores-footer">
 				<button class="stores-map-btn" onclick={() => (planner.isLocationsOpen = true)}>
-					<span class="btn-text">📍 Наші 4 магазини на Google Картах</span>
-					<span class="btn-arrow">&rarr;</span>
+					<MapPin size={16} />
+					<span class="btn-text">Наші 4 магазини на Google Картах</span>
+					<ArrowRight size={15} />
 				</button>
 			</div>
 		</section>
@@ -174,7 +215,9 @@
 		<section class="cart-section grocery-section">
 			<div class="section-header">
 				<div class="section-title-box">
-					<span class="section-icon">🛒</span>
+					<span class="section-icon">
+						<ShoppingBag size={20} color="#b45309" />
+					</span>
 					<div>
 						<h3 class="section-title">2. Докупити в супермаркеті</h3>
 						<span class="section-sub">
@@ -189,10 +232,12 @@
 				{#each ['dairy', 'produce', 'bakery', 'grocery', 'sauces', 'other'] as catKey}
 					{@const catItems = cart.groceryItems.filter((i) => i.category === catKey)}
 					{#if catItems.length > 0}
-						{@const catInfo = GROCERY_CATEGORIES_UA[catKey] || { label: catKey, icon: '•' }}
+						{@const catInfo = GROCERY_CATEGORIES_UA[catKey] || { label: catKey, icon: 'other' }}
 						<div class="category-group">
 							<div class="category-header">
-								<span class="cat-icon">{catInfo.icon}</span>
+								<span class="cat-icon">
+									{@render categoryIcon(catKey, 14)}
+								</span>
 								<span class="cat-name">{catInfo.label}</span>
 								<span class="cat-count">({catItems.length})</span>
 							</div>
@@ -209,7 +254,9 @@
 											aria-label="Позначити купленим {item.name}"
 										>
 											<span class="check-box" class:active={isChecked}>
-												{isChecked ? '✓' : ''}
+												{#if isChecked}
+													<Check size={13} strokeWidth={3} />
+												{/if}
 											</span>
 										</button>
 
@@ -234,7 +281,8 @@
 		<!-- Bottom Utilities -->
 		<div class="cart-bottom-utilities">
 			<button class="clear-all-link" onclick={() => planner.clearWeek()}>
-				🗑️ Очистити весь план на тиждень
+				<Trash2 size={14} />
+				<span>Очистити весь план на тиждень</span>
 			</button>
 		</div>
 	{/if}
@@ -515,11 +563,6 @@
 		transform: translateY(-1px);
 	}
 
-	.btn-arrow {
-		font-size: 15px;
-		font-weight: 800;
-	}
-
 	/* Grocery Groups */
 	.grocery-groups {
 		display: flex;
@@ -639,6 +682,9 @@
 	}
 
 	.clear-all-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
 		background: none;
 		border: none;
 		color: #ef4444;

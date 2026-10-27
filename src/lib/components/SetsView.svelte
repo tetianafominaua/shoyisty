@@ -3,6 +3,20 @@
 	import { READY_MADE_SETS } from '#lib/data/sets';
 	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
 	import type { ReadyMadeSet } from '#lib/types';
+	import Home from '@lucide/svelte/icons/home';
+	import Zap from '@lucide/svelte/icons/zap';
+	import Baby from '@lucide/svelte/icons/baby';
+	import Wine from '@lucide/svelte/icons/wine';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import Edit3 from '@lucide/svelte/icons/edit-3';
+	import Clock from '@lucide/svelte/icons/clock';
+	import ChefHat from '@lucide/svelte/icons/chef-hat';
+	import Sun from '@lucide/svelte/icons/sun';
+	import Soup from '@lucide/svelte/icons/soup';
+	import Utensils from '@lucide/svelte/icons/utensils';
 
 	const selectedSet = $derived(
 		planner.selectedSetId ? READY_MADE_SETS.find((s) => s.id === planner.selectedSetId) : null
@@ -28,6 +42,30 @@
 	}
 </script>
 
+{#snippet setIcon(id: string, size = 22)}
+	{#if id === 'family'}
+		<Home {size} />
+	{:else if id === 'busy'}
+		<Zap {size} />
+	{:else if id === 'kids'}
+		<Baby {size} />
+	{:else if id === 'gourmet'}
+		<Wine {size} />
+	{:else}
+		<Home {size} />
+	{/if}
+{/snippet}
+
+{#snippet mealIcon(key: string, size = 15)}
+	{#if key === 'breakfast'}
+		<Sun {size} />
+	{:else if key === 'lunch'}
+		<Soup {size} />
+	{:else}
+		<Utensils {size} />
+	{/if}
+{/snippet}
+
 <div class="sets-view-container animate-fade-in">
 	{#if !selectedSet}
 		<!-- 1. MINIMALIST LIST OF 4 SETS (ONLY NAMES) -->
@@ -44,13 +82,17 @@
 						onclick={() => openSetDetails(set.id)}
 						aria-label="Переглянути набір {set.title}"
 					>
-						<div class="set-icon-box">{set.emoji}</div>
+						<div class="set-icon-box" style="color: {set.accentColor}">
+							{@render setIcon(set.id, 22)}
+						</div>
 						<div class="set-info-col">
 							<span class="set-badge-tag">{set.badge}</span>
 							<h3 class="set-name">{set.title}</h3>
 							<span class="set-tagline">{set.subtitle}</span>
 						</div>
-						<span class="set-arrow">&rsaquo;</span>
+						<span class="set-arrow">
+							<ChevronRight size={20} />
+						</span>
 					</button>
 				{/each}
 			</div>
@@ -60,7 +102,7 @@
 		<div class="set-detail-view animate-slide-up">
 			<!-- Back Navigation to Sets List -->
 			<button class="back-to-sets-btn" onclick={backToList}>
-				<span>&larr;</span>
+				<ArrowLeft size={16} />
 				<span>Назад до списку наборів</span>
 			</button>
 
@@ -68,7 +110,9 @@
 			<div class="detail-banner" style="background: {selectedSet.gradient}">
 				<div class="detail-banner-top">
 					<span class="banner-badge">{selectedSet.badge}</span>
-					<span class="banner-emoji">{selectedSet.emoji}</span>
+					<div class="banner-icon-badge">
+						{@render setIcon(selectedSet.id, 24)}
+					</div>
 				</div>
 				<h2 class="detail-title">{selectedSet.title}</h2>
 				<p class="detail-subtitle">{selectedSet.subtitle}</p>
@@ -79,12 +123,12 @@
 			<div class="detail-actions-row">
 				<button class="btn-primary flex-1" onclick={() => handleChooseSet(selectedSet)}>
 					<span>Обрати цей набір</span>
-					<span>🛒 &rarr;</span>
+					<ShoppingCart size={16} />
 				</button>
 
 				<button class="btn-secondary" onclick={() => handleCustomizeSet(selectedSet)}>
+					<Edit3 size={15} />
 					<span>Редагувати по днях</span>
-					<span>✏️</span>
 				</button>
 			</div>
 
@@ -97,7 +141,6 @@
 						{@const dayPlan = selectedSet.plan[day.key]}
 						<div class="schedule-day-card">
 							<div class="day-side-label">
-								<span class="day-side-emoji">{day.accentEmoji}</span>
 								<span class="day-side-text">{day.shortName}</span>
 							</div>
 
@@ -107,15 +150,23 @@
 									{@const dish = planner.getDish(dishId)}
 									{#if dish}
 										<div class="meal-item-row">
-											<span class="meal-type-icon">{meal.icon}</span>
+											<span class="meal-type-icon">
+												{@render mealIcon(meal.key, 14)}
+											</span>
 											<div class="meal-item-text">
 												<div class="dish-title-row">
 													<span class="meal-dish-name">{dish.name}</span>
 													{#if dish.isGalyaProduct}
-														<span class="galya-mini-badge">🥟 Галя Балувана</span>
+														<span class="galya-mini-badge">
+															<ChefHat size={11} />
+															<span>Галя Балувана</span>
+														</span>
 													{/if}
 												</div>
-												<span class="meal-time-info">⏱️ {dish.prepTimeMinutes} хв &bull; {dish.calories} ккал</span>
+												<div class="meal-time-info">
+													<Clock size={11} />
+													<span>{dish.prepTimeMinutes} хв &bull; {dish.calories} ккал</span>
+												</div>
 											</div>
 										</div>
 									{/if}
@@ -130,7 +181,7 @@
 			<div class="detail-bottom-cta">
 				<button class="btn-primary full-width" onclick={() => handleChooseSet(selectedSet)}>
 					<span>Затвердити та перейти в кошик</span>
-					<span>🛒 &rarr;</span>
+					<ArrowRight size={16} />
 				</button>
 			</div>
 		</div>
@@ -289,8 +340,16 @@
 		border-radius: var(--radius-full);
 	}
 
-	.banner-emoji {
-		font-size: 28px;
+	.banner-icon-badge {
+		width: 36px;
+		height: 36px;
+		border-radius: 10px;
+		background: rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(8px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #ffffff;
 	}
 
 	.detail-title {
@@ -349,18 +408,14 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: 36px;
+		width: 32px;
 		background: var(--bg-surface-alt);
 		border-radius: var(--radius-sm);
-		padding: 6px 0;
-	}
-
-	.day-side-emoji {
-		font-size: 14px;
+		padding: 8px 0;
 	}
 
 	.day-side-text {
-		font-size: 12px;
+		font-size: 13px;
 		font-weight: 800;
 		color: var(--text-main);
 	}
@@ -380,8 +435,11 @@
 	}
 
 	.meal-type-icon {
-		font-size: 14px;
-		margin-top: 1px;
+		color: var(--color-brand-primary);
+		display: flex;
+		align-items: center;
+		margin-top: 2px;
+		flex-shrink: 0;
 	}
 
 	.meal-item-text {
@@ -401,18 +459,24 @@
 	}
 
 	.galya-mini-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
 		font-size: 10px;
-		font-weight: 800;
+		font-weight: 700;
 		color: var(--color-brand-primary);
 		background: rgba(24, 67, 47, 0.08);
 		padding: 1px 6px;
-		border-radius: var(--radius-full);
+		border-radius: 4px;
 	}
 
 	.meal-time-info {
-		display: block;
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 		font-size: 11px;
 		color: var(--text-muted);
+		margin-top: 2px;
 	}
 
 	.detail-bottom-cta {

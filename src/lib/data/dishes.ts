@@ -27,7 +27,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Цукрова пудра або мед', amount: 'за смаком', category: 'grocery' }
 		],
 		description: 'Ніжна текстура з фермерського сиру з легким ванільним ароматом. Тримають форму та тануть у роті.',
-		imageEmoji: '🥞',
+		imageEmoji: '',
 		tags: ['kids', 'sweet', 'classic', 'breakfast']
 	},
 	{
@@ -54,7 +54,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Мікс салату', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Пікантний смак для тих, хто полюбляє ситні несолодкі сніданки з тягучим сиром сулугуні.',
-		imageEmoji: '🧀',
+		imageEmoji: '',
 		tags: ['quick', 'cheese', 'breakfast']
 	},
 	{
@@ -81,7 +81,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Твердий сир (за бажанням підпекти)', amount: '100 г', category: 'dairy' }
 		],
 		description: 'Тонке мереживне тісто з щедрою начинкою з томленого курячого філе та обсмажених грибочків.',
-		imageEmoji: '🌯',
+		imageEmoji: '',
 		tags: ['meat', 'filling', 'family']
 	},
 	{
@@ -107,7 +107,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа м’ята для подачі', amount: 'гілочка', category: 'produce' }
 		],
 		description: 'Справжня вишня без кісточок у делікатному сиропі всередині найтонших фірмових млинців.',
-		imageEmoji: '🍒',
+		imageEmoji: '',
 		tags: ['sweet', 'kids', 'berries']
 	},
 	{
@@ -133,7 +133,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Вершкове масло 82%', amount: '20 г', category: 'dairy' }
 		],
 		description: 'Хрусткий пухкий човник з сумішшю сулугуні та імеретинського сиру з фірмової печі.',
-		imageEmoji: '🥧',
+		imageEmoji: '',
 		tags: ['cheese', 'hot', 'gourmet']
 	},
 
@@ -164,7 +164,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сало з проріззю (за бажанням)', amount: '150 г', category: 'grocery' }
 		],
 		description: 'Насичений, наваристий борщ темно-рубінового кольору зі шматочками добірного м’яса та овочами.',
-		imageEmoji: '🍲',
+		imageEmoji: '',
 		tags: ['soup', 'family', 'ukrainian', 'lunch']
 	},
 	{
@@ -192,7 +192,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Хрусткий багет', amount: '1 шт', category: 'bakery' }
 		],
 		description: 'Густа, запашна солянка з 4 видами м’яса та копченостей, солоненькими огірочками та каперсами.',
-		imageEmoji: '🥣',
+		imageEmoji: '',
 		tags: ['soup', 'meat', 'gourmet', 'lunch']
 	},
 	{
@@ -220,7 +220,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Ідеальний легкий суп для малечі та дорослих. Гіпоалергенне дієтичне м’ясо кролика.',
-		imageEmoji: '🍲',
+		imageEmoji: '',
 		tags: ['kids', 'diet', 'soup', 'family']
 	},
 	{
@@ -246,7 +246,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа зелена цибулька', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Оксамитовий гороховий суп з глибоким ароматом якісних копчених реберець.',
-		imageEmoji: '🫕',
+		imageEmoji: '',
 		tags: ['quick', 'soup', 'comfort']
 	},
 	{
@@ -272,7 +272,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий перець чілі (за бажанням)', amount: '1 шт', category: 'produce' }
 		],
 		description: 'Справжній гуляшний суп: томлене м’ясо, ароматна угорська солодка паприка та картопелька.',
-		imageEmoji: '🍲',
+		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hearty']
 	},
 
@@ -302,7 +302,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа зелень кропу', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Золоте співвідношення 70% свіжого фермерського фаршу та 30% тонкого пружного тіста ручної ліпки.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['quick', 'meat', 'classic', 'bestseller']
 	},
 	{
@@ -328,7 +328,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy' }
 		],
 		description: 'Тільки дієтичне філе індички без зайвих спецій, ніжне тонке тісто, яке не розварюється.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['kids', 'diet', 'quick']
 	},
 	{
@@ -355,7 +355,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' }
 		],
 		description: 'Пишні, оксамитові всередині варенички ручної ліпки зі справжньою ароматною засмажкою.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['vegetarian', 'ukrainian', 'comfort']
 	},
 	{
@@ -382,7 +382,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Ягідне варення або мед', amount: 'за смаком', category: 'grocery' }
 		],
 		description: 'Багато солодкої сирної начинки з крупинками справжнього сиру та ваніллю.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['sweet', 'kids', 'family']
 	},
 	{
@@ -410,7 +410,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Акуратні невеличкі голубці з м’яким листям молодої капусти, де багато соковитого м’яса і мінімум рису.',
-		imageEmoji: '🥬',
+		imageEmoji: '',
 		tags: ['family', 'hearty', 'meat']
 	},
 	{
@@ -438,7 +438,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжі огірки та чері', amount: '300 г', category: 'produce' }
 		],
 		description: 'Хрустка паніровка, цільне куряче філе і запашне вершкове масло з кропом, що витікає при розрізанні.',
-		imageEmoji: '🍗',
+		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'restaurant']
 	},
 	{
@@ -465,7 +465,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Зелень петрушки', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Ніжні дієтичні кульки з соковитого курячого м’яса в оксамитовому вершковому французькому соусі.',
-		imageEmoji: '🧆',
+		imageEmoji: '',
 		tags: ['kids', 'quick', 'meat', 'gourmet']
 	},
 	{
@@ -492,7 +492,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Соус Сацебелі або Ткемалі', amount: '1 пляшечка', category: 'sauces' }
 		],
 		description: 'Міцне тісто з акуратним «хвостиком» і море пряного духмяного бульйону всередині.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hot']
 	},
 	{
@@ -518,7 +518,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Мед натуральний (для подачі)', amount: 'трохи', category: 'grocery' }
 		],
 		description: 'Тонкий бортик з пухирцями з кам’яної печі, моцарела, дор блю, пармезан та сулугуні.',
-		imageEmoji: '🍕',
+		imageEmoji: '',
 		tags: ['quick', 'cheese', 'gourmet']
 	},
 	{
@@ -544,7 +544,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Базилік зелений', amount: '1 гілочка', category: 'produce' }
 		],
 		description: 'Листи пасти власного розкачування, багато томленої яловичини та ніжний вершковий соус.',
-		imageEmoji: '🥘',
+		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'family']
 	},
 	{
@@ -571,7 +571,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce' }
 		],
 		description: 'Пухирчасте хрустке тісто, що при першому укусі розкриває соковитий м’ясний сік.',
-		imageEmoji: '🥟',
+		imageEmoji: '',
 		tags: ['quick', 'meat', 'hot']
 	},
 	{
@@ -598,7 +598,8 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа зелень', amount: '1 пучок', category: 'produce' }
 		],
 		description: 'Соковитий болгарський перець з ніжним м’ясним фаршем і рисом, просочений томатним ароматом.',
-		imageEmoji: '🫑',
+		imageEmoji: '',
 		tags: ['vegetable', 'meat', 'family']
 	}
 ];
+

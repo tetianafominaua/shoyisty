@@ -1,5 +1,9 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	const cart = $derived(planner.getCartGrouped());
 </script>
@@ -22,12 +26,16 @@
 			}}
 			aria-label="Готові набори"
 		>
-			<div class="card-icon-bubble">🍱</div>
+			<div class="card-icon-bubble">
+				<Sparkles size={24} color="#18432f" />
+			</div>
 			<div class="card-text-group">
 				<h3 class="card-main-title">Готові набори</h3>
 				<span class="card-sub-info">4 готові раціони на тиждень</span>
 			</div>
-			<span class="card-arrow-circle">&rarr;</span>
+			<span class="card-arrow-circle">
+				<ArrowRight size={16} />
+			</span>
 		</button>
 
 		<!-- Button 2: На тиждень -->
@@ -36,12 +44,16 @@
 			onclick={() => (planner.activeTab = 'week')}
 			aria-label="На тиждень"
 		>
-			<div class="card-icon-bubble">📅</div>
+			<div class="card-icon-bubble">
+				<Calendar size={24} color="#b45309" />
+			</div>
 			<div class="card-text-group">
 				<h3 class="card-main-title">На тиждень</h3>
 				<span class="card-sub-info">Конструктор страв по днях (Пн–Нд)</span>
 			</div>
-			<span class="card-arrow-circle">&rarr;</span>
+			<span class="card-arrow-circle">
+				<ArrowRight size={16} />
+			</span>
 		</button>
 	</div>
 
@@ -50,7 +62,9 @@
 		<div class="smart-cart-wrapper animate-slide-up">
 			<button class="smart-cart-btn" onclick={() => (planner.activeTab = 'cart')}>
 				<div class="smart-cart-left">
-					<span class="smart-cart-icon">🛒</span>
+					<span class="smart-cart-icon">
+						<ShoppingCart size={22} color="#ffffff" />
+					</span>
 					<div class="smart-cart-texts">
 						<span class="smart-cart-heading">Твій кошик сформовано</span>
 						<span class="smart-cart-sub">
@@ -58,7 +72,10 @@
 						</span>
 					</div>
 				</div>
-				<span class="smart-cart-action">Переглянути &rarr;</span>
+				<span class="smart-cart-action">
+					<span>Переглянути</span>
+					<ArrowRight size={15} />
+				</span>
 			</button>
 		</div>
 	{/if}
@@ -276,6 +293,9 @@
 	}
 
 	.smart-cart-action {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
 		font-size: 13px;
 		font-weight: 700;
 		color: #ffffff;

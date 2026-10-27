@@ -260,10 +260,10 @@ class PlannerStore {
 		const cart = this.getCartGrouped();
 		const dateStr = new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
 
-		let text = `🥟 *СПИСОК ПОКУПОК НА ТИЖДЕНЬ* (${dateStr})\n`;
+		let text = `*СПИСОК ПОКУПОК НА ТИЖДЕНЬ* (${dateStr})\n`;
 		text += `Планувальник меню «Галя Балувана»\n\n`;
 
-		text += `📍 *1. ПРИДБАТИ В «ГАЛЯ БАЛУВАНА»* (${cart.totalGalyaUnits} поз., ~${cart.totalEstimatedGalyaPrice} ₴):\n`;
+		text += `*1. ПРИДБАТИ В «ГАЛЯ БАЛУВАНА»* (${cart.totalGalyaUnits} поз., ~${cart.totalEstimatedGalyaPrice} ₴):\n`;
 		if (cart.galyaItems.length === 0) {
 			text += `_(Ще немає обраних напівфабрикатів)_\n`;
 		} else {
@@ -272,7 +272,7 @@ class PlannerStore {
 			});
 		}
 
-		text += `\n🛒 *2. ДОКУПИТИ В СУПЕРМАРКЕТІ* (${cart.totalGroceryUnits} поз.):\n`;
+		text += `\n*2. ДОКУПИТИ В СУПЕРМАРКЕТІ* (${cart.totalGroceryUnits} поз.):\n`;
 		if (cart.groceryItems.length === 0) {
 			text += `_(Список супутніх товарів порожній)_\n`;
 		} else {
@@ -281,8 +281,8 @@ class PlannerStore {
 			for (const cat of categories) {
 				const itemsInCat = cart.groceryItems.filter((i) => i.category === cat);
 				if (itemsInCat.length > 0) {
-					const catInfo = GROCERY_CATEGORIES_UA[cat] || { label: cat, icon: '•' };
-					text += `\n${catInfo.icon} *${catInfo.label}*:\n`;
+					const catInfo = GROCERY_CATEGORIES_UA[cat] || { label: cat };
+					text += `\n*${catInfo.label}*:\n`;
 					itemsInCat.forEach((item) => {
 						text += `  • [ ] ${item.name} (${item.amounts.join(', ')})\n`;
 					});
@@ -290,7 +290,7 @@ class PlannerStore {
 			}
 		}
 
-		text += `\n✨ _Смачного та затишного тижня!_`;
+		text += `\n_Смачного та затишного тижня!_`;
 		return text;
 	}
 }

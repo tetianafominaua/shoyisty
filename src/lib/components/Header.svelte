@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
+	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
 
 	const cart = $derived(planner.getCartGrouped());
 
@@ -36,7 +38,7 @@
 		<!-- Clean Subpage Top Navigation Bar -->
 		<div class="subpage-nav-bar animate-fade-in">
 			<button class="nav-back-btn" onclick={handleBack} aria-label="Назад">
-				<span class="back-arrow">&larr;</span>
+				<ArrowLeft size={16} />
 				<span class="back-text">Назад</span>
 			</button>
 
@@ -49,7 +51,7 @@
 						onclick={() => (planner.activeTab = 'cart')}
 						aria-label="Переглянути кошик"
 					>
-						<span>🛒</span>
+						<ShoppingCart size={14} />
 						<span class="mini-cart-num">{planner.totalDishesCount}</span>
 					</button>
 				{:else}
@@ -139,11 +141,6 @@
 	.nav-back-btn:hover {
 		background: #eae3d4;
 		border-color: #d4ccbd;
-	}
-
-	.back-arrow {
-		font-size: 16px;
-		line-height: 1;
 	}
 
 	.subpage-title {

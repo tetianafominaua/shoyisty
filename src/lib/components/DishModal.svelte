@@ -3,6 +3,22 @@
 	import { DISHES } from '#lib/data/dishes';
 	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
 	import type { Dish, MealKey } from '#lib/types';
+	import X from '@lucide/svelte/icons/x';
+	import Search from '@lucide/svelte/icons/search';
+	import ChefHat from '@lucide/svelte/icons/chef-hat';
+	import Clock from '@lucide/svelte/icons/clock';
+	import Flame from '@lucide/svelte/icons/flame';
+	import Users from '@lucide/svelte/icons/users';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import Check from '@lucide/svelte/icons/check';
+	import Zap from '@lucide/svelte/icons/zap';
+	import Baby from '@lucide/svelte/icons/baby';
+	import Beef from '@lucide/svelte/icons/beef';
+	import Milk from '@lucide/svelte/icons/milk';
+	import Utensils from '@lucide/svelte/icons/utensils';
+	import Sun from '@lucide/svelte/icons/sun';
+	import Soup from '@lucide/svelte/icons/soup';
+	import Info from '@lucide/svelte/icons/info';
 
 	let searchQuery = $state('');
 	let selectedFilter = $state<string>('all');
@@ -59,6 +75,16 @@
 	}
 </script>
 
+{#snippet mealIcon(key: string, size = 14)}
+	{#if key === 'breakfast'}
+		<Sun {size} />
+	{:else if key === 'lunch'}
+		<Soup {size} />
+	{:else}
+		<Utensils {size} />
+	{/if}
+{/snippet}
+
 {#if activeModal && activeDayInfo && activeMealInfo}
 	<div
 		class="modal-backdrop"
@@ -81,18 +107,23 @@
 					<div>
 						<div class="sheet-breadcrumbs">
 							<span>{activeDayInfo.fullName}</span> &bull;
-							<span>{activeMealInfo.icon} {activeMealInfo.label}</span>
+							<span class="meal-badge-inline">
+								{@render mealIcon(activeMealInfo.key, 13)}
+								<span>{activeMealInfo.label}</span>
+							</span>
 						</div>
 						<h3 class="sheet-heading">Оберіть страву</h3>
 					</div>
 					<button class="sheet-close-btn" onclick={handleClose} aria-label="Закрити">
-						&times;
+						<X size={18} />
 					</button>
 				</div>
 
 				<!-- Search Input -->
 				<div class="search-box">
-					<span class="search-icon">🔍</span>
+					<span class="search-icon">
+						<Search size={16} />
+					</span>
 					<input
 						type="text"
 						class="search-input"
@@ -100,7 +131,9 @@
 						bind:value={searchQuery}
 					/>
 					{#if searchQuery}
-						<button class="search-clear" onclick={() => (searchQuery = '')}>✕</button>
+						<button class="search-clear" onclick={() => (searchQuery = '')}>
+							<X size={14} />
+						</button>
 					{/if}
 				</div>
 
@@ -118,35 +151,40 @@
 						class:active={selectedFilter === 'galya'}
 						onclick={() => (selectedFilter = 'galya')}
 					>
-						🥟 Тільки «Галя Балувана»
+						<ChefHat size={13} />
+						<span>«Галя Балувана»</span>
 					</button>
 					<button
 						class="chip-btn"
 						class:active={selectedFilter === 'quick'}
 						onclick={() => (selectedFilter = 'quick')}
 					>
-						⚡ До 12 хв
+						<Zap size={13} />
+						<span>До 12 хв</span>
 					</button>
 					<button
 						class="chip-btn"
 						class:active={selectedFilter === 'kids'}
 						onclick={() => (selectedFilter = 'kids')}
 					>
-						👶 Дітям
+						<Baby size={13} />
+						<span>Дітям</span>
 					</button>
 					<button
 						class="chip-btn"
 						class:active={selectedFilter === 'meat'}
 						onclick={() => (selectedFilter = 'meat')}
 					>
-						🥩 М’ясні
+						<Beef size={13} />
+						<span>М’ясні</span>
 					</button>
 					<button
 						class="chip-btn"
 						class:active={selectedFilter === 'cheese'}
 						onclick={() => (selectedFilter = 'cheese')}
 					>
-						🧀 Сирні
+						<Milk size={13} />
+						<span>Сирні</span>
 					</button>
 				</div>
 			</div>
@@ -155,7 +193,9 @@
 			<div class="sheet-body">
 				{#if filteredDishes.length === 0}
 					<div class="empty-state">
-						<span class="empty-emoji">🔍</span>
+						<div class="empty-icon-wrap">
+							<Search size={32} />
+						</div>
 						<p>За вашим запитом страв не знайдено</p>
 						<button class="btn-outline btn-sm" onclick={() => { searchQuery = ''; selectedFilter = 'all'; }}>
 							Скинути фільтри
@@ -166,13 +206,24 @@
 						{#each filteredDishes as dish}
 							<div class="dish-card">
 								<div class="dish-card-header">
-									<div class="dish-emoji-badge">{dish.imageEmoji}</div>
+									<div class="dish-icon-box">
+										<Utensils size={20} color="var(--color-brand-primary)" />
+									</div>
 									<div class="dish-title-col">
 										<h4 class="dish-title">{dish.name}</h4>
 										<div class="dish-meta-pills">
-											<span class="meta-pill">⏱️ {dish.prepTimeMinutes} хв</span>
-											<span class="meta-pill">🔥 {dish.calories} ккал</span>
-											<span class="meta-pill">👥 {dish.servings} порц.</span>
+											<span class="meta-pill">
+												<Clock size={11} />
+												<span>{dish.prepTimeMinutes} хв</span>
+											</span>
+											<span class="meta-pill">
+												<Flame size={11} />
+												<span>{dish.calories} ккал</span>
+											</span>
+											<span class="meta-pill">
+												<Users size={11} />
+												<span>{dish.servings} порц.</span>
+											</span>
 										</div>
 									</div>
 								</div>
@@ -183,12 +234,16 @@
 								{#if dish.isGalyaProduct && dish.galyaProduct}
 									<div class="galya-highlight-card">
 										<div class="galya-card-top">
-											<span class="galya-brand-tag">🥟 Галя Балувана &bull; {dish.galyaProduct.badge}</span>
+											<span class="galya-brand-tag">
+												<ChefHat size={12} />
+												<span>Галя Балувана &bull; {dish.galyaProduct.badge}</span>
+											</span>
 											<span class="galya-price">~{dish.galyaProduct.priceUah} ₴</span>
 										</div>
 										<div class="galya-item-name">{dish.galyaProduct.name}</div>
 										<div class="galya-cooking-hint">
-											💡 <em>{dish.galyaProduct.cookingMethod}</em>
+											<Info size={12} />
+											<em>{dish.galyaProduct.cookingMethod}</em>
 										</div>
 									</div>
 								{/if}
@@ -196,7 +251,10 @@
 								<!-- Supermarket Ingredients Teaser -->
 								{#if dish.groceryItems.length > 0}
 									<div class="grocery-teaser">
-										<span class="teaser-label">🛒 Докупити в супермаркеті:</span>
+										<span class="teaser-label">
+											<ShoppingCart size={13} />
+											<span>Докупити в супермаркеті:</span>
+										</span>
 										<span class="teaser-items">
 											{dish.groceryItems.map((g) => `${g.name} (${g.amount})`).join(', ')}
 										</span>
@@ -205,7 +263,7 @@
 
 								<button class="btn-primary dish-select-btn" onclick={() => handleSelect(dish)}>
 									<span>Обрати цю страву</span>
-									<span>✓</span>
+									<Check size={16} />
 								</button>
 							</div>
 						{/each}
@@ -347,6 +405,9 @@
 	}
 
 	.chip-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
 		white-space: nowrap;
 		padding: 6px 12px;
 		border-radius: var(--radius-full);
@@ -372,6 +433,13 @@
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
+	}
+
+	.empty-icon-wrap {
+		display: flex;
+		justify-content: center;
+		color: var(--text-muted);
+		margin-bottom: 8px;
 	}
 
 	.dishes-grid {
@@ -401,8 +469,7 @@
 		align-items: flex-start;
 	}
 
-	.dish-emoji-badge {
-		font-size: 26px;
+	.dish-icon-box {
 		width: 44px;
 		height: 44px;
 		border-radius: 12px;
@@ -431,6 +498,9 @@
 	}
 
 	.meta-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 		font-size: 11px;
 		font-weight: 600;
 		color: var(--text-muted);
@@ -463,6 +533,9 @@
 	}
 
 	.galya-brand-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
 		font-size: 11px;
 		font-weight: 800;
 		color: #166534;
@@ -517,9 +590,5 @@
 		align-items: center;
 		gap: 12px;
 		color: var(--text-muted);
-	}
-
-	.empty-emoji {
-		font-size: 36px;
 	}
 </style>
