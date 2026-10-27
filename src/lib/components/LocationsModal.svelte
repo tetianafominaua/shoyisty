@@ -5,8 +5,6 @@
 		city: string;
 		address: string;
 		badge: string;
-		note: string;
-		icon: string;
 		mapsUrl: string;
 	}
 
@@ -15,32 +13,24 @@
 			city: 'Одеса',
 			address: 'вул. Сегедська, 6',
 			badge: 'Головне виробництво',
-			note: 'Відкритий цех ручної ліпки за склом: свіжі вареники, пельмені, готова кулінарія',
-			icon: '🥟',
 			mapsUrl: 'https://maps.google.com/?q=Галя+Балувана+Одеса+Сегедська+6'
 		},
 		{
 			city: 'Одеса',
 			address: 'вул. Ак. Корольова, 53',
-			badge: 'Фірмовий магазин',
-			note: 'Щоденна свіжа доставка з виробництва Сегедської',
-			icon: '🥟',
+			badge: 'Магазин',
 			mapsUrl: 'https://maps.google.com/?q=Галя+Балувана+Одеса+Корольова+53'
 		},
 		{
 			city: 'Одеса',
 			address: 'вул. Св. Ріхтера, 129а',
-			badge: 'Фірмовий магазин',
-			note: 'Повний асортимент заморожених напівфабрикатів та страв під розігрів',
-			icon: '🥟',
+			badge: 'Магазин',
 			mapsUrl: 'https://maps.google.com/?q=Галя+Балувана+Одеса+Святослава+Ріхтера+129а'
 		},
 		{
 			city: 'м. Південне',
 			address: 'вул. Шевченка, 18/6',
-			badge: 'Виробництво з піччю',
-			note: 'Гаряча піца з печі, хачапурі по-аджарськи, гриль-меню та бургери',
-			icon: '🍕',
+			badge: 'З піччю та грилем',
 			mapsUrl: 'https://maps.google.com/?q=Галя+Балувана+Південне+Шевченка+18'
 		}
 	];
@@ -65,50 +55,42 @@
 			tabindex="0"
 			onkeydown={(e) => e.stopPropagation()}
 		>
-			<!-- Sheet Handle & Header -->
+			<!-- Top Drag Handle -->
 			<div class="sheet-handle"></div>
+
+			<!-- Compact Header -->
 			<div class="sheet-header">
-				<div class="header-titles">
-					<span class="sheet-badge">📍 4 магазини мережі</span>
-					<h3 class="sheet-title">Наші адреси на Google Картах</h3>
-					<p class="sheet-sub">Оберіть потрібну точку, щоб прокласти маршрут</p>
-				</div>
-				<button class="sheet-close-btn" onclick={close} aria-label="Закрити">
-					&times;
-				</button>
+				<h3 class="sheet-title">📍 Наші магазини на карті</h3>
+				<button class="sheet-close-btn" onclick={close} aria-label="Закрити">&times;</button>
 			</div>
 
-			<!-- Locations List -->
-			<div class="locations-list">
+			<!-- 4 Compact Locations (Zero scroll, fits 100% on any screen) -->
+			<div class="locations-compact-list">
 				{#each LOCATIONS as loc}
 					<a
 						href={loc.mapsUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="location-card"
+						class="compact-loc-row"
 					>
-						<div class="loc-icon-bubble">{loc.icon}</div>
-						<div class="loc-info">
-							<div class="loc-top-row">
+						<div class="loc-text-col">
+							<div class="loc-address-line">
+								<strong class="loc-address">{loc.address}</strong>
 								<span class="loc-badge">{loc.badge}</span>
-								<span class="loc-city">{loc.city}</span>
 							</div>
-							<div class="loc-address">{loc.address}</div>
-							<div class="loc-note">{loc.note}</div>
+							<span class="loc-city">{loc.city}</span>
 						</div>
-						<div class="loc-route-btn" title="Відкрити маршрут у Google Maps">
-							<span>Маршрут</span>
-							<span class="arrow-icon">↗</span>
-						</div>
+
+						<span class="loc-route-pill">Карта ↗</span>
 					</a>
 				{/each}
 			</div>
 
-			<!-- Phone Call Action Button -->
-			<div class="sheet-footer-call">
-				<a href="tel:+380506118570" class="call-btn">
+			<!-- Call Button (Strictly Single Line Guaranteed, No Wrapping) -->
+			<div class="sheet-call-wrapper">
+				<a href="tel:+380506118570" class="call-btn-single-line">
 					<span class="call-icon">📞</span>
-					<span>Зателефонувати в магазин: <strong>+38 050 611 85 70</strong></span>
+					<span class="call-text">Зателефонувати в магазин: <strong>+38 050 611 85 70</strong></span>
 				</a>
 			</div>
 		</div>
@@ -121,7 +103,7 @@
 		inset: 0;
 		z-index: 70;
 		background: rgba(15, 28, 20, 0.6);
-		backdrop-filter: blur(6px);
+		backdrop-filter: blur(5px);
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
@@ -129,50 +111,37 @@
 
 	.bottom-sheet {
 		width: 100%;
-		max-width: 580px;
-		max-height: 88vh;
+		max-width: 520px;
 		background: #ffffff;
-		border-radius: 24px 24px 0 0;
+		border-radius: 20px 20px 0 0;
 		display: flex;
 		flex-direction: column;
-		box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
-		overflow: hidden;
-		padding: 12px 18px 24px 18px;
+		box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+		padding: 10px 14px 18px 14px;
 	}
 
 	.sheet-handle {
 		width: 36px;
 		height: 4px;
-		background: #d4cdc3;
+		background: #dcd6cc;
 		border-radius: 2px;
-		margin: 0 auto 12px auto;
+		margin: 0 auto 8px auto;
 	}
 
+	/* Compact Header */
 	.sheet-header {
 		display: flex;
 		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 14px;
-	}
-
-	.sheet-badge {
-		font-size: 11px;
-		font-weight: 700;
-		color: var(--color-brand-primary);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
+		align-items: center;
+		margin-bottom: 8px;
+		padding-bottom: 6px;
+		border-bottom: 1px solid var(--border-subtle);
 	}
 
 	.sheet-title {
-		font-size: 19px;
+		font-size: 15px;
 		font-weight: 800;
-		margin: 2px 0 2px 0;
 		color: var(--text-main);
-	}
-
-	.sheet-sub {
-		font-size: 12px;
-		color: var(--text-muted);
 		margin: 0;
 	}
 
@@ -181,8 +150,8 @@
 		border: none;
 		font-size: 20px;
 		line-height: 1;
-		width: 32px;
-		height: 32px;
+		width: 28px;
+		height: 28px;
 		border-radius: 50%;
 		cursor: pointer;
 		display: flex;
@@ -194,144 +163,137 @@
 
 	.sheet-close-btn:hover {
 		background: #eae2d1;
+		color: var(--text-main);
 	}
 
-	/* Locations List */
-	.locations-list {
+	/* Compact Locations List - 4 items guaranteed on 1 screen */
+	.locations-compact-list {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
-		overflow-y: auto;
-		max-height: 52vh;
-		padding-right: 2px;
-		margin-bottom: 14px;
+		gap: 6px;
+		margin-bottom: 10px;
 	}
 
-	.location-card {
+	.compact-loc-row {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 14px;
+		justify-content: space-between;
+		gap: 8px;
+		padding: 8px 10px;
 		border-radius: var(--radius-md);
-		border: 1.5px solid var(--border-subtle);
+		border: 1px solid var(--border-subtle);
 		background: #ffffff;
 		text-decoration: none;
 		color: inherit;
 		transition: all var(--transition-fast);
 	}
 
-	.location-card:hover {
+	.compact-loc-row:hover {
 		border-color: var(--color-brand-primary);
 		background: #fdfcf9;
 		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(24, 67, 47, 0.08);
+		box-shadow: 0 2px 6px rgba(24, 67, 47, 0.08);
 	}
 
-	.loc-icon-bubble {
-		width: 44px;
-		height: 44px;
-		border-radius: 12px;
-		background: var(--bg-surface-alt);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 22px;
-		flex-shrink: 0;
-	}
-
-	.loc-info {
+	.loc-text-col {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 2px;
+		gap: 1px;
+		min-width: 0;
 	}
 
-	.loc-top-row {
+	.loc-address-line {
 		display: flex;
-		gap: 6px;
 		align-items: center;
+		gap: 6px;
+		flex-wrap: nowrap;
+		overflow: hidden;
+	}
+
+	.loc-address {
+		font-size: 13.5px;
+		font-weight: 800;
+		color: var(--text-main);
+		white-space: nowrap;
 	}
 
 	.loc-badge {
 		font-size: 10px;
-		font-weight: 800;
+		font-weight: 700;
 		color: var(--color-brand-primary);
 		background: rgba(24, 67, 47, 0.08);
-		padding: 1px 6px;
+		padding: 1px 5px;
 		border-radius: 4px;
+		white-space: nowrap;
 	}
 
 	.loc-city {
 		font-size: 11px;
-		font-weight: 700;
 		color: var(--text-muted);
+		font-weight: 500;
+		line-height: 1.2;
 	}
 
-	.loc-address {
-		font-size: 15px;
-		font-weight: 800;
-		color: var(--text-main);
-	}
-
-	.loc-note {
-		font-size: 11px;
-		color: var(--text-muted);
-		line-height: 1.35;
-	}
-
-	.loc-route-btn {
-		display: flex;
+	.loc-route-pill {
+		display: inline-flex;
 		align-items: center;
-		gap: 4px;
-		font-size: 11px;
+		gap: 2px;
+		font-size: 11.5px;
 		font-weight: 800;
 		color: var(--color-brand-primary);
-		background: rgba(24, 67, 47, 0.06);
-		padding: 6px 10px;
+		background: rgba(24, 67, 47, 0.07);
+		padding: 5px 10px;
 		border-radius: var(--radius-full);
 		flex-shrink: 0;
+		white-space: nowrap;
 		transition: all var(--transition-fast);
 	}
 
-	.location-card:hover .loc-route-btn {
+	.compact-loc-row:hover .loc-route-pill {
 		background: var(--color-brand-primary);
 		color: #ffffff;
 	}
 
-	.arrow-icon {
-		font-size: 13px;
-		line-height: 1;
+	/* Call Button - Strictly Single Line Guaranteed */
+	.sheet-call-wrapper {
+		padding-top: 2px;
 	}
 
-	/* Phone Call Button */
-	.sheet-footer-call {
-		padding-top: 6px;
-		border-top: 1px dashed var(--border-subtle);
-	}
-
-	.call-btn {
+	.call-btn-single-line {
 		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 8px;
-		padding: 12px 16px;
+		gap: 6px;
+		padding: 9px 10px;
 		background: #f0fdf4;
 		border: 1.5px solid #a7f3d0;
 		border-radius: var(--radius-md);
 		color: #166534;
-		font-size: 13px;
+		font-size: clamp(11.5px, 3.4vw, 13px);
 		font-weight: 700;
 		text-decoration: none;
+		white-space: nowrap;
 		transition: all var(--transition-fast);
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
-	.call-btn:hover {
+	.call-btn-single-line:hover {
 		background: #dcfce7;
 		border-color: #86efac;
+		transform: translateY(-1px);
 	}
 
 	.call-icon {
-		font-size: 16px;
+		font-size: 14px;
+		flex-shrink: 0;
+	}
+
+	.call-text {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>
