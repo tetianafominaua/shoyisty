@@ -1,0 +1,246 @@
+:root {
+	--font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+	/* Brand Colors - Galya Baluvana Heritage */
+	--color-brand-primary: #18432f;
+	--color-brand-primary-light: #23583f;
+	--color-brand-primary-dark: #0f2c1f;
+	--color-brand-accent: #d97706;
+	--color-brand-accent-hover: #b45309;
+	--color-brand-gold: #e59838;
+	--color-brand-honey: #fff7ed;
+
+	/* Backgrounds */
+	--bg-app: #f8f6f0;
+	--bg-surface: #ffffff;
+	--bg-surface-alt: #f3efe6;
+	--bg-surface-glass: rgba(255, 255, 255, 0.88);
+	--border-subtle: #e8e2d5;
+	--border-focus: #18432f;
+
+	/* Text */
+	--text-main: #192620;
+	--text-muted: #576b61;
+	--text-subtle: #899c92;
+	--text-inverse: #ffffff;
+
+	/* UI Elevation & Radius */
+	--radius-sm: 8px;
+	--radius-md: 14px;
+	--radius-lg: 20px;
+	--radius-xl: 28px;
+	--radius-full: 9999px;
+
+	--shadow-sm: 0 2px 6px rgba(22, 42, 33, 0.05);
+	--shadow-md: 0 8px 20px rgba(22, 42, 33, 0.08);
+	--shadow-lg: 0 16px 36px rgba(22, 42, 33, 0.12);
+	--shadow-glow: 0 0 24px rgba(24, 67, 47, 0.18);
+
+	/* Transitions */
+	--transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+	--transition-smooth: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+body {
+	font-family: var(--font-main);
+	background-color: var(--bg-app);
+	color: var(--text-main);
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	background-image: 
+		radial-gradient(at 0% 0%, rgba(24, 67, 47, 0.04) 0px, transparent 50%),
+		radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.03) 0px, transparent 50%);
+	background-attachment: fixed;
+}
+
+/* Base Container */
+.app-viewport {
+	width: 100%;
+	max-width: 580px;
+	min-height: 100vh;
+	background: var(--bg-surface);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	box-shadow: 0 0 50px rgba(0, 0, 0, 0.06);
+	border-left: 1px solid var(--border-subtle);
+	border-right: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 600px) {
+	.app-viewport {
+		border-left: none;
+		border-right: none;
+		box-shadow: none;
+	}
+}
+
+/* Typography Helpers */
+h1, h2, h3, h4, h5 {
+	color: var(--text-main);
+	font-weight: 700;
+	line-height: 1.25;
+	letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--border-subtle);
+	border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--text-subtle);
+}
+
+/* Micro-animations */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes pulseGlow {
+	0%, 100% {
+		box-shadow: 0 0 0 0 rgba(24, 67, 47, 0.2);
+	}
+	50% {
+		box-shadow: 0 0 0 8px rgba(24, 67, 47, 0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+	animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Brand Button Styles */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 14px 24px;
+	background: linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-primary-light) 100%);
+	color: #ffffff;
+	font-weight: 600;
+	font-size: 15px;
+	border-radius: var(--radius-md);
+	border: none;
+	cursor: pointer;
+	box-shadow: 0 4px 14px rgba(24, 67, 47, 0.28);
+	transition: all var(--transition-fast);
+}
+
+.btn-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(24, 67, 47, 0.35);
+}
+
+.btn-primary:active {
+	transform: translateY(0);
+}
+
+.btn-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 20px;
+	background: var(--bg-surface-alt);
+	color: var(--text-main);
+	font-weight: 600;
+	font-size: 14px;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--border-subtle);
+	cursor: pointer;
+	transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+	background: #eae4d7;
+	border-color: #d8d0c0;
+	transform: translateY(-1px);
+}
+
+.btn-outline {
+	background: transparent;
+	border: 1.5px solid var(--border-subtle);
+	color: var(--text-main);
+	border-radius: var(--radius-md);
+	padding: 10px 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all var(--transition-fast);
+}
+
+.btn-outline:hover {
+	border-color: var(--color-brand-primary);
+	color: var(--color-brand-primary);
+	background: rgba(24, 67, 47, 0.04);
+}
+
+/* Brand Badges */
+.badge-galya {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	background: rgba(24, 67, 47, 0.08);
+	color: var(--color-brand-primary);
+	font-size: 12px;
+	font-weight: 700;
+	padding: 4px 10px;
+	border-radius: var(--radius-full);
+	border: 1px solid rgba(24, 67, 47, 0.16);
+	letter-spacing: 0.01em;
+}
+
+.badge-gold {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	background: #fffbeb;
+	color: #b45309;
+	font-size: 12px;
+	font-weight: 700;
+	padding: 4px 10px;
+	border-radius: var(--radius-full);
+	border: 1px solid #fde68a;
+}
