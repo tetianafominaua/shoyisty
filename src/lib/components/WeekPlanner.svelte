@@ -15,7 +15,6 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import ChefHat from '@lucide/svelte/icons/chef-hat';
 	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
-	import Salad from '@lucide/svelte/icons/salad';
 	import Plus from '@lucide/svelte/icons/plus';
 
 	const activeDay = $derived(planner.selectedDay);
@@ -154,7 +153,12 @@
 									<Utensils size={20} color="var(--color-brand-primary)" />
 								</div>
 								<div class="dish-info-box">
-									<h4 class="dish-heading">{dish.name}</h4>
+									<div class="dish-heading-row">
+										<h4 class="dish-heading">{dish.name}</h4>
+										{#if dish.sideCompanion}
+											<span class="companion-pill">+ {dish.sideCompanion}</span>
+										{/if}
+									</div>
 									<div class="dish-pills-row">
 										<span class="dish-pill">
 											<Clock size={11} />
@@ -216,19 +220,6 @@
 										</div>
 									{/each}
 								{/if}
-							</div>
-						{/if}
-
-						<!-- Supermarket Ingredients Hint -->
-						{#if dish.groceryItems.length > 0}
-							<div class="grocery-hint-box">
-								<span class="hint-label">
-									<Salad size={12} />
-									<span>Продукти із супермаркету:</span>
-								</span>
-								<span class="hint-text">
-									+ {dish.groceryItems.map((g) => g.name).join(' • ')}
-								</span>
 							</div>
 						{/if}
 					</div>
@@ -513,11 +504,32 @@
 		flex: 1;
 	}
 
+	.dish-heading-row {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 5px;
+	}
+
 	.dish-heading {
 		font-size: 14px;
 		font-weight: 800;
 		line-height: 1.35;
-		margin-bottom: 4px;
+		margin-bottom: 0;
+	}
+
+	.companion-pill {
+		display: inline-flex;
+		align-items: center;
+		font-size: 11.5px;
+		font-weight: 600;
+		color: #92400e;
+		background: #fef3c7;
+		border: 1px solid #fde68a;
+		padding: 1px 7px;
+		border-radius: 6px;
+		line-height: 1.25;
 	}
 
 	.slot-icon {
@@ -622,25 +634,6 @@
 		margin-top: 3px;
 		color: #14532d;
 		font-weight: 600;
-	}
-
-	/* Grocery Hint Box */
-	.grocery-hint-box {
-		font-size: 11px;
-		color: var(--text-muted);
-		background: #fffbeb;
-		border-left: 2.5px solid var(--color-brand-accent);
-		padding: 5px 8px;
-		border-radius: 0 4px 4px 0;
-	}
-
-	.hint-label {
-		font-weight: 700;
-		color: #15803d;
-		margin-right: 4px;
-		display: inline-flex;
-		align-items: center;
-		gap: 3px;
 	}
 
 	/* Empty Slot Button */

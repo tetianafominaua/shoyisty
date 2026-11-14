@@ -25,6 +25,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
 			{ name: 'Свіжі ягоди та фрукти (по сезону)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'свіжі ягоди та фрукти',
 		description: 'Класичні сирники з фермерського сиру з легким ванільним ароматом.',
 		imageEmoji: '',
 		tags: ['kids', 'sweet', 'classic', 'breakfast']
@@ -52,6 +53,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Томати чері', amount: '200 г', category: 'produce', baseQty: 200, unit: 'г', scalable: true },
 			{ name: 'Мікс салату', amount: '1 уп.', category: 'produce', baseQty: 1, unit: 'уп.', scalable: true }
 		],
+		sideCompanion: 'томати чері та мікс салату',
 		description: 'Несолодкі сирники з солоною бринзою для ситного сніданку.',
 		imageEmoji: '',
 		tags: ['quick', 'cheese', 'breakfast']
@@ -79,6 +81,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true },
 			{ name: 'Твердий сир (за бажанням підпекти)', amount: '100 г', category: 'dairy', baseQty: 100, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'свіжа зелень та сир',
 		description: 'Тонкі млинці з начинкою з курячого філе та обсмажених печериць.',
 		imageEmoji: '',
 		tags: ['meat', 'filling', 'family']
@@ -106,6 +109,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжі фрукти та ягоди (банан, лохина)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Свіжа м’ята для подачі', amount: 'гілочка', category: 'produce', scalable: false }
 		],
+		sideCompanion: 'свіжі фрукти та ягоди',
 		description: 'Вишня без кісточок у делікатному сиропі всередині тонких млинців.',
 		imageEmoji: '',
 		tags: ['sweet', 'kids', 'berries']
@@ -128,7 +132,11 @@ export const DISHES: Dish[] = [
 			cookingTimeMinutes: 4,
 			cookingMethod: 'Готова страва з печі — достатньо лише розігріти 2–3 хв у мікрохвильовці або 4–5 хв у духовці чи на сухій сковороді.'
 		},
-		groceryItems: [],
+		groceryItems: [
+			{ name: 'Томати чері', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Свіжа зелень (кінза, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
+		],
+		sideCompanion: 'свіжі томати та зелень',
 		description: 'Готовий хачапурі з сирною начинкою — достатньо лише розігріти.',
 		imageEmoji: '',
 		tags: ['quick', 'cheese', 'hot', 'gourmet']
@@ -160,6 +168,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Бородинський або житній хліб / пампушки', amount: '1 буханка', category: 'bakery', baseQty: 0.25, unit: 'бух.', scalable: true },
 			{ name: 'Сало з проріззю (за бажанням)', amount: '75 г', category: 'grocery', baseQty: 75, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'хліб, сметана та свіжа зелень',
 		description: 'Наваристий український борщ зі шматочками м’яса та овочами.',
 		imageEmoji: '',
 		tags: ['soup', 'family', 'ukrainian', 'lunch']
@@ -186,6 +195,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметана 20%', amount: '75 г', category: 'dairy', baseQty: 75, unit: 'г', scalable: true },
 			{ name: 'Хрусткий багет', amount: '1 шт', category: 'bakery', baseQty: 0.38, unit: 'шт', scalable: true }
 		],
+		sideCompanion: 'хрусткий багет та сметана',
 		description: 'Густа солянка-концентрат з м’ясними копченостями, солоними огірками, маслинами та лимоном у складі.',
 		imageEmoji: '',
 		tags: ['soup', 'meat', 'gourmet', 'lunch']
@@ -216,6 +226,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Дрібна вермішель або зірочки', amount: '60 г', category: 'grocery', baseQty: 60, unit: 'г', scalable: true },
 			{ name: 'Свіжий кріп та петрушка', amount: '0.5 пучка', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'свіжі овочі та вермішель',
 		description:
 			'Ніжний та дієтичний домашній суп: вариться самостійно з додаванням соковитих фрикадельок з кролика від «Галя Балувана» та свіжих овочів.',
 		imageEmoji: '',
@@ -243,6 +254,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Хрусткі пшеничні сухарики або грінки', amount: '1 пачка', category: 'bakery', baseQty: 0.38, unit: 'пачка', scalable: true },
 			{ name: 'Свіжа зелена цибулька', amount: '1 пучок', category: 'produce', baseQty: 0.38, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'хрусткі грінки та свіжа зелень',
 		description: 'Гороховий крем-суп концентрат із копченостями.',
 		imageEmoji: '',
 		tags: ['quick', 'soup', 'comfort']
@@ -269,6 +281,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Хліб свіжоспечений', amount: '1 буханка', category: 'bakery', baseQty: 0.25, unit: 'бух.', scalable: true },
 			{ name: 'Свіжий перець чілі (за бажанням)', amount: '1 шт', category: 'produce', scalable: false }
 		],
+		sideCompanion: 'хрусткий свіжий хліб та зелень',
 		description: 'Ситний угорський м’ясний суп із паприкою та овочами.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hearty']
@@ -296,6 +309,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий часник', amount: '1 головка', category: 'produce', scalable: false },
 			{ name: 'Лаваш або свіжий хліб', amount: '1 шт', category: 'bakery', baseQty: 0.38, unit: 'шт', scalable: true }
 		],
+		sideCompanion: 'свіжий лаваш та кінза',
 		description: 'Насичений суп-концентрат із яловичиною, рисом, томатами та спеціями.',
 		imageEmoji: '',
 		tags: ['soup', 'meat', 'gourmet', 'hot']
@@ -327,6 +341,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Лавровий лист та чорний перець горошком', amount: '1 уп', category: 'grocery', scalable: false },
 			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'салат зі свіжих огірків та зелені',
 		description: 'Класичні пельмені ручної ліпки з тонкого тіста та фаршу зі свинини й яловичини.',
 		imageEmoji: '',
 		tags: ['quick', 'meat', 'classic', 'bestseller']
@@ -354,6 +369,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy', baseQty: 200, unit: 'г', scalable: true },
 			{ name: 'Овочева соломка (огірок, солодкий перець, морква)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'хрустка овочева соломка',
 		description: 'Дієтичні пельмені з філе індички без зайвих спецій у тонкому тісті.',
 		imageEmoji: '',
 		tags: ['kids', 'diet', 'quick']
@@ -381,6 +397,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Олія рослинна або бекон для засмажки', amount: '100 г', category: 'grocery', baseQty: 100, unit: 'г', scalable: true },
 			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'свіжий салат та сметана',
 		description: 'Вареники ручної ліпки з картоплею та смаженими печерицями.',
 		imageEmoji: '',
 		tags: ['vegetarian', 'ukrainian', 'comfort']
@@ -409,6 +426,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжі ягоди (малина, лохина, полуниця)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Ягідне варення або мед', amount: 'за смаком', category: 'grocery', scalable: false }
 		],
+		sideCompanion: 'свіжі ягоди та сметана',
 		description: 'Вареники з солодкою сирною начинкою та легким ароматом ванілі.',
 		imageEmoji: '',
 		tags: ['sweet', 'kids', 'family']
@@ -451,6 +469,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'салат зі свіжих огірків та томатів',
 		description: 'Акуратні голубці зі свіжого листя капусти з м’ясним фаршем та рисом.',
 		imageEmoji: '',
 		tags: ['family', 'hearty', 'meat']
@@ -479,6 +498,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
 			{ name: 'Свіжі огірки та чері', amount: '300 г', category: 'produce', baseQty: 300, unit: 'г', scalable: true }
 		],
+		sideCompanion: 'картопляне пюре та свіжий салат',
 		description: 'Хрустка паніровка, куряче філе і вершкове масло із зеленню всередині.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'restaurant']
@@ -506,6 +526,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce', baseQty: 2, unit: 'шт', scalable: true },
 			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'картопля або паста та свіжі овочі',
 		description: 'Курячі тефтельки у вершковому соусі Бешамель.',
 		imageEmoji: '',
 		tags: ['kids', 'quick', 'meat', 'gourmet']
@@ -533,6 +554,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Свіжа кінза', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true },
 			{ name: 'Соус Сацебелі або Ткемалі', amount: '1 пляшечка', category: 'sauces', scalable: false }
 		],
+		sideCompanion: 'соус Сацебелі та свіжа кінза',
 		description: 'Хінкалі з м’ясним фаршем та ароматним пряним бульйоном усередині.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hot']
@@ -555,7 +577,11 @@ export const DISHES: Dish[] = [
 			cookingTimeMinutes: 4,
 			cookingMethod: 'Готова піца з печі — достатньо лише розігріти 3–5 хв у духовці, на сковороді під кришкою або в мікрохвильовці.'
 		},
-		groceryItems: [],
+		groceryItems: [
+			{ name: 'Свіжа рукола', amount: '1 уп.', category: 'produce', baseQty: 1, unit: 'уп.', scalable: true },
+			{ name: 'Томати чері на гілочці', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true }
+		],
+		sideCompanion: 'свіжа рукола та чері',
 		description: 'Готова піца з чотирьох видів сиру — достатньо лише розігріти.',
 		imageEmoji: '',
 		tags: ['quick', 'cheese', 'gourmet']
@@ -582,6 +608,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Томати чері на гілочці', amount: '250 г', category: 'produce', baseQty: 250, unit: 'г', scalable: true },
 			{ name: 'Базилік зелений', amount: '1 гілочка', category: 'produce', scalable: false }
 		],
+		sideCompanion: 'томати чері та свіжий базилік',
 		description: 'Листи пасти з яловичим рагу, томатним і вершковим соусами під сиром.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'family']
@@ -609,6 +636,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Айран або кефір 2.5%', amount: '1 пляшка', category: 'dairy', baseQty: 1, unit: 'пляшка', scalable: true },
 			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce', baseQty: 2, unit: 'шт', scalable: true }
 		],
+		sideCompanion: 'свіжий огірок та айран',
 		description: 'Хрустке тісто та м’ясна начинка із соковитим бульйоном усередині.',
 		imageEmoji: '',
 		tags: ['quick', 'meat', 'hot']
@@ -636,6 +664,7 @@ export const DISHES: Dish[] = [
 			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true },
 			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
+		sideCompanion: 'салат зі свіжих овочів та сметана',
 		description: 'Болгарський перець з фаршем зі свинини й яловичини та рисом.',
 		imageEmoji: '',
 		tags: ['vegetable', 'meat', 'family']

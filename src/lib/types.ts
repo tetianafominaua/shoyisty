@@ -66,6 +66,8 @@ export interface Dish {
 	galyaProduct?: GalyaProduct;
 	extraGalyaProducts?: ExtraGalyaProduct[];
 	groceryItems: GroceryItem[];
+	/** Short companion to buy at market/supermarket for complete meal, e.g. "свіжі ягоди та фрукти", "картопляне пюре та салат" */
+	sideCompanion?: string;
 	description: string;
 	imageEmoji: string;
 	tags: string[];

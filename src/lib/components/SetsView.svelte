@@ -20,7 +20,6 @@
 	import Utensils from '@lucide/svelte/icons/utensils';
 	import Users from '@lucide/svelte/icons/users';
 	import Package from '@lucide/svelte/icons/package';
-	import Salad from '@lucide/svelte/icons/salad';
 
 	const selectedSet = $derived(
 		planner.selectedSetId ? READY_MADE_SETS.find((s) => s.id === planner.selectedSetId) : null
@@ -201,18 +200,12 @@
 															<span>Галя Балувана</span>
 														</span>
 													{/if}
+													{#if dish.sideCompanion}
+														<span class="meal-companion-pill">
+															+ {dish.sideCompanion}
+														</span>
+													{/if}
 												</div>
-												{#if dish.groceryItems && dish.groceryItems.length > 0}
-													<div class="meal-ration-box">
-														<span class="ration-tag">
-															<Salad size={11} />
-															<span>Продукти із супермаркету:</span>
-														</span>
-														<span class="ration-items-text">
-															+ {dish.groceryItems.map((g) => g.name).join(' • ')}
-														</span>
-													</div>
-												{/if}
 												<div class="meal-time-info">
 													<Clock size={11} />
 													<span>
@@ -507,9 +500,9 @@
 
 	.dish-title-row {
 		display: flex;
-		align-items: flex-start;
+		align-items: baseline;
 		gap: 6px;
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 	}
 
 	.meal-dish-name {
@@ -530,36 +523,19 @@
 		border-radius: 4px;
 		flex-shrink: 0;
 		white-space: nowrap;
-		margin-top: 1px;
 	}
 
-	.meal-ration-box {
-		margin-top: 5px;
-		margin-bottom: 5px;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: 5px;
-		font-size: 11px;
-		line-height: 1.35;
-		background: #f0fdf4;
-		border: 1px solid #bbf7d0;
-		border-radius: 6px;
-		padding: 4px 8px;
-	}
-
-	.ration-tag {
+	.meal-companion-pill {
 		display: inline-flex;
 		align-items: center;
-		gap: 3px;
-		font-weight: 700;
-		color: #15803d;
-		flex-shrink: 0;
-	}
-
-	.ration-items-text {
-		color: #14532d;
-		font-weight: 500;
+		font-size: 12px;
+		font-weight: 600;
+		color: #92400e;
+		background: #fef3c7;
+		border: 1px solid #fde68a;
+		padding: 1px 7px;
+		border-radius: 6px;
+		line-height: 1.3;
 	}
 
 	.meal-time-info {

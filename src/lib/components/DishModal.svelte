@@ -213,7 +213,12 @@
 										<Utensils size={20} color="var(--color-brand-primary)" />
 									</div>
 									<div class="dish-title-col">
-										<h4 class="dish-title">{dish.name}</h4>
+										<div class="modal-dish-title-row">
+											<h4 class="dish-title">{dish.name}</h4>
+											{#if dish.sideCompanion}
+												<span class="modal-companion-pill">+ {dish.sideCompanion}</span>
+											{/if}
+										</div>
 										<div class="dish-meta-pills">
 											<span class="meta-pill">
 												<Clock size={11} />
@@ -261,15 +266,15 @@
 									</div>
 								{/if}
 
-								<!-- Supermarket Ingredients Teaser -->
-								{#if dish.groceryItems.length > 0}
+								<!-- Supermarket Companion Teaser -->
+								{#if dish.sideCompanion}
 									<div class="grocery-teaser">
 										<span class="teaser-label">
 											<ShoppingCart size={13} />
 											<span>Докупити в супермаркеті:</span>
 										</span>
 										<span class="teaser-items">
-											{dish.groceryItems.map((g) => `${g.name} (${g.amount})`).join(', ')}
+											+ {dish.sideCompanion} <span class="teaser-hint">(детальний перелік у покупках)</span>
 										</span>
 									</div>
 								{/if}
@@ -497,11 +502,32 @@
 		flex: 1;
 	}
 
+	.modal-dish-title-row {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 5px;
+	}
+
 	.dish-title {
 		font-size: 15px;
 		font-weight: 800;
 		line-height: 1.3;
-		margin-bottom: 4px;
+		margin-bottom: 0;
+	}
+
+	.modal-companion-pill {
+		display: inline-flex;
+		align-items: center;
+		font-size: 11.5px;
+		font-weight: 600;
+		color: #92400e;
+		background: #fef3c7;
+		border: 1px solid #fde68a;
+		padding: 1px 7px;
+		border-radius: 6px;
+		line-height: 1.25;
 	}
 
 	.dish-meta-pills {
@@ -598,6 +624,12 @@
 		color: #b45309;
 		display: block;
 		margin-bottom: 2px;
+	}
+
+	.teaser-hint {
+		font-size: 10.5px;
+		color: var(--text-muted);
+		font-style: italic;
 	}
 
 	.dish-select-btn {
