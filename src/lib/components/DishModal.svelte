@@ -2,7 +2,7 @@
 	import { planner } from '#lib/stores/planner.svelte';
 	import { DISHES } from '#lib/data/dishes';
 	import { DAYS_LIST, MEALS_LIST, getFamilySizeLabel } from '#lib/data/constants';
-	import type { Dish, MealKey } from '#lib/types';
+	import type { Dish } from '#lib/types';
 	import X from '@lucide/svelte/icons/x';
 	import Search from '@lucide/svelte/icons/search';
 	import ChefHat from '@lucide/svelte/icons/chef-hat';
@@ -200,13 +200,19 @@
 							<Search size={32} />
 						</div>
 						<p>За вашим запитом страв не знайдено</p>
-						<button class="btn-outline btn-sm" onclick={() => { searchQuery = ''; selectedFilter = 'all'; }}>
+						<button
+							class="btn-outline btn-sm"
+							onclick={() => {
+								searchQuery = '';
+								selectedFilter = 'all';
+							}}
+						>
 							Скинути фільтри
 						</button>
 					</div>
 				{:else}
 					<div class="dishes-grid">
-						{#each filteredDishes as dish}
+						{#each filteredDishes as dish (dish.id)}
 							<div class="dish-card">
 								<div class="dish-card-header">
 									<div class="dish-icon-box">
@@ -233,7 +239,11 @@
 												<span>{dish.servings} порц./уп.</span>
 											</span>
 											<span class="meta-pill meta-pill-brand">
-												<span>Для {getFamilySizeLabel(planner.familySize)}: {planner.getDishPackHint(dish)}</span>
+												<span
+													>Для {getFamilySizeLabel(planner.familySize)}: {planner.getDishPackHint(
+														dish
+													)}</span
+												>
 											</span>
 										</div>
 									</div>
@@ -253,9 +263,10 @@
 										</div>
 										<div class="galya-item-name">{dish.galyaProduct.name}</div>
 										{#if dish.extraGalyaProducts?.length}
-											{#each dish.extraGalyaProducts as extra}
+											{#each dish.extraGalyaProducts as extra (extra.product.name)}
 												<div class="galya-extra-line">
-													+ {extra.product.name} ({extra.product.weightText}, ~{extra.product.priceUah} ₴)
+													+ {extra.product.name} ({extra.product.weightText}, ~{extra.product
+														.priceUah} ₴)
 												</div>
 											{/each}
 										{/if}
@@ -274,7 +285,8 @@
 											<span>Докупити в супермаркеті:</span>
 										</span>
 										<span class="teaser-items">
-											+ {dish.sideCompanion} <span class="teaser-hint">(детальний перелік у покупках)</span>
+											+ {dish.sideCompanion}
+											<span class="teaser-hint">(детальний перелік у покупках)</span>
 										</span>
 									</div>
 								{/if}

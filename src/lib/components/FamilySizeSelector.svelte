@@ -25,7 +25,7 @@
 	</div>
 
 	<div class="selector-buttons-grid">
-		{#each FAMILY_SIZE_OPTIONS as opt}
+		{#each FAMILY_SIZE_OPTIONS as opt (opt.value)}
 			{@const isActive = planner.familySize === opt.value}
 			<button
 				type="button"
@@ -137,4 +137,3 @@
 		box-shadow: 0 2px 8px rgba(24, 67, 47, 0.25);
 	}
 </style>
-

@@ -1,11 +1,5 @@
 export type DayKey =
-	| 'monday'
-	| 'tuesday'
-	| 'wednesday'
-	| 'thursday'
-	| 'friday'
-	| 'saturday'
-	| 'sunday';
+	'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
 export type MealKey = 'breakfast' | 'lunch' | 'dinner';
 

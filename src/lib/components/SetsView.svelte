@@ -84,7 +84,7 @@
 			</div>
 
 			<div class="minimal-sets-grid">
-				{#each READY_MADE_SETS as set}
+				{#each READY_MADE_SETS as set (set.id)}
 					<button
 						class="minimal-set-card"
 						onclick={() => openSetDetails(set.id)}
@@ -175,7 +175,7 @@
 				<h3 class="schedule-heading">Меню на 7 днів (Пн–Нд):</h3>
 
 				<div class="schedule-days-list">
-					{#each DAYS_LIST as day}
+					{#each DAYS_LIST as day (day.key)}
 						{@const dayPlan = selectedSet.plan[day.key]}
 						<div class="schedule-day-card">
 							<div class="day-side-label">
@@ -183,7 +183,7 @@
 							</div>
 
 							<div class="day-meals-stack">
-								{#each MEALS_LIST as meal}
+								{#each MEALS_LIST as meal (meal.key)}
 									{@const dishId = dayPlan ? dayPlan[meal.key] : null}
 									{@const dish = planner.getDish(dishId)}
 									{#if dish}
@@ -209,7 +209,8 @@
 												<div class="meal-time-info">
 													<Clock size={11} />
 													<span>
-														{dish.prepTimeMinutes} хв &bull; {dish.calories} ккал &bull; {dish.servings} порц./уп.
+														{dish.prepTimeMinutes} хв &bull; {dish.calories} ккал &bull; {dish.servings}
+														порц./уп.
 													</span>
 													<span class="pack-hint-chip">{planner.getDishPackHint(dish)}</span>
 												</div>
