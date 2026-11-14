@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
-	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
+	import { DAYS_LIST, MEALS_LIST, getFamilySizeLabel } from '#lib/data/constants';
 	import type { DayKey, MealKey } from '#lib/types';
+	import FamilySizeSelector from '#lib/components/FamilySizeSelector.svelte';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Sun from '@lucide/svelte/icons/sun';
@@ -9,16 +10,17 @@
 	import Utensils from '@lucide/svelte/icons/utensils';
 	import Clock from '@lucide/svelte/icons/clock';
 	import Flame from '@lucide/svelte/icons/flame';
+	import Users from '@lucide/svelte/icons/users';
 	import Edit2 from '@lucide/svelte/icons/edit-2';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import ChefHat from '@lucide/svelte/icons/chef-hat';
 	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
 	import Plus from '@lucide/svelte/icons/plus';
-	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	const activeDay = $derived(planner.selectedDay);
 	const activeDayInfo = $derived(DAYS_LIST.find((d) => d.key === activeDay) || DAYS_LIST[0]);
 	const dayPlan = $derived(planner.week[activeDay]);
+	const cart = $derived(planner.getCartGrouped());
 
 	function selectDay(dayKey: DayKey) {
 		planner.selectedDay = dayKey;
@@ -65,6 +67,8 @@
 			</p>
 		</div>
 	</div>
+
+	<FamilySizeSelector subtitle="У кошику порахуємо упаковки для обраної родини" />
 
 	<!-- 7 Days Button Menu (Понеділок .. Неділя) -->
 	<nav class="days-nav-bar" aria-label="Вибір дня тижня">
@@ -159,6 +163,10 @@
 											<Flame size={11} />
 											<span>{dish.calories} ккал</span>
 										</span>
+										<span class="dish-pill">
+											<Users size={11} />
+											<span>{dish.servings} порц./уп.</span>
+										</span>
 									</div>
 								</div>
 							</div>
@@ -191,12 +199,22 @@
 									<ChefHat size={14} color="var(--color-brand-primary)" />
 									<strong>Галя Балувана</strong>
 									<span class="galya-badge-pill">{dish.galyaProduct.badge}</span>
+									<span class="galya-pack-rec">
+										Для {getFamilySizeLabel(planner.familySize)}: {planner.getDishPackHint(dish)}
+									</span>
 								</div>
 								<div class="galya-details-row">
 									<span>{dish.galyaProduct.name}</span> &bull;
 									<span>{dish.galyaProduct.weightText}</span> &bull;
-									<strong>~{dish.galyaProduct.priceUah} ₴</strong>
+									<strong>~{dish.galyaProduct.priceUah} ₴/уп.</strong>
 								</div>
+								{#if dish.extraGalyaProducts?.length}
+									{#each dish.extraGalyaProducts as extra}
+										<div class="galya-extra-row">
+											+ <strong>{extra.product.name}</strong> &bull; {extra.product.weightText} &bull; ~{extra.product.priceUah} ₴/уп.
+										</div>
+									{/each}
+								{/if}
 							</div>
 						{/if}
 
@@ -240,7 +258,9 @@
 			onclick={() => (planner.activeTab = 'cart')}
 			aria-label="Переглянути кошик"
 		>
-			<span>Переглянути кошик ({planner.totalDishesCount} страв)</span>
+			<span>
+				Переглянути кошик ({planner.totalDishesCount} страв{#if planner.totalDishesCount > 0} &bull; {cart.totalGalyaUnits} уп.{/if})
+			</span>
 			<ShoppingCart size={16} />
 		</button>
 	</div>
@@ -411,6 +431,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+		height: 100%;
+	}
+
+	@media (min-width: 720px) {
+		.meal-slots-list {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 14px;
+			align-items: stretch;
+		}
 	}
 
 	.slot-header {
@@ -441,6 +471,7 @@
 
 	/* Filled Dish Card */
 	.filled-dish-card {
+		flex: 1;
 		background: #ffffff;
 		border: 1.5px solid var(--border-subtle);
 		border-radius: var(--radius-md);
@@ -492,6 +523,12 @@
 		display: flex;
 		align-items: center;
 		color: var(--color-brand-primary);
+	}
+
+	.dish-pills-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px;
 	}
 
 	.dish-pill {
@@ -547,8 +584,14 @@
 	.galya-logo-title {
 		display: flex;
 		align-items: center;
+		flex-wrap: wrap;
 		gap: 6px;
-		margin-bottom: 2px;
+		margin-bottom: 3px;
+	}
+
+	.galya-logo-title strong {
+		white-space: nowrap;
+		flex-shrink: 0;
 	}
 
 	.galya-badge-pill {
@@ -559,8 +602,25 @@
 		font-weight: 700;
 	}
 
+	.galya-pack-rec {
+		margin-left: auto;
+		font-size: 10.5px;
+		font-weight: 800;
+		color: #14532d;
+		background: #ffffff;
+		border: 1px solid #bbf7d0;
+		padding: 1px 7px;
+		border-radius: var(--radius-full);
+	}
+
 	.galya-details-row {
 		color: #15803d;
+	}
+
+	.galya-extra-row {
+		margin-top: 3px;
+		color: #14532d;
+		font-weight: 600;
 	}
 
 	/* Grocery Hint Box */
@@ -634,7 +694,9 @@
 	.planner-bottom-bar {
 		position: sticky;
 		bottom: 12px;
-		margin-top: 10px;
+		width: 100%;
+		max-width: 540px;
+		margin: 10px auto 0 auto;
 		z-index: 30;
 	}
 

@@ -121,7 +121,7 @@
 
 	.bottom-sheet {
 		width: 100%;
-		max-width: 520px;
+		max-width: 760px;
 		background: #ffffff;
 		border-radius: 20px 20px 0 0;
 		display: flex;
@@ -300,5 +300,14 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	@media (min-width: 680px) {
+		.locations-compact-list {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 8px;
+			align-items: stretch;
+		}
 	}
 </style>

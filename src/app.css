@@ -68,7 +68,7 @@ body {
 /* Base Container */
 .app-viewport {
 	width: 100%;
-	max-width: 580px;
+	max-width: 960px;
 	min-height: 100vh;
 	background: var(--bg-surface);
 	display: flex;
@@ -79,7 +79,7 @@ body {
 	border-right: 1px solid var(--border-subtle);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 980px) {
 	.app-viewport {
 		border-left: none;
 		border-right: none;

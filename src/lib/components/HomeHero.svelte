@@ -68,7 +68,7 @@
 					<div class="smart-cart-texts">
 						<span class="smart-cart-heading">Твій кошик сформовано</span>
 						<span class="smart-cart-sub">
-							{planner.totalDishesCount} страв &bull; ~{cart.totalEstimatedGalyaPrice} ₴
+							{planner.totalDishesCount} страв &bull; {cart.totalGalyaUnits} уп. &bull; ~{cart.totalEstimatedGalyaPrice} ₴
 						</span>
 					</div>
 				</div>
@@ -107,7 +107,7 @@
 	.home-subtitle {
 		font-size: 14px;
 		color: var(--text-muted);
-		max-width: 320px;
+		max-width: 440px;
 		margin: 0 auto;
 		line-height: 1.45;
 	}
@@ -118,7 +118,7 @@
 		flex-direction: column;
 		gap: 16px;
 		width: 100%;
-		max-width: 440px;
+		max-width: 540px;
 		margin: 0 auto;
 	}
 
@@ -242,7 +242,7 @@
 	/* Smart Cart Floating Bar */
 	.smart-cart-wrapper {
 		width: 100%;
-		max-width: 440px;
+		max-width: 540px;
 		margin: 0 auto;
 	}
 

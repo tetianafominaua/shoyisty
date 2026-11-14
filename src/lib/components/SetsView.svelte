@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
 	import { READY_MADE_SETS } from '#lib/data/sets';
-	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
+	import { DAYS_LIST, MEALS_LIST, getFamilySizeLabel } from '#lib/data/constants';
 	import type { ReadyMadeSet } from '#lib/types';
+	import FamilySizeSelector from '#lib/components/FamilySizeSelector.svelte';
 	import Home from '@lucide/svelte/icons/home';
 	import Zap from '@lucide/svelte/icons/zap';
 	import Baby from '@lucide/svelte/icons/baby';
@@ -17,10 +18,13 @@
 	import Sun from '@lucide/svelte/icons/sun';
 	import Soup from '@lucide/svelte/icons/soup';
 	import Utensils from '@lucide/svelte/icons/utensils';
+	import Users from '@lucide/svelte/icons/users';
+	import Package from '@lucide/svelte/icons/package';
 
 	const selectedSet = $derived(
 		planner.selectedSetId ? READY_MADE_SETS.find((s) => s.id === planner.selectedSetId) : null
 	);
+	const setSummary = $derived(selectedSet ? planner.getSetSummary(selectedSet) : null);
 
 	function openSetDetails(setId: string) {
 		planner.selectedSetId = setId;
@@ -43,13 +47,13 @@
 </script>
 
 {#snippet setIcon(id: string, size = 22)}
-	{#if id === 'family'}
+	{#if id === 'family-comfort'}
 		<Home {size} />
-	{:else if id === 'busy'}
+	{:else if id === 'express-busy'}
 		<Zap {size} />
-	{:else if id === 'kids'}
+	{:else if id === 'kids-mom-care'}
 		<Baby {size} />
-	{:else if id === 'gourmet'}
+	{:else if id === 'gourmet-weekend'}
 		<Wine {size} />
 	{:else}
 		<Home {size} />
@@ -72,7 +76,11 @@
 		<div class="sets-list-view animate-fade-in">
 			<div class="sets-intro">
 				<h2 class="view-title">Оберіть готовий набір</h2>
-				<p class="view-sub">Натисніть на набір, щоб переглянути меню на тиждень</p>
+				<p class="view-sub">Вкажіть склад родини та відкрийте набір для перегляду меню</p>
+			</div>
+
+			<div class="selector-spacer">
+				<FamilySizeSelector />
 			</div>
 
 			<div class="minimal-sets-grid">
@@ -117,7 +125,37 @@
 				<h2 class="detail-title">{selectedSet.title}</h2>
 				<p class="detail-subtitle">{selectedSet.subtitle}</p>
 				<p class="detail-desc">{selectedSet.description}</p>
+				{#if selectedSet.idealFor}
+					<div class="detail-ideal-for">
+						<Users size={13} />
+						<span>{selectedSet.idealFor}</span>
+					</div>
+				{/if}
 			</div>
+
+			<FamilySizeSelector subtitle="Кількість упаковок підбирається сумарно на весь тиждень" />
+
+			{#if setSummary}
+				<div class="set-summary-bar">
+					<div class="set-summary-item">
+						<span class="summary-kicker">Меню</span>
+						<strong class="summary-val">{selectedSet.totalDishesCount} страв</strong>
+					</div>
+					<div class="summary-divider"></div>
+					<div class="set-summary-item">
+						<span class="summary-kicker">Для {getFamilySizeLabel(planner.familySize)}</span>
+						<strong class="summary-val text-brand">
+							<Package size={13} />
+							<span>{setSummary.totalGalyaUnits} уп.</span>
+						</strong>
+					</div>
+					<div class="summary-divider"></div>
+					<div class="set-summary-item">
+						<span class="summary-kicker">Орієнтовно</span>
+						<strong class="summary-val text-brand">~{setSummary.totalEstimatedGalyaPrice} ₴</strong>
+					</div>
+				</div>
+			{/if}
 
 			<!-- Action Buttons -->
 			<div class="detail-actions-row">
@@ -165,7 +203,10 @@
 												</div>
 												<div class="meal-time-info">
 													<Clock size={11} />
-													<span>{dish.prepTimeMinutes} хв &bull; {dish.calories} ккал</span>
+													<span>
+														{dish.prepTimeMinutes} хв &bull; {dish.calories} ккал &bull; {dish.servings} порц./уп.
+													</span>
+													<span class="pack-hint-chip">{planner.getDishPackHint(dish)}</span>
 												</div>
 											</div>
 										</div>
@@ -180,7 +221,9 @@
 			<!-- Bottom CTA -->
 			<div class="detail-bottom-cta">
 				<button class="btn-primary full-width" onclick={() => handleChooseSet(selectedSet)}>
-					<span>Затвердити та перейти в кошик</span>
+					<span>
+						Затвердити ({setSummary ? `${setSummary.totalGalyaUnits} уп.` : 'набір'}) і в кошик
+					</span>
 					<ArrowRight size={16} />
 				</button>
 			</div>
@@ -224,6 +267,7 @@
 		align-items: center;
 		gap: 14px;
 		padding: 16px 18px;
+		height: 100%;
 		background: #ffffff;
 		border: 1.5px solid var(--border-subtle);
 		border-radius: var(--radius-lg);
@@ -409,6 +453,7 @@
 		align-items: center;
 		justify-content: center;
 		width: 32px;
+		flex-shrink: 0;
 		background: var(--bg-surface-alt);
 		border-radius: var(--radius-sm);
 		padding: 8px 0;
@@ -422,6 +467,7 @@
 
 	.day-meals-stack {
 		flex: 1;
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
@@ -444,18 +490,20 @@
 
 	.meal-item-text {
 		flex: 1;
+		min-width: 0;
 	}
 
 	.dish-title-row {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 6px;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 	}
 
 	.meal-dish-name {
 		font-weight: 700;
 		color: var(--text-main);
+		min-width: 0;
 	}
 
 	.galya-mini-badge {
@@ -468,21 +516,96 @@
 		background: rgba(24, 67, 47, 0.08);
 		padding: 1px 6px;
 		border-radius: 4px;
+		flex-shrink: 0;
+		white-space: nowrap;
+		margin-top: 1px;
 	}
 
 	.meal-time-info {
 		display: inline-flex;
 		align-items: center;
+		flex-wrap: wrap;
 		gap: 4px;
 		font-size: 11px;
 		color: var(--text-muted);
 		margin-top: 2px;
 	}
 
+	.selector-spacer {
+		margin-bottom: 14px;
+	}
+
+	.detail-ideal-for {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: 10px;
+		padding: 6px 10px;
+		border-radius: var(--radius-sm);
+		background: rgba(255, 255, 255, 0.16);
+		font-size: 11.5px;
+		font-weight: 600;
+		color: #ffffff;
+	}
+
+	.set-summary-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		background: #ffffff;
+		border: 1.5px solid var(--border-subtle);
+		border-radius: var(--radius-md);
+		padding: 12px 10px;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.set-summary-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 2px;
+	}
+
+	.summary-kicker {
+		font-size: 11px;
+		color: var(--text-muted);
+	}
+
+	.summary-val {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-size: 14px;
+		font-weight: 800;
+		color: var(--text-main);
+	}
+
+	.summary-val.text-brand {
+		color: var(--color-brand-primary);
+	}
+
+	.summary-divider {
+		width: 1px;
+		height: 28px;
+		background: var(--border-subtle);
+	}
+
+	.pack-hint-chip {
+		font-size: 10.5px;
+		font-weight: 700;
+		color: #166534;
+		background: #dcfce7;
+		padding: 1px 6px;
+		border-radius: 4px;
+	}
+
 	.detail-bottom-cta {
 		position: sticky;
 		bottom: 12px;
-		margin-top: 8px;
+		width: 100%;
+		max-width: 540px;
+		margin: 8px auto 0 auto;
 		z-index: 30;
 	}
 
@@ -490,5 +613,15 @@
 		width: 100%;
 		padding: 14px 20px;
 		font-size: 15px;
+	}
+
+	@media (min-width: 720px) {
+		.minimal-sets-grid,
+		.schedule-days-list {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			align-items: stretch;
+		}
 	}
 </style>

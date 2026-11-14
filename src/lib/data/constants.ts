@@ -1,4 +1,20 @@
-import type { DayInfo, MealInfo } from '#lib/types';
+import type { DayInfo, MealInfo, FamilySize } from '#lib/types';
+
+export const FAMILY_SIZE_OPTIONS: Array<{
+	value: FamilySize;
+	shortLabel: string;
+	fullLabel: string;
+}> = [
+	{ value: 1, shortLabel: '1', fullLabel: '1 особа' },
+	{ value: 2, shortLabel: '2', fullLabel: '2 особи' },
+	{ value: 3, shortLabel: '3', fullLabel: '3 особи' },
+	{ value: 4, shortLabel: '4', fullLabel: '4 особи' },
+	{ value: 5, shortLabel: '5+', fullLabel: '5+ осіб' }
+];
+
+export function getFamilySizeLabel(size: FamilySize): string {
+	return FAMILY_SIZE_OPTIONS.find((opt) => opt.value === size)?.fullLabel ?? `${size} осіб`;
+}
 
 export const DAYS_LIST: DayInfo[] = [
 	{ key: 'monday', shortName: 'Пн', fullName: 'Понеділок', accentEmoji: '' },

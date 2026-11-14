@@ -9,6 +9,8 @@ export type DayKey =
 
 export type MealKey = 'breakfast' | 'lunch' | 'dinner';
 
+export type FamilySize = 1 | 2 | 3 | 4 | 5;
+
 export interface DayInfo {
 	key: DayKey;
 	shortName: string;
@@ -34,10 +36,22 @@ export interface GalyaProduct {
 	cookingMethod: string;
 }
 
+export interface ExtraGalyaProduct {
+	product: GalyaProduct;
+	/** Servings covered by one pack of this companion product (defaults to dish.servings) */
+	servingsPerPack?: number;
+}
+
 export interface GroceryItem {
 	name: string;
 	amount: string;
 	category: 'dairy' | 'produce' | 'bakery' | 'grocery' | 'sauces' | 'other';
+	/** Base quantity corresponding to dish.servings */
+	baseQty?: number;
+	/** Measurement unit used when aggregating scalable items */
+	unit?: string;
+	/** Whether the quantity scales proportionally with family size & occurrences */
+	scalable?: boolean;
 }
 
 export interface Dish {
@@ -50,6 +64,7 @@ export interface Dish {
 	servings: number;
 	isGalyaProduct: boolean;
 	galyaProduct?: GalyaProduct;
+	extraGalyaProducts?: ExtraGalyaProduct[];
 	groceryItems: GroceryItem[];
 	description: string;
 	imageEmoji: string;
@@ -79,20 +94,33 @@ export interface ReadyMadeSet {
 	plan: Record<DayKey, { breakfast: string; lunch: string; dinner: string }>;
 }
 
+export interface CartGalyaItem {
+	product: GalyaProduct;
+	recommendedCount: number;
+	count: number;
+	isOverridden: boolean;
+	servingsPerPack: number;
+	totalServingsNeeded: number;
+	occurrences: number;
+	totalPrice: number;
+	dishesNames: string[];
+}
+
+export interface CartGroceryItem {
+	name: string;
+	amountLabel: string;
+	category: string;
+	dishesNames: string[];
+	scalable: boolean;
+}
+
 export interface ShoppingCartGrouped {
-	galyaItems: Array<{
-		product: GalyaProduct;
-		count: number;
-		totalPrice: number;
-		dishesNames: string[];
-	}>;
-	groceryItems: Array<{
-		name: string;
-		amounts: string[];
-		category: string;
-		dishesNames: string[];
-	}>;
+	galyaItems: CartGalyaItem[];
+	groceryItems: CartGroceryItem[];
+	familySize: FamilySize;
 	totalEstimatedGalyaPrice: number;
 	totalGalyaUnits: number;
+	totalRecommendedGalyaUnits: number;
 	totalGroceryUnits: number;
+	hasManualOverrides: boolean;
 }

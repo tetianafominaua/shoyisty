@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
 	import { DISHES } from '#lib/data/dishes';
-	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
+	import { DAYS_LIST, MEALS_LIST, getFamilySizeLabel } from '#lib/data/constants';
 	import type { Dish, MealKey } from '#lib/types';
 	import X from '@lucide/svelte/icons/x';
 	import Search from '@lucide/svelte/icons/search';
@@ -50,7 +50,10 @@
 				const matchName = dish.name.toLowerCase().includes(query);
 				const matchDesc = dish.description.toLowerCase().includes(query);
 				const matchGalya = dish.galyaProduct?.name.toLowerCase().includes(query);
-				if (!matchName && !matchDesc && !matchGalya) return false;
+				const matchExtraGalya = dish.extraGalyaProducts?.some((e) =>
+					e.product.name.toLowerCase().includes(query)
+				);
+				if (!matchName && !matchDesc && !matchGalya && !matchExtraGalya) return false;
 			}
 
 			// Filter tag
@@ -222,7 +225,10 @@
 											</span>
 											<span class="meta-pill">
 												<Users size={11} />
-												<span>{dish.servings} порц.</span>
+												<span>{dish.servings} порц./уп.</span>
+											</span>
+											<span class="meta-pill meta-pill-brand">
+												<span>Для {getFamilySizeLabel(planner.familySize)}: {planner.getDishPackHint(dish)}</span>
 											</span>
 										</div>
 									</div>
@@ -241,6 +247,13 @@
 											<span class="galya-price">~{dish.galyaProduct.priceUah} ₴</span>
 										</div>
 										<div class="galya-item-name">{dish.galyaProduct.name}</div>
+										{#if dish.extraGalyaProducts?.length}
+											{#each dish.extraGalyaProducts as extra}
+												<div class="galya-extra-line">
+													+ {extra.product.name} ({extra.product.weightText}, ~{extra.product.priceUah} ₴)
+												</div>
+											{/each}
+										{/if}
 										<div class="galya-cooking-hint">
 											<Info size={12} />
 											<em>{dish.galyaProduct.cookingMethod}</em>
@@ -288,7 +301,7 @@
 
 	.modal-sheet {
 		width: 100%;
-		max-width: 580px;
+		max-width: 960px;
 		max-height: 85vh;
 		background: #ffffff;
 		border-radius: 24px 24px 0 0;
@@ -509,6 +522,12 @@
 		border-radius: 6px;
 	}
 
+	.meta-pill-brand {
+		background: #dcfce7;
+		color: #166534;
+		font-weight: 700;
+	}
+
 	.dish-description {
 		font-size: 12px;
 		color: var(--text-muted);
@@ -553,6 +572,12 @@
 		color: #14532d;
 	}
 
+	.galya-extra-line {
+		font-size: 11.5px;
+		font-weight: 700;
+		color: #166534;
+	}
+
 	.galya-cooking-hint {
 		font-size: 11px;
 		color: #15803d;
@@ -577,6 +602,7 @@
 
 	.dish-select-btn {
 		width: 100%;
+		margin-top: auto;
 		padding: 10px 16px;
 		font-size: 14px;
 	}
@@ -590,5 +616,14 @@
 		align-items: center;
 		gap: 12px;
 		color: var(--text-muted);
+	}
+
+	@media (min-width: 720px) {
+		.dishes-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 14px;
+			align-items: stretch;
+		}
 	}
 </style>

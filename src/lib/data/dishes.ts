@@ -4,7 +4,7 @@ export const DISHES: Dish[] = [
 	// ==================== СНІДАНКИ ====================
 	{
 		id: 'syrnyky-vanilla',
-		name: 'Сирники ніжні ванільні зі сметаною та ягодами',
+		name: 'Сирники',
 		category: 'breakfast',
 		availableMeals: ['breakfast', 'dinner'],
 		prepTimeMinutes: 12,
@@ -12,7 +12,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Сирники класичні ванільні (Галя Балувана)',
+			name: 'Сирники',
 			category: 'Сирники',
 			weightText: 'упаковка 600 г (6 шт)',
 			priceUah: 165,
@@ -21,18 +21,17 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Обсмажити на вершковому маслі на помірному вогні по 4-5 хв з кожного боку до золотистої скоринки під кришкою.'
 		},
 		groceryItems: [
-			{ name: 'Сметана 20%', amount: '1 банка (350 г)', category: 'dairy' },
-			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy' },
-			{ name: 'Свіжі ягоди (лохина чи малина)', amount: '150 г', category: 'produce' },
-			{ name: 'Цукрова пудра або мед', amount: 'за смаком', category: 'grocery' }
+			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
+			{ name: 'Свіжі ягоди та фрукти (по сезону)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true }
 		],
-		description: 'Ніжна текстура з фермерського сиру з легким ванільним ароматом. Тримають форму та тануть у роті.',
+		description: 'Класичні сирники з фермерського сиру з легким ванільним ароматом.',
 		imageEmoji: '',
 		tags: ['kids', 'sweet', 'classic', 'breakfast']
 	},
 	{
 		id: 'syrnyky-suluguni',
-		name: 'Солоні сирники з сулугуні та кропом',
+		name: 'Сирники з бринзою',
 		category: 'breakfast',
 		availableMeals: ['breakfast', 'dinner'],
 		prepTimeMinutes: 12,
@@ -40,26 +39,26 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Сирники з сулугуні та кропом (Галя Балувана)',
+			name: 'Сирники з бринзою',
 			category: 'Сирники',
 			weightText: 'упаковка 600 г',
 			priceUah: 175,
 			badge: 'Хіт сезону',
 			cookingTimeMinutes: 10,
-			cookingMethod: 'Підсмажити на краплі олії на невеликому вогні, щоб сир сулугуні всередині апетитно розплавився.'
+			cookingMethod: 'Підсмажити на краплі олії на невеликому вогні, щоб сирна начинка всередині стала ніжною та теплою.'
 		},
 		groceryItems: [
-			{ name: 'Густий грецький йогурт або сметана', amount: '1 уп (300 г)', category: 'dairy' },
-			{ name: 'Томати чері', amount: '200 г', category: 'produce' },
-			{ name: 'Мікс салату', amount: '1 пучок', category: 'produce' }
+			{ name: 'Густий грецький йогурт або сметана', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Томати чері', amount: '200 г', category: 'produce', baseQty: 200, unit: 'г', scalable: true },
+			{ name: 'Мікс салату', amount: '1 уп.', category: 'produce', baseQty: 1, unit: 'уп.', scalable: true }
 		],
-		description: 'Пікантний смак для тих, хто полюбляє ситні несолодкі сніданки з тягучим сиром сулугуні.',
+		description: 'Несолодкі сирники з солоною бринзою для ситного сніданку.',
 		imageEmoji: '',
 		tags: ['quick', 'cheese', 'breakfast']
 	},
 	{
 		id: 'mlyntsi-chicken-mushrooms',
-		name: 'Млинці з соковитою куркою та печерицями',
+		name: 'Млинці з куркою та грибами',
 		category: 'breakfast',
 		availableMeals: ['breakfast', 'lunch', 'dinner'],
 		prepTimeMinutes: 10,
@@ -67,7 +66,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Млинці з куркою та грибами (Галя Балувана)',
+			name: 'Млинці з куркою та грибами',
 			category: 'Млинці',
 			weightText: 'упаковка 600 г (6 шт)',
 			priceUah: 168,
@@ -76,17 +75,17 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Розігріти на сковороді з шматочком масла або запекти 10 хв у духовці під сиром.'
 		},
 		groceryItems: [
-			{ name: 'Вершкове масло', amount: '30 г', category: 'dairy' },
-			{ name: 'Свіжа зелень (петрушка, кріп)', amount: '1 пучок', category: 'produce' },
-			{ name: 'Твердий сир (за бажанням підпекти)', amount: '100 г', category: 'dairy' }
+			{ name: 'Вершкове масло 82%', amount: '30 г', category: 'dairy', baseQty: 30, unit: 'г', scalable: true },
+			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true },
+			{ name: 'Твердий сир (за бажанням підпекти)', amount: '100 г', category: 'dairy', baseQty: 100, unit: 'г', scalable: true }
 		],
-		description: 'Тонке мереживне тісто з щедрою начинкою з томленого курячого філе та обсмажених грибочків.',
+		description: 'Тонкі млинці з начинкою з курячого філе та обсмажених печериць.',
 		imageEmoji: '',
 		tags: ['meat', 'filling', 'family']
 	},
 	{
 		id: 'mlyntsi-cherry',
-		name: 'Млинці з соковитою стиглою вишнею',
+		name: 'Млинці з вишнею',
 		category: 'breakfast',
 		availableMeals: ['breakfast', 'dinner'],
 		prepTimeMinutes: 8,
@@ -94,7 +93,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Млинці з вишнею (Галя Балувана)',
+			name: 'Млинці з вишнею',
 			category: 'Млинці',
 			weightText: 'упаковка 600 г',
 			priceUah: 155,
@@ -103,53 +102,50 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Розігріти на сухій або змащеній вершковим маслом сковороді під кришкою 5-7 хв.'
 		},
 		groceryItems: [
-			{ name: 'Сметана 15%', amount: '1 стакан (200 г)', category: 'dairy' },
-			{ name: 'Свіжа м’ята для подачі', amount: 'гілочка', category: 'produce' }
+			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Свіжа м’ята для подачі', amount: 'гілочка', category: 'produce', scalable: false }
 		],
-		description: 'Справжня вишня без кісточок у делікатному сиропі всередині найтонших фірмових млинців.',
+		description: 'Вишня без кісточок у делікатному сиропі всередині тонких млинців.',
 		imageEmoji: '',
 		tags: ['sweet', 'kids', 'berries']
 	},
 	{
 		id: 'khachapuri-adjarian',
-		name: 'Хачапурі по-аджарськи з яєчним жовтком та маслом',
+		name: 'Хачапурі з сиром',
 		category: 'breakfast',
 		availableMeals: ['breakfast', 'dinner'],
-		prepTimeMinutes: 15,
+		prepTimeMinutes: 4,
 		calories: 460,
 		servings: 1,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Хачапурі по-аджарськи (виробництво з піччю)',
-			category: 'Випічка',
+			name: 'Хачапурі з сиром',
+			category: 'Готові страви',
 			weightText: '1 шт (350 г)',
 			priceUah: 130,
-			badge: 'Справжня піч',
-			cookingTimeMinutes: 12,
-			cookingMethod: 'Випікати у розігрітій до 180°C духовці 10-12 хвилин, наприкінці додати сирий жовток та масло.'
+			badge: 'Готова страва',
+			cookingTimeMinutes: 4,
+			cookingMethod: 'Готова страва з печі — достатньо лише розігріти 2–3 хв у мікрохвильовці або 4–5 хв у духовці чи на сухій сковороді.'
 		},
-		groceryItems: [
-			{ name: 'Яйця курячі відбірні', amount: '1 шт', category: 'dairy' },
-			{ name: 'Вершкове масло 82%', amount: '20 г', category: 'dairy' }
-		],
-		description: 'Хрусткий пухкий човник з сумішшю сулугуні та імеретинського сиру з фірмової печі.',
+		groceryItems: [],
+		description: 'Готовий хачапурі з сирною начинкою — достатньо лише розігріти.',
 		imageEmoji: '',
-		tags: ['cheese', 'hot', 'gourmet']
+		tags: ['quick', 'cheese', 'hot', 'gourmet']
 	},
 
 	// ==================== ОБІДИ ====================
 	{
 		id: 'borscht-ukrainian',
-		name: 'Український борщ на м’ясному бульйоні зі сметаною та часником',
+		name: 'Борщ готовий',
 		category: 'lunch',
 		availableMeals: ['lunch'],
 		prepTimeMinutes: 10,
 		calories: 280,
-		servings: 2,
+		servings: 1,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Борщ український з м’ясом (Галя Балувана)',
-			category: 'Готові страви',
+			name: 'Борщ готовий',
+			category: 'Борщ, супи',
 			weightText: 'контейнер 700 г',
 			priceUah: 145,
 			badge: 'Готова кулінарія',
@@ -157,47 +153,45 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Перелити у каструлю та довести до кипіння на помірному вогні або розігріти в мікрохвильовці 5 хв.'
 		},
 		groceryItems: [
-			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' },
-			{ name: 'Свіжий часник', amount: '1 головка', category: 'produce' },
-			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce' },
-			{ name: 'Бородинський або житній хліб / пампушки', amount: '1 буханка', category: 'bakery' },
-			{ name: 'Сало з проріззю (за бажанням)', amount: '150 г', category: 'grocery' }
+			{ name: 'Сметана 20%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
+			{ name: 'Свіжий часник', amount: '1 головка', category: 'produce', scalable: false },
+			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.25, unit: 'пуч.', scalable: true },
+			{ name: 'Бородинський або житній хліб / пампушки', amount: '1 буханка', category: 'bakery', baseQty: 0.25, unit: 'бух.', scalable: true },
+			{ name: 'Сало з проріззю (за бажанням)', amount: '75 г', category: 'grocery', baseQty: 75, unit: 'г', scalable: true }
 		],
-		description: 'Насичений, наваристий борщ темно-рубінового кольору зі шматочками добірного м’яса та овочами.',
+		description: 'Наваристий український борщ зі шматочками м’яса та овочами.',
 		imageEmoji: '',
 		tags: ['soup', 'family', 'ukrainian', 'lunch']
 	},
 	{
 		id: 'solyanka-meat',
-		name: 'М’ясна збірна солянка з маслинами та лимоном',
+		name: 'Солянка',
 		category: 'lunch',
 		availableMeals: ['lunch'],
 		prepTimeMinutes: 10,
 		calories: 320,
-		servings: 2,
+		servings: 1.5,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Солянка м’ясна збірна (Галя Балувана)',
-			category: 'Готові страви',
-			weightText: 'контейнер 700 г',
+			name: 'Солянка',
+			category: 'Борщ, супи',
+			weightText: 'контейнер 500 г',
 			priceUah: 165,
-			badge: 'Готова кулінарія',
+			badge: 'Суп-концентрат',
 			cookingTimeMinutes: 6,
-			cookingMethod: 'Розігріти до закипання в каструльці, додати часточку свіжого лимона та маслини.'
+			cookingMethod: 'Додати 100–150 мл води, розігріти до закипання в каструльці; за бажанням подавати зі сметаною (виходить 1.5 порції).'
 		},
 		groceryItems: [
-			{ name: 'Лимон свіжий', amount: '1 шт', category: 'produce' },
-			{ name: 'Маслини без кісточок', amount: '1 баночка', category: 'grocery' },
-			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' },
-			{ name: 'Хрусткий багет', amount: '1 шт', category: 'bakery' }
+			{ name: 'Сметана 20%', amount: '75 г', category: 'dairy', baseQty: 75, unit: 'г', scalable: true },
+			{ name: 'Хрусткий багет', amount: '1 шт', category: 'bakery', baseQty: 0.38, unit: 'шт', scalable: true }
 		],
-		description: 'Густа, запашна солянка з 4 видами м’яса та копченостей, солоненькими огірочками та каперсами.',
+		description: 'Густа солянка-концентрат з м’ясними копченостями, солоними огірками, маслинами та лимоном у складі.',
 		imageEmoji: '',
 		tags: ['soup', 'meat', 'gourmet', 'lunch']
 	},
 	{
 		id: 'soup-rabbit-meatballs',
-		name: 'Легкий прозорий супчик з ніжними фрикадельками з кролика',
+		name: 'Суп з фрикадельками з кролика',
 		category: 'lunch',
 		availableMeals: ['lunch'],
 		prepTimeMinutes: 15,
@@ -205,81 +199,105 @@ export const DISHES: Dish[] = [
 		servings: 3,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Фрикадельки з кролика (Галя Балувана)',
-			category: 'Тефтелі та фрикадельки',
-			weightText: 'упаковка 500 г',
+			name: 'Суп з фрикадельками з кролика',
+			category: 'Борщ, супи',
+			weightText: 'упаковка 1000 г',
 			priceUah: 210,
 			badge: 'Дієтичне / Дитяче',
-			cookingTimeMinutes: 10,
-			cookingMethod: 'Опустити заморожені фрикадельки у киплячий овочевий бульйон і варити 10-12 хвилин.'
+			cookingTimeMinutes: 15,
+			cookingMethod: 'Висипати вміст пакета у киплячу воду та варити 15 хвилин до готовності картоплі, моркви й вермішелі.'
 		},
 		groceryItems: [
-			{ name: 'Картопля молода', amount: '3-4 шт', category: 'produce' },
-			{ name: 'Морква свіжа', amount: '1 шт', category: 'produce' },
-			{ name: 'Дрібна вермішель-павутинка', amount: '70 г', category: 'grocery' },
-			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce' }
+			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
-		description: 'Ідеальний легкий суп для малечі та дорослих. Гіпоалергенне дієтичне м’ясо кролика.',
+		description: 'Готовий суповий набір з фрикадельками з кролика, картоплею, морквою та дрібною вермішеллю у складі.',
 		imageEmoji: '',
 		tags: ['kids', 'diet', 'soup', 'family']
 	},
 	{
 		id: 'soup-pea-smoked',
-		name: 'Гороховий суп-пюре з копченостями та сухариками',
+		name: 'Суп гороховий',
 		category: 'lunch',
 		availableMeals: ['lunch'],
 		prepTimeMinutes: 8,
 		calories: 310,
-		servings: 2,
+		servings: 1.5,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Суп гороховий з копченостями (Галя Балувана)',
-			category: 'Готові страви',
-			weightText: 'контейнер 700 г',
+			name: 'Суп гороховий',
+			category: 'Борщ, супи',
+			weightText: 'контейнер 500 г',
 			priceUah: 135,
-			badge: 'Готова кулінарія',
+			badge: 'Суп-концентрат',
 			cookingTimeMinutes: 6,
-			cookingMethod: 'Розігріти у сотейнику до гарячого стану, посипати хрусткими часниковими грінками.'
+			cookingMethod: 'Додати 100–150 мл води, розігріти у сотейнику до гарячого стану та посипати грінками (виходить 1.5 порції).'
 		},
 		groceryItems: [
-			{ name: 'Хрусткі пшеничні сухарики або грінки', amount: '1 пачка', category: 'bakery' },
-			{ name: 'Свіжа зелена цибулька', amount: '1 пучок', category: 'produce' }
+			{ name: 'Хрусткі пшеничні сухарики або грінки', amount: '1 пачка', category: 'bakery', baseQty: 0.38, unit: 'пачка', scalable: true },
+			{ name: 'Свіжа зелена цибулька', amount: '1 пучок', category: 'produce', baseQty: 0.38, unit: 'пуч.', scalable: true }
 		],
-		description: 'Оксамитовий гороховий суп з глибоким ароматом якісних копчених реберець.',
+		description: 'Гороховий крем-суп концентрат із копченостями.',
 		imageEmoji: '',
 		tags: ['quick', 'soup', 'comfort']
 	},
 	{
 		id: 'bogracs-transcarpathian',
-		name: 'Закарпатський бограч з яловичиною та паприкою',
+		name: 'Бограч',
 		category: 'lunch',
 		availableMeals: ['lunch'],
 		prepTimeMinutes: 10,
 		calories: 360,
-		servings: 2,
+		servings: 1,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Бограч м’ясний (Галя Балувана)',
-			category: 'Готові страви',
+			name: 'Бограч',
+			category: 'Борщ, супи',
 			weightText: 'контейнер 700 г',
 			priceUah: 155,
 			badge: 'Готова кулінарія',
 			cookingTimeMinutes: 7,
-			cookingMethod: 'Розігріти на середньому вогні, подавати гарячим з шматочком свіжого хліба.'
+			cookingMethod: 'Розігріти на середньому вогні, подавати гарячим зі шматочком свіжого хліба.'
 		},
 		groceryItems: [
-			{ name: 'Хліб свіжоспечений', amount: '1 буханка', category: 'bakery' },
-			{ name: 'Свіжий перець чілі (за бажанням)', amount: '1 шт', category: 'produce' }
+			{ name: 'Хліб свіжоспечений', amount: '1 буханка', category: 'bakery', baseQty: 0.25, unit: 'бух.', scalable: true },
+			{ name: 'Свіжий перець чілі (за бажанням)', amount: '1 шт', category: 'produce', scalable: false }
 		],
-		description: 'Справжній гуляшний суп: томлене м’ясо, ароматна угорська солодка паприка та картопелька.',
+		description: 'Ситний угорський м’ясний суп із паприкою та овочами.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hearty']
+	},
+	{
+		id: 'soup-kharcho',
+		name: 'Харчо',
+		category: 'lunch',
+		availableMeals: ['lunch'],
+		prepTimeMinutes: 10,
+		calories: 340,
+		servings: 1.5,
+		isGalyaProduct: true,
+		galyaProduct: {
+			name: 'Харчо',
+			category: 'Борщ, супи',
+			weightText: 'контейнер 500 г',
+			priceUah: 155,
+			badge: 'Суп-концентрат',
+			cookingTimeMinutes: 7,
+			cookingMethod: 'Додати 100–150 мл води, розігріти на помірному вогні до закипання та посипати свіжою кінзою (виходить 1.5 порції).'
+		},
+		groceryItems: [
+			{ name: 'Свіжа кінза', amount: '1 пучок', category: 'produce', baseQty: 0.38, unit: 'пуч.', scalable: true },
+			{ name: 'Свіжий часник', amount: '1 головка', category: 'produce', scalable: false },
+			{ name: 'Лаваш або свіжий хліб', amount: '1 шт', category: 'bakery', baseQty: 0.38, unit: 'шт', scalable: true }
+		],
+		description: 'Насичений суп-концентрат із яловичиною, рисом, томатами та спеціями.',
+		imageEmoji: '',
+		tags: ['soup', 'meat', 'gourmet', 'hot']
 	},
 
 	// ==================== ВЕЧЕРІ ====================
 	{
 		id: 'pelmeni-classic',
-		name: 'Фірмові пельмені зі свининою та яловичиною у вершковому маслі',
+		name: 'Пельмені зі свининою та яловичиною',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 10,
@@ -287,7 +305,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Пельмені класичні ручної ліпки (Галя Балувана)',
+			name: 'Пельмені зі свининою та яловичиною',
 			category: 'Пельмені',
 			weightText: 'упаковка 800 г',
 			priceUah: 195,
@@ -296,18 +314,18 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Опустити у підсолений окріп з лавровим листом. Варити 5-6 хвилин після спливання.'
 		},
 		groceryItems: [
-			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy' },
-			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' },
-			{ name: 'Лавровий лист та чорний перець горошком', amount: '1 уп', category: 'grocery' },
-			{ name: 'Свіжа зелень кропу', amount: '1 пучок', category: 'produce' }
+			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
+			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true },
+			{ name: 'Лавровий лист та чорний перець горошком', amount: '1 уп', category: 'grocery', scalable: false },
+			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
-		description: 'Золоте співвідношення 70% свіжого фермерського фаршу та 30% тонкого пружного тіста ручної ліпки.',
+		description: 'Класичні пельмені ручної ліпки з тонкого тіста та фаршу зі свинини й яловичини.',
 		imageEmoji: '',
 		tags: ['quick', 'meat', 'classic', 'bestseller']
 	},
 	{
 		id: 'pelmeni-turkey-kids',
-		name: 'Ніжні пельмені з індичкою (Дитячі / Дієтичні)',
+		name: 'Пельмені з індиком',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 8,
@@ -315,7 +333,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Пельмені з індичкою дитячі (Галя Балувана)',
+			name: 'Пельмені з індиком',
 			category: 'Пельмені',
 			weightText: 'упаковка 600 г',
 			priceUah: 175,
@@ -324,16 +342,16 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Варити у слабокиплячій підсоленій воді рівно 5 хвилин після спливання.'
 		},
 		groceryItems: [
-			{ name: 'Масло солодковершкове', amount: '30 г', category: 'dairy' },
-			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy' }
+			{ name: 'Вершкове масло 82%', amount: '30 г', category: 'dairy', baseQty: 30, unit: 'г', scalable: true },
+			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy', baseQty: 200, unit: 'г', scalable: true }
 		],
-		description: 'Тільки дієтичне філе індички без зайвих спецій, ніжне тонке тісто, яке не розварюється.',
+		description: 'Дієтичні пельмені з філе індички без зайвих спецій у тонкому тісті.',
 		imageEmoji: '',
 		tags: ['kids', 'diet', 'quick']
 	},
 	{
 		id: 'varenyky-potato-mushrooms',
-		name: 'Вареники з картоплею та лісовими грибами зі шкварками та цибулькою',
+		name: 'Вареники з картоплею та грибами',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 12,
@@ -341,7 +359,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Вареники з картоплею та печерицями (Галя Балувана)',
+			name: 'Вареники з картоплею та грибами',
 			category: 'Вареники',
 			weightText: 'упаковка 800 г',
 			priceUah: 145,
@@ -350,17 +368,17 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Варити у великій кількості підсоленого окропу 5-6 хвилин після виринання на поверхню.'
 		},
 		groceryItems: [
-			{ name: 'Ріпчаста цибуля', amount: '2 шт', category: 'produce' },
-			{ name: 'Олія рослинна або бекон для засмажки', amount: '100 г', category: 'grocery' },
-			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' }
+			{ name: 'Ріпчаста цибуля', amount: '2 шт', category: 'produce', baseQty: 2, unit: 'шт', scalable: true },
+			{ name: 'Олія рослинна або бекон для засмажки', amount: '100 г', category: 'grocery', baseQty: 100, unit: 'г', scalable: true },
+			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true }
 		],
-		description: 'Пишні, оксамитові всередині варенички ручної ліпки зі справжньою ароматною засмажкою.',
+		description: 'Вареники ручної ліпки з картоплею та смаженими печерицями.',
 		imageEmoji: '',
 		tags: ['vegetarian', 'ukrainian', 'comfort']
 	},
 	{
 		id: 'varenyky-sweet-cottage-cheese',
-		name: 'Вареники з ніжним домашнім солодким сиром та родзинками',
+		name: 'Вареники з солодким сиром',
 		category: 'dinner',
 		availableMeals: ['breakfast', 'dinner'],
 		prepTimeMinutes: 10,
@@ -368,7 +386,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Вареники з солодким сиром (Галя Балувана)',
+			name: 'Вареники з солодким сиром',
 			category: 'Вареники',
 			weightText: 'упаковка 800 г',
 			priceUah: 165,
@@ -377,17 +395,17 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Варити 5 хвилин. Змастити теплим вершковим маслом і полити сметанкою.'
 		},
 		groceryItems: [
-			{ name: 'Вершкове масло', amount: '40 г', category: 'dairy' },
-			{ name: 'Сметана 20%', amount: '1 банка', category: 'dairy' },
-			{ name: 'Ягідне варення або мед', amount: 'за смаком', category: 'grocery' }
+			{ name: 'Вершкове масло 82%', amount: '40 г', category: 'dairy', baseQty: 40, unit: 'г', scalable: true },
+			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Ягідне варення або мед', amount: 'за смаком', category: 'grocery', scalable: false }
 		],
-		description: 'Багато солодкої сирної начинки з крупинками справжнього сиру та ваніллю.',
+		description: 'Вареники з солодкою сирною начинкою та легким ароматом ванілі.',
 		imageEmoji: '',
 		tags: ['sweet', 'kids', 'family']
 	},
 	{
 		id: 'golubtsi-peasant',
-		name: 'Ніжні голубці по-домашньому у сметанно-томатному соусі',
+		name: 'Голубці з м’ясом (свіжа капуста)',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 30,
@@ -395,27 +413,40 @@ export const DISHES: Dish[] = [
 		servings: 3,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Голубці з м’ясом свинини та яловичини (Галя Балувана)',
+			name: 'Голубці з м’ясом (свіжа капуста)',
 			category: 'Голубці',
 			weightText: 'упаковка 900 г',
 			priceUah: 195,
 			badge: 'Ручна праця',
 			cookingTimeMinutes: 35,
-			cookingMethod: 'Скласти у каструлю чи сотейник, залити томатно-сметанним соусом і тушкувати 35 хв на повільному вогні.'
+			cookingMethod: 'Скласти у каструлю чи сотейник, додати готову засмажку зі сметаною і томатом та тушкувати 35 хв на повільному вогні.'
 		},
-		groceryItems: [
-			{ name: 'Томатна паста якісна', amount: '2 ст. л.', category: 'sauces' },
-			{ name: 'Сметана 20%', amount: '1 банка (350 г)', category: 'dairy' },
-			{ name: 'Морква та цибуля для підливи', amount: 'по 1 шт', category: 'produce' },
-			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce' }
+		extraGalyaProducts: [
+			{
+				product: {
+					name: 'Готова засмажка',
+					category: 'Готові страви',
+					weightText: 'упаковка 250 г',
+					priceUah: 55,
+					badge: 'До підливи',
+					cookingTimeMinutes: 0,
+					cookingMethod: 'Додати готову засмажку під час тушкування голубців замість самостійного обсмажування моркви та цибулі.'
+				},
+				servingsPerPack: 3
+			}
 		],
-		description: 'Акуратні невеличкі голубці з м’яким листям молодої капусти, де багато соковитого м’яса і мінімум рису.',
+		groceryItems: [
+			{ name: 'Томатна паста якісна', amount: '2 ст. л.', category: 'sauces', scalable: false },
+			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
+		],
+		description: 'Акуратні голубці зі свіжого листя капусти з м’ясним фаршем та рисом.',
 		imageEmoji: '',
 		tags: ['family', 'hearty', 'meat']
 	},
 	{
 		id: 'kotlety-kyiv',
-		name: 'Котлета по-київськи з картопляним пюре та свіжими томатами',
+		name: 'Котлета по-київськи',
 		category: 'dinner',
 		availableMeals: ['dinner'],
 		prepTimeMinutes: 20,
@@ -423,27 +454,27 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Котлети по-київськи з маслом та кропом (Галя Балувана)',
+			name: 'Котлета по-київськи',
 			category: 'Котлети',
-			weightText: 'упаковка 500 г (4 шт)',
+			weightText: 'упаковка 600 г (4 шт)',
 			priceUah: 185,
 			badge: 'Ресторанний хіт',
 			cookingTimeMinutes: 18,
 			cookingMethod: 'Обсмажити у фритюрі чи на сковороді до золотистості, довести у духовці при 180°C 12-14 хв.'
 		},
 		groceryItems: [
-			{ name: 'Картопля для пюре', amount: '800 г', category: 'produce' },
-			{ name: 'Молоко 2.5%', amount: '150 мл', category: 'dairy' },
-			{ name: 'Вершкове масло', amount: '50 г', category: 'dairy' },
-			{ name: 'Свіжі огірки та чері', amount: '300 г', category: 'produce' }
+			{ name: 'Картопля для пюре', amount: '800 г', category: 'produce', baseQty: 800, unit: 'г', scalable: true },
+			{ name: 'Молоко 2.5%', amount: '150 мл', category: 'dairy', baseQty: 150, unit: 'мл', scalable: true },
+			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
+			{ name: 'Свіжі огірки та чері', amount: '300 г', category: 'produce', baseQty: 300, unit: 'г', scalable: true }
 		],
-		description: 'Хрустка паніровка, цільне куряче філе і запашне вершкове масло з кропом, що витікає при розрізанні.',
+		description: 'Хрустка паніровка, куряче філе і вершкове масло із зеленню всередині.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'restaurant']
 	},
 	{
 		id: 'tefteli-beshamel',
-		name: 'Тефтельки курячі у ніжному соусі Бешамель з молодою картоплею',
+		name: 'Тефтельки курячі в соусі Бешамель',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 15,
@@ -451,8 +482,8 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Тефтельки курячі в соусі Бешамель (Галя Балувана)',
-			category: 'Готові страви',
+			name: 'Тефтельки курячі в соусі Бешамель',
+			category: 'Тефтелі та фрикадельки',
 			weightText: 'контейнер 600 г',
 			priceUah: 165,
 			badge: 'Готова кулінарія',
@@ -460,17 +491,17 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Розігріти на сковороді під кришкою або запекти 10 хв до появи апетитної скоринки.'
 		},
 		groceryItems: [
-			{ name: 'Молода картопля або макарони твердих сортів', amount: '400 г', category: 'produce' },
-			{ name: 'Свіжий огірочок', amount: '2 шт', category: 'produce' },
-			{ name: 'Зелень петрушки', amount: '1 пучок', category: 'produce' }
+			{ name: 'Молода картопля або макарони твердих сортів', amount: '400 г', category: 'produce', baseQty: 400, unit: 'г', scalable: true },
+			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce', baseQty: 2, unit: 'шт', scalable: true },
+			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
-		description: 'Ніжні дієтичні кульки з соковитого курячого м’яса в оксамитовому вершковому французькому соусі.',
+		description: 'Курячі тефтельки у вершковому соусі Бешамель.',
 		imageEmoji: '',
 		tags: ['kids', 'quick', 'meat', 'gourmet']
 	},
 	{
 		id: 'khinkali-georgian',
-		name: 'Соковиті хінкалі з кінзою та яловичиною з чорним перцем',
+		name: 'Хінкалі з м’ясом',
 		category: 'dinner',
 		availableMeals: ['dinner'],
 		prepTimeMinutes: 15,
@@ -478,52 +509,49 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Хінкалі з яловичиною та свининою (Галя Балувана)',
+			name: 'Хінкалі з м’ясом',
 			category: 'Хінкалі',
-			weightText: 'упаковка 800 г',
+			weightText: 'упаковка 500 г',
 			priceUah: 185,
 			badge: 'Кавказькі традиції',
 			cookingTimeMinutes: 10,
 			cookingMethod: 'Закрутити вир у киплячій воді, варити по одній 9-11 хвилин. Подавати з грубо меленим перцем.'
 		},
 		groceryItems: [
-			{ name: 'Чорний перець крупного помелу', amount: '1 млинок', category: 'sauces' },
-			{ name: 'Свіжа кінза', amount: '1 пучок', category: 'produce' },
-			{ name: 'Соус Сацебелі або Ткемалі', amount: '1 пляшечка', category: 'sauces' }
+			{ name: 'Чорний перець крупного помелу', amount: '1 млинок', category: 'sauces', scalable: false },
+			{ name: 'Свіжа кінза', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true },
+			{ name: 'Соус Сацебелі або Ткемалі', amount: '1 пляшечка', category: 'sauces', scalable: false }
 		],
-		description: 'Міцне тісто з акуратним «хвостиком» і море пряного духмяного бульйону всередині.',
+		description: 'Хінкалі з м’ясним фаршем та ароматним пряним бульйоном усередині.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'hot']
 	},
 	{
 		id: 'pizza-four-cheese',
-		name: 'Справжня піца «4 сири» з фірмової печі з травами',
+		name: 'Піца 4 сири 25 см',
 		category: 'dinner',
 		availableMeals: ['dinner'],
-		prepTimeMinutes: 12,
+		prepTimeMinutes: 4,
 		calories: 520,
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Піца 4 сири (виробництво з піччю)',
-			category: 'Піца',
+			name: 'Піца 4 сири 25 см',
+			category: 'Готові страви',
 			weightText: '1 шт (420 г)',
-			priceUah: 175,
-			badge: 'Справжня піч',
-			cookingTimeMinutes: 10,
-			cookingMethod: 'Поставити у розігріту до 200°C духовку на решітку на 8-10 хвилин доки сир закипить.'
+			priceUah: 210,
+			badge: 'Готова страва',
+			cookingTimeMinutes: 4,
+			cookingMethod: 'Готова піца з печі — достатньо лише розігріти 3–5 хв у духовці, на сковороді під кришкою або в мікрохвильовці.'
 		},
-		groceryItems: [
-			{ name: 'Рукола свіжа', amount: '1 уп (70 г)', category: 'produce' },
-			{ name: 'Мед натуральний (для подачі)', amount: 'трохи', category: 'grocery' }
-		],
-		description: 'Тонкий бортик з пухирцями з кам’яної печі, моцарела, дор блю, пармезан та сулугуні.',
+		groceryItems: [],
+		description: 'Готова піца з чотирьох видів сиру — достатньо лише розігріти.',
 		imageEmoji: '',
 		tags: ['quick', 'cheese', 'gourmet']
 	},
 	{
 		id: 'lasagna-bolognese',
-		name: 'Лазанья Болоньєзе з томатним рагу та соусом Морне',
+		name: 'Лазанья з яловичиною',
 		category: 'dinner',
 		availableMeals: ['dinner'],
 		prepTimeMinutes: 20,
@@ -531,8 +559,8 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Лазанья з м’ясним рагу Болоньєзе (Галя Балувана)',
-			category: 'Лазанья',
+			name: 'Лазанья з яловичиною',
+			category: 'Лазанья, печеня',
 			weightText: 'форма 600 г',
 			priceUah: 185,
 			badge: 'Італійська лінія',
@@ -540,16 +568,16 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Запікати прямо у термостійкій формі при 180°C 15-20 хвилин до рум’яної сирної скоринки.'
 		},
 		groceryItems: [
-			{ name: 'Томати чері на гілочці', amount: '250 г', category: 'produce' },
-			{ name: 'Базилік зелений', amount: '1 гілочка', category: 'produce' }
+			{ name: 'Томати чері на гілочці', amount: '250 г', category: 'produce', baseQty: 250, unit: 'г', scalable: true },
+			{ name: 'Базилік зелений', amount: '1 гілочка', category: 'produce', scalable: false }
 		],
-		description: 'Листи пасти власного розкачування, багато томленої яловичини та ніжний вершковий соус.',
+		description: 'Листи пасти з яловичим рагу, томатним і вершковим соусами під сиром.',
 		imageEmoji: '',
 		tags: ['meat', 'gourmet', 'family']
 	},
 	{
 		id: 'chebureki-crimean',
-		name: 'Кримські чебуреки з яловичиною та соковитим бульйоном',
+		name: 'Чебурек «Кримський»',
 		category: 'dinner',
 		availableMeals: ['dinner'],
 		prepTimeMinutes: 10,
@@ -557,26 +585,26 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Чебуреки з яловичиною (Галя Балувана)',
-			category: 'Чебуреки',
-			weightText: 'упаковка 500 г (4 шт)',
+			name: 'Чебурек «Кримський»',
+			category: 'Чебуреки, біляші, пиріжки',
+			weightText: 'упаковка 400 г (4 шт)',
 			priceUah: 155,
 			badge: 'Хрусткий хіт',
 			cookingTimeMinutes: 8,
 			cookingMethod: 'Смажити на розігрітій олії на помірному вогні по 3-4 хвилини з кожного боку до золотистих бульбашок.'
 		},
 		groceryItems: [
-			{ name: 'Рослинна олія для смаження', amount: '100 мл', category: 'grocery' },
-			{ name: 'Айран або кефір 2.5%', amount: '1 пляшка', category: 'dairy' },
-			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce' }
+			{ name: 'Рослинна олія для смаження', amount: '100 мл', category: 'grocery', scalable: false },
+			{ name: 'Айран або кефір 2.5%', amount: '1 пляшка', category: 'dairy', baseQty: 1, unit: 'пляшка', scalable: true },
+			{ name: 'Свіжий огірок', amount: '2 шт', category: 'produce', baseQty: 2, unit: 'шт', scalable: true }
 		],
-		description: 'Пухирчасте хрустке тісто, що при першому укусі розкриває соковитий м’ясний сік.',
+		description: 'Хрустке тісто та м’ясна начинка із соковитим бульйоном усередині.',
 		imageEmoji: '',
 		tags: ['quick', 'meat', 'hot']
 	},
 	{
 		id: 'pepper-stuffed-pork-beef',
-		name: 'Фарширований солодкий перець зі свининою та яловичиною',
+		name: 'Перець фарширований зі свининою та яловичиною',
 		category: 'dinner',
 		availableMeals: ['lunch', 'dinner'],
 		prepTimeMinutes: 25,
@@ -584,7 +612,7 @@ export const DISHES: Dish[] = [
 		servings: 2,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Перець фарширований м’ясом (Галя Балувана)',
+			name: 'Перець фарширований зі свининою та яловичиною',
 			category: 'Перець фарширований',
 			weightText: 'упаковка 800 г',
 			priceUah: 180,
@@ -593,11 +621,11 @@ export const DISHES: Dish[] = [
 			cookingMethod: 'Поставити вертикально у сотейник, залити томатно-овочевою підливою і тушкувати 30 хвилин.'
 		},
 		groceryItems: [
-			{ name: 'Томатний сік або паста', amount: '300 мл', category: 'sauces' },
-			{ name: 'Сметана 15%', amount: '1 банка', category: 'dairy' },
-			{ name: 'Свіжа зелень', amount: '1 пучок', category: 'produce' }
+			{ name: 'Томатний сік або паста', amount: '300 мл', category: 'sauces', baseQty: 300, unit: 'мл', scalable: true },
+			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true },
+			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
-		description: 'Соковитий болгарський перець з ніжним м’ясним фаршем і рисом, просочений томатним ароматом.',
+		description: 'Болгарський перець з фаршем зі свинини й яловичини та рисом.',
 		imageEmoji: '',
 		tags: ['vegetable', 'meat', 'family']
 	}
