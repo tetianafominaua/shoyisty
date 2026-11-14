@@ -206,7 +206,7 @@
 													<div class="meal-ration-box">
 														<span class="ration-tag">
 															<Salad size={11} />
-															<span>Раціон (з супермаркету):</span>
+															<span>Продукти із супермаркету:</span>
 														</span>
 														<span class="ration-items-text">
 															+ {dish.groceryItems.map((g) => g.name).join(' • ')}

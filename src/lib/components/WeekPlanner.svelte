@@ -224,7 +224,7 @@
 							<div class="grocery-hint-box">
 								<span class="hint-label">
 									<Salad size={12} />
-									<span>Раціон (з супермаркету):</span>
+									<span>Продукти із супермаркету:</span>
 								</span>
 								<span class="hint-text">
 									+ {dish.groceryItems.map((g) => g.name).join(' • ')}
