@@ -194,23 +194,29 @@ export const DISHES: Dish[] = [
 		name: 'Суп з фрикадельками з кролика',
 		category: 'lunch',
 		availableMeals: ['lunch'],
-		prepTimeMinutes: 15,
+		prepTimeMinutes: 20,
 		calories: 220,
 		servings: 3,
 		isGalyaProduct: true,
 		galyaProduct: {
-			name: 'Суп з фрикадельками з кролика',
-			category: 'Борщ, супи',
-			weightText: 'упаковка 1000 г',
-			priceUah: 210,
+			name: 'Фрикадельки з кролика',
+			category: 'Тефтелі та фрикадельки',
+			weightText: 'упаковка 500 г',
+			priceUah: 195,
 			badge: 'Дієтичне / Дитяче',
-			cookingTimeMinutes: 15,
-			cookingMethod: 'Висипати вміст пакета у киплячу воду та варити 15 хвилин до готовності картоплі, моркви й вермішелі.'
+			cookingTimeMinutes: 20,
+			cookingMethod:
+				'Зварити овочевий бульйон (картопля, морква, цибуля). За 10–12 хвилин до готовності опустити заморожені фрикадельки з кролика, додати вермішель та зелень.'
 		},
 		groceryItems: [
-			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
+			{ name: 'Картопля', amount: '350 г', category: 'produce', baseQty: 350, unit: 'г', scalable: true },
+			{ name: 'Морква', amount: '1 шт (100 г)', category: 'produce', baseQty: 100, unit: 'г', scalable: true },
+			{ name: 'Цибуля ріпчаста', amount: '1 шт (80 г)', category: 'produce', baseQty: 80, unit: 'г', scalable: true },
+			{ name: 'Дрібна вермішель або зірочки', amount: '60 г', category: 'grocery', baseQty: 60, unit: 'г', scalable: true },
+			{ name: 'Свіжий кріп та петрушка', amount: '0.5 пучка', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
-		description: 'Готовий суповий набір з фрикадельками з кролика, картоплею, морквою та дрібною вермішеллю у складі.',
+		description:
+			'Ніжний та дієтичний домашній суп: вариться самостійно з додаванням соковитих фрикадельок з кролика від «Галя Балувана» та свіжих овочів.',
 		imageEmoji: '',
 		tags: ['kids', 'diet', 'soup', 'family']
 	},
