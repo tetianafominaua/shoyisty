@@ -15,7 +15,21 @@
 	<title>Галя Балувана — Шпаргалка меню на тиждень</title>
 	<meta
 		name="description"
-		content="Що приготувати сьогодні? Готові тижневі набори страв та зручний планувальник на тиждень із напівфабрикатів ручної ліпки «Галя Балувана» (Одеса & Південне)."
+		content="Оберіть готовий набір страв на 7 днів або складіть власний за 2 хвилини. Домашні страви без турбот!"
+	/>
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://tetianafominaua.github.io/shoyisty/" />
+	<meta property="og:title" content="Галя Балувана — Шпаргалка меню на тиждень" />
+	<meta
+		property="og:description"
+		content="Оберіть готовий набір страв на 7 днів або складіть власний за 2 хвилини. Домашні страви без турбот!"
+	/>
+	<meta property="og:locale" content="uk_UA" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Галя Балувана — Шпаргалка меню на тиждень" />
+	<meta
+		name="twitter:description"
+		content="Оберіть готовий набір страв на 7 днів або складіть власний за 2 хвилини. Домашні страви без турбот!"
 	/>
 </svelte:head>
 
