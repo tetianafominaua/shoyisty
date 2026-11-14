@@ -68,7 +68,8 @@
 					<div class="smart-cart-texts">
 						<span class="smart-cart-heading">Твій кошик сформовано</span>
 						<span class="smart-cart-sub">
-							{planner.totalDishesCount} страв &bull; {cart.totalGalyaUnits} уп. &bull; ~{cart.totalEstimatedGalyaPrice} ₴
+							{planner.totalDishesCount} страв &bull; {cart.totalGalyaUnits} уп. &bull; ~{cart.totalEstimatedGalyaPrice}
+							₴
 						</span>
 					</div>
 				</div>

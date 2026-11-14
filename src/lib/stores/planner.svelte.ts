@@ -448,7 +448,9 @@ class PlannerStore {
 		this.saveToStorage();
 
 		if (showNotification) {
-			this.showToast(`Завантажено набір «${targetSet.title}» (${getFamilySizeLabel(this.familySize)})!`);
+			this.showToast(
+				`Завантажено набір «${targetSet.title}» (${getFamilySizeLabel(this.familySize)})!`
+			);
 		}
 	}
 

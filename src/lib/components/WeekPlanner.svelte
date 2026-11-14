@@ -62,9 +62,7 @@
 	<div class="planner-header">
 		<div class="header-titles">
 			<h2 class="planner-title">Конструктор на тиждень</h2>
-			<p class="planner-subtitle">
-				Обирай день тижня та наповнюй сніданки, обіди і вечері.
-			</p>
+			<p class="planner-subtitle">Обирай день тижня та наповнюй сніданки, обіди і вечері.</p>
 		</div>
 	</div>
 
@@ -72,7 +70,7 @@
 
 	<!-- 7 Days Button Menu (Понеділок .. Неділя) -->
 	<nav class="days-nav-bar" aria-label="Вибір дня тижня">
-		{#each DAYS_LIST as day}
+		{#each DAYS_LIST as day (day.key)}
 			{@const count = planner.getDayDishesCount(day.key)}
 			{@const isActive = activeDay === day.key}
 
@@ -129,7 +127,7 @@
 
 	<!-- 3 Meal Slots: Сніданок, Обід, Вечеря -->
 	<div class="meal-slots-list">
-		{#each MEALS_LIST as meal}
+		{#each MEALS_LIST as meal (meal.key)}
 			{@const dishId = dayPlan[meal.key]}
 			{@const dish = planner.getDish(dishId)}
 
@@ -209,9 +207,10 @@
 									<strong>~{dish.galyaProduct.priceUah} ₴/уп.</strong>
 								</div>
 								{#if dish.extraGalyaProducts?.length}
-									{#each dish.extraGalyaProducts as extra}
+									{#each dish.extraGalyaProducts as extra (extra.product.name)}
 										<div class="galya-extra-row">
-											+ <strong>{extra.product.name}</strong> &bull; {extra.product.weightText} &bull; ~{extra.product.priceUah} ₴/уп.
+											+ <strong>{extra.product.name}</strong> &bull; {extra.product.weightText} &bull;
+											~{extra.product.priceUah} ₴/уп.
 										</div>
 									{/each}
 								{/if}
@@ -259,7 +258,8 @@
 			aria-label="Переглянути кошик"
 		>
 			<span>
-				Переглянути кошик ({planner.totalDishesCount} страв{#if planner.totalDishesCount > 0} &bull; {cart.totalGalyaUnits} уп.{/if})
+				Переглянути кошик ({planner.totalDishesCount} страв{#if planner.totalDishesCount > 0}
+					&bull; {cart.totalGalyaUnits} уп.{/if})
 			</span>
 			<ShoppingCart size={16} />
 		</button>

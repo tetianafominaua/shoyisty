@@ -1,30 +1,27 @@
 <script lang="ts">
-	import { planner } from "#lib/stores/planner.svelte";
-	import {
-		GROCERY_CATEGORIES_UA,
-		getFamilySizeLabel,
-	} from "#lib/data/constants";
-	import FamilySizeSelector from "#lib/components/FamilySizeSelector.svelte";
-	import ShoppingCart from "@lucide/svelte/icons/shopping-cart";
-	import ShoppingBag from "@lucide/svelte/icons/shopping-bag";
-	import Sparkles from "@lucide/svelte/icons/sparkles";
-	import Calendar from "@lucide/svelte/icons/calendar";
-	import Copy from "@lucide/svelte/icons/copy";
-	import Share2 from "@lucide/svelte/icons/share-2";
-	import ChefHat from "@lucide/svelte/icons/chef-hat";
-	import Check from "@lucide/svelte/icons/check";
-	import Info from "@lucide/svelte/icons/info";
-	import MapPin from "@lucide/svelte/icons/map-pin";
-	import ArrowRight from "@lucide/svelte/icons/arrow-right";
-	import Trash2 from "@lucide/svelte/icons/trash-2";
-	import Milk from "@lucide/svelte/icons/milk";
-	import Carrot from "@lucide/svelte/icons/carrot";
-	import Croissant from "@lucide/svelte/icons/croissant";
-	import Package from "@lucide/svelte/icons/package";
-	import Flame from "@lucide/svelte/icons/flame";
-	import Minus from "@lucide/svelte/icons/minus";
-	import Plus from "@lucide/svelte/icons/plus";
-	import RotateCcw from "@lucide/svelte/icons/rotate-ccw";
+	import { planner } from '#lib/stores/planner.svelte';
+	import { GROCERY_CATEGORIES_UA, getFamilySizeLabel } from '#lib/data/constants';
+	import FamilySizeSelector from '#lib/components/FamilySizeSelector.svelte';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import ShoppingBag from '@lucide/svelte/icons/shopping-bag';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import Copy from '@lucide/svelte/icons/copy';
+	import Share2 from '@lucide/svelte/icons/share-2';
+	import ChefHat from '@lucide/svelte/icons/chef-hat';
+	import Check from '@lucide/svelte/icons/check';
+	import Info from '@lucide/svelte/icons/info';
+	import MapPin from '@lucide/svelte/icons/map-pin';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import Milk from '@lucide/svelte/icons/milk';
+	import Carrot from '@lucide/svelte/icons/carrot';
+	import Croissant from '@lucide/svelte/icons/croissant';
+	import Package from '@lucide/svelte/icons/package';
+	import Flame from '@lucide/svelte/icons/flame';
+	import Minus from '@lucide/svelte/icons/minus';
+	import Plus from '@lucide/svelte/icons/plus';
+	import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 
 	const cart = $derived(planner.getCartGrouped());
 
@@ -35,22 +32,20 @@
 				await navigator.clipboard.writeText(text);
 			} else {
 				// Fallback
-				const textArea = document.createElement("textarea");
+				const textArea = document.createElement('textarea');
 				textArea.value = text;
-				textArea.style.position = "fixed";
-				textArea.style.left = "-9999px";
+				textArea.style.position = 'fixed';
+				textArea.style.left = '-9999px';
 				document.body.appendChild(textArea);
 				textArea.focus();
 				textArea.select();
-				document.execCommand("copy");
+				document.execCommand('copy');
 				document.body.removeChild(textArea);
 			}
-			planner.showToast(
-				"Список скопійовано! Вставте у Telegram або Viber",
-			);
+			planner.showToast('Список скопійовано! Вставте у Telegram або Viber');
 		} catch (e) {
-			console.error("Copy failed", e);
-			planner.showToast("Помилка копіювання. Спробуйте вручну.");
+			console.error('Copy failed', e);
+			planner.showToast('Помилка копіювання. Спробуйте вручну.');
 		}
 	}
 
@@ -59,10 +54,10 @@
 		if (navigator.share) {
 			try {
 				await navigator.share({
-					title: "Список покупок «Галя Балувана»",
-					text: text,
+					title: 'Список покупок «Галя Балувана»',
+					text: text
 				});
-			} catch (e) {
+			} catch (_e) {
 				// User cancelled share
 			}
 		} else {
@@ -72,15 +67,15 @@
 </script>
 
 {#snippet categoryIcon(catKey: string, size = 15)}
-	{#if catKey === "dairy"}
+	{#if catKey === 'dairy'}
 		<Milk {size} />
-	{:else if catKey === "produce"}
+	{:else if catKey === 'produce'}
 		<Carrot {size} />
-	{:else if catKey === "bakery"}
+	{:else if catKey === 'bakery'}
 		<Croissant {size} />
-	{:else if catKey === "grocery"}
+	{:else if catKey === 'grocery'}
 		<Package {size} />
-	{:else if catKey === "sauces"}
+	{:else if catKey === 'sauces'}
 		<Flame {size} />
 	{:else}
 		<ShoppingBag {size} />
@@ -93,8 +88,7 @@
 		<div class="header-titles">
 			<h2 class="cart-title">Кошик на тиждень</h2>
 			<p class="cart-subtitle">
-				Два списки: що придбати у «Галя Балувана», і що докупити у
-				супермаркеті.
+				Два списки: що придбати у «Галя Балувана», і що докупити у супермаркеті.
 			</p>
 		</div>
 	</div>
@@ -106,31 +100,20 @@
 				<ShoppingCart size={40} color="var(--color-brand-primary)" />
 			</div>
 			<h3>Ваш кошик ще порожній</h3>
-			<p>
-				Оберіть один із готових наборів або додайте страви у
-				планувальник по днях тижня.
-			</p>
+			<p>Оберіть один із готових наборів або додайте страви у планувальник по днях тижня.</p>
 			<div class="empty-actions">
-				<button
-					class="btn-primary"
-					onclick={() => (planner.activeTab = "sets")}
-				>
+				<button class="btn-primary" onclick={() => (planner.activeTab = 'sets')}>
 					<span>Обрати готовий набір</span>
 					<Sparkles size={16} />
 				</button>
-				<button
-					class="btn-secondary"
-					onclick={() => (planner.activeTab = "week")}
-				>
+				<button class="btn-secondary" onclick={() => (planner.activeTab = 'week')}>
 					<span>Скласти по днях</span>
 					<Calendar size={16} />
 				</button>
 			</div>
 		</div>
 	{:else}
-		<FamilySizeSelector
-			subtitle="Змінюйте кількість осіб або підкоригуйте упаковки вручну"
-		/>
+		<FamilySizeSelector subtitle="Змінюйте кількість осіб або підкоригуйте упаковки вручну" />
 
 		<!-- Summary Top Bar -->
 		<div class="summary-top-card">
@@ -140,19 +123,13 @@
 			</div>
 			<div class="summary-divider"></div>
 			<div class="summary-stat">
-				<span class="stat-label"
-					>Для {getFamilySizeLabel(cart.familySize)}:</span
-				>
-				<strong class="stat-val text-brand"
-					>{cart.totalGalyaUnits} уп.</strong
-				>
+				<span class="stat-label">Для {getFamilySizeLabel(cart.familySize)}:</span>
+				<strong class="stat-val text-brand">{cart.totalGalyaUnits} уп.</strong>
 			</div>
 			<div class="summary-divider"></div>
 			<div class="summary-stat">
 				<span class="stat-label">Орієнтовно:</span>
-				<strong class="stat-val text-brand"
-					>~{cart.totalEstimatedGalyaPrice} ₴</strong
-				>
+				<strong class="stat-val text-brand">~{cart.totalEstimatedGalyaPrice} ₴</strong>
 			</div>
 		</div>
 
@@ -163,11 +140,7 @@
 				<span>Скопіювати в Telegram / Viber</span>
 			</button>
 
-			<button
-				class="btn-secondary"
-				onclick={shareList}
-				title="Поділитися списком"
-			>
+			<button class="btn-secondary" onclick={shareList} title="Поділитися списком">
 				<Share2 size={16} />
 				<span>Поділитися</span>
 			</button>
@@ -179,15 +152,10 @@
 				<div class="section-header">
 					<div class="section-title-box">
 						<span class="section-icon">
-							<ChefHat
-								size={20}
-								color="var(--color-brand-primary)"
-							/>
+							<ChefHat size={20} color="var(--color-brand-primary)" />
 						</span>
 						<div>
-							<h3 class="section-title">
-								1. Придбати в «Галя Балувана»
-							</h3>
+							<h3 class="section-title">1. Придбати в «Галя Балувана»</h3>
 							<span class="section-sub">
 								{cart.galyaItems.length} поз. &bull; {cart.totalGalyaUnits}
 								уп. (~{cart.totalEstimatedGalyaPrice} ₴)
@@ -218,13 +186,9 @@
 							<button
 								class="checkbox-btn"
 								onclick={() => planner.toggleChecked(itemKey)}
-								aria-label="Позначити купленим {item.product
-									.name}"
+								aria-label="Позначити купленим {item.product.name}"
 							>
-								<span
-									class="check-box"
-									class:active={isChecked}
-								>
+								<span class="check-box" class:active={isChecked}>
 									{#if isChecked}
 										<Check size={13} strokeWidth={3} />
 									{/if}
@@ -233,18 +197,12 @@
 
 							<div class="item-main-content">
 								<div class="item-title-row">
-									<span class="item-name"
-										>{item.product.name}</span
-									>
-									<span class="item-total-price"
-										>~{item.totalPrice} ₴</span
-									>
+									<span class="item-name">{item.product.name}</span>
+									<span class="item-total-price">~{item.totalPrice} ₴</span>
 								</div>
 
 								<div class="item-meta-row">
-									<span class="item-badge"
-										>{item.product.badge}</span
-									>
+									<span class="item-badge">{item.product.badge}</span>
 									<span class="item-pack-info">
 										{item.product.weightText} &bull; {item.servingsPerPack}
 										порц./уп.
@@ -255,15 +213,11 @@
 									<span>
 										{item.occurrences}
 										{item.occurrences === 1
-											? "прийом"
+											? 'прийом'
 											: item.occurrences <= 4
-												? "прийоми"
-												: "прийомів"} &times; {getFamilySizeLabel(
-											cart.familySize,
-										)} =
-										<strong
-											>{item.totalServingsNeeded} порц.</strong
-										>
+												? 'прийоми'
+												: 'прийомів'} &times; {getFamilySizeLabel(cart.familySize)} =
+										<strong>{item.totalServingsNeeded} порц.</strong>
 									</span>
 								</div>
 
@@ -271,8 +225,7 @@
 									<div
 										class="pack-stepper"
 										role="group"
-										aria-label="Кількість упаковок {item
-											.product.name}"
+										aria-label="Кількість упаковок {item.product.name}"
 									>
 										<button
 											type="button"
@@ -282,15 +235,13 @@
 												planner.setPackCount(
 													item.product.name,
 													item.count - 1,
-													item.recommendedCount,
+													item.recommendedCount
 												)}
 											aria-label="Зменшити кількість упаковок"
 										>
 											<Minus size={13} />
 										</button>
-										<span class="stepper-val"
-											>{item.count} уп.</span
-										>
+										<span class="stepper-val">{item.count} уп.</span>
 										<button
 											type="button"
 											class="stepper-btn"
@@ -298,7 +249,7 @@
 												planner.setPackCount(
 													item.product.name,
 													item.count + 1,
-													item.recommendedCount,
+													item.recommendedCount
 												)}
 											aria-label="Збільшити кількість упаковок"
 										>
@@ -314,24 +265,20 @@
 												planner.setPackCount(
 													item.product.name,
 													item.recommendedCount,
-													item.recommendedCount,
+													item.recommendedCount
 												)}
 											title="Повернути рекомендовану кількість"
 										>
-											<span
-												>Рек.: {item.recommendedCount} уп.</span
-											>
+											<span>Рек.: {item.recommendedCount} уп.</span>
 											<RotateCcw size={11} />
 										</button>
 									{:else}
-										<span class="rec-match-badge"
-											>Рекомендовано</span
-										>
+										<span class="rec-match-badge">Рекомендовано</span>
 									{/if}
 								</div>
 
 								<div class="item-dishes-note">
-									Для страв: {item.dishesNames.join(", ")}
+									Для страв: {item.dishesNames.join(', ')}
 								</div>
 
 								<div class="item-cook-hint">
@@ -345,14 +292,9 @@
 
 				<!-- Stores Info Footer -->
 				<div class="stores-footer">
-					<button
-						class="stores-map-btn"
-						onclick={() => (planner.isLocationsOpen = true)}
-					>
+					<button class="stores-map-btn" onclick={() => (planner.isLocationsOpen = true)}>
 						<MapPin size={16} />
-						<span class="btn-text"
-							>Наші 4 магазини на Google Картах</span
-						>
+						<span class="btn-text">Наші 4 магазини на Google Картах</span>
 						<ArrowRight size={15} />
 					</button>
 				</div>
@@ -366,14 +308,10 @@
 							<ShoppingBag size={20} color="#b45309" />
 						</span>
 						<div>
-							<h3 class="section-title">
-								2. Докупити в супермаркеті
-							</h3>
+							<h3 class="section-title">2. Докупити в супермаркеті</h3>
 							<span class="section-sub">
-								Розрахунок на {getFamilySizeLabel(
-									cart.familySize,
-								)} (спеції та соуси без множення) &bull; {cart
-									.groceryItems.length} поз.
+								Розрахунок на {getFamilySizeLabel(cart.familySize)} (спеції та соуси без множення) &bull;
+								{cart.groceryItems.length} поз.
 							</span>
 						</div>
 					</div>
@@ -383,85 +321,50 @@
 				<div class="grocery-groups">
 					{#if cart.groceryItems.length === 0}
 						<div class="empty-grocery-note">
-							Обрані страви вже готові або не потребують
-							додаткових покупок у супермаркеті.
+							Обрані страви вже готові або не потребують додаткових покупок у супермаркеті.
 						</div>
 					{:else}
-						{#each ["dairy", "produce", "bakery", "grocery", "sauces", "other"] as catKey}
-							{@const catItems = cart.groceryItems.filter(
-								(i) => i.category === catKey,
-							)}
+						{#each ['dairy', 'produce', 'bakery', 'grocery', 'sauces', 'other'] as catKey (catKey)}
+							{@const catItems = cart.groceryItems.filter((i) => i.category === catKey)}
 							{#if catItems.length > 0}
-								{@const catInfo = GROCERY_CATEGORIES_UA[
-									catKey
-								] || { label: catKey, icon: "other" }}
+								{@const catInfo = GROCERY_CATEGORIES_UA[catKey] || { label: catKey, icon: 'other' }}
 								<div class="category-group">
 									<div class="category-header">
 										<span class="cat-icon">
 											{@render categoryIcon(catKey, 14)}
 										</span>
-										<span class="cat-name"
-											>{catInfo.label}</span
-										>
-										<span class="cat-count"
-											>({catItems.length})</span
-										>
+										<span class="cat-name">{catInfo.label}</span>
+										<span class="cat-count">({catItems.length})</span>
 									</div>
 
 									<div class="category-items">
-										{#each catItems as item}
+										{#each catItems as item (item.name)}
 											{@const itemKey = `grocery_${item.name}`}
-											{@const isChecked =
-												!!planner.checkedItems[itemKey]}
+											{@const isChecked = !!planner.checkedItems[itemKey]}
 
-											<div
-												class="grocery-item-row"
-												class:checked={isChecked}
-											>
+											<div class="grocery-item-row" class:checked={isChecked}>
 												<button
 													class="checkbox-btn"
-													onclick={() =>
-														planner.toggleChecked(
-															itemKey,
-														)}
+													onclick={() => planner.toggleChecked(itemKey)}
 													aria-label="Позначити купленим {item.name}"
 												>
-													<span
-														class="check-box"
-														class:active={isChecked}
-													>
+													<span class="check-box" class:active={isChecked}>
 														{#if isChecked}
-															<Check
-																size={13}
-																strokeWidth={3}
-															/>
+															<Check size={13} strokeWidth={3} />
 														{/if}
 													</span>
 												</button>
 
 												<div class="grocery-item-text">
-													<div
-														class="grocery-name-row"
-													>
-														<span
-															class="grocery-name"
-															>{item.name}</span
-														>
-														<span
-															class="grocery-amount"
-															>{item.amountLabel}</span
-														>
+													<div class="grocery-name-row">
+														<span class="grocery-name">{item.name}</span>
+														<span class="grocery-amount">{item.amountLabel}</span>
 													</div>
-													<span
-														class="grocery-for-dish"
-													>
-														Для: {item.dishesNames
-															.slice(0, 2)
-															.join(", ")}{item
-															.dishesNames
-															.length > 2
-															? " та ін."
-															: ""}
+													<span class="grocery-for-dish">
+														Для: {item.dishesNames.slice(0, 2).join(', ')}{item.dishesNames.length >
+														2
+															? ' та ін.'
+															: ''}
 													</span>
 												</div>
 											</div>

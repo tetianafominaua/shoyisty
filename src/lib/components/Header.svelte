@@ -3,8 +3,6 @@
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
 
-	const cart = $derived(planner.getCartGrouped());
-
 	function handleBack() {
 		if (planner.activeTab === 'sets' && planner.selectedSetId) {
 			planner.selectedSetId = null;

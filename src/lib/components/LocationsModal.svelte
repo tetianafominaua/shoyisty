@@ -75,13 +75,8 @@
 
 			<!-- 4 Compact Locations (Unified layout: Type -> Address -> City) -->
 			<div class="locations-compact-list">
-				{#each LOCATIONS as loc}
-					<a
-						href={loc.mapsUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="compact-loc-row"
-					>
+				{#each LOCATIONS as loc (loc.address)}
+					<a href={loc.mapsUrl} target="_blank" rel="noopener noreferrer" class="compact-loc-row">
 						<div class="loc-text-col">
 							<span class="loc-badge">{loc.badge}</span>
 							<strong class="loc-address">{loc.address}</strong>
@@ -100,7 +95,8 @@
 			<div class="sheet-call-wrapper">
 				<a href="tel:+380506118570" class="call-btn-single-line">
 					<Phone size={16} class="call-icon" />
-					<span class="call-text">Зателефонувати в магазин: <strong>+38 050 611 85 70</strong></span>
+					<span class="call-text">Зателефонувати в магазин: <strong>+38 050 611 85 70</strong></span
+					>
 				</a>
 			</div>
 		</div>
