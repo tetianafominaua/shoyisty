@@ -103,6 +103,7 @@ export const DISHES: Dish[] = [
 		},
 		groceryItems: [
 			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Свіжі фрукти та ягоди (банан, лохина)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Свіжа м’ята для подачі', amount: 'гілочка', category: 'produce', scalable: false }
 		],
 		description: 'Вишня без кісточок у делікатному сиропі всередині тонких млинців.',
@@ -322,6 +323,7 @@ export const DISHES: Dish[] = [
 		groceryItems: [
 			{ name: 'Вершкове масло 82%', amount: '50 г', category: 'dairy', baseQty: 50, unit: 'г', scalable: true },
 			{ name: 'Сметана 20%', amount: '120 г', category: 'dairy', baseQty: 120, unit: 'г', scalable: true },
+			{ name: 'Салат зі свіжих огірків та зелені', amount: '200 г', category: 'produce', baseQty: 200, unit: 'г', scalable: true },
 			{ name: 'Лавровий лист та чорний перець горошком', amount: '1 уп', category: 'grocery', scalable: false },
 			{ name: 'Свіжа зелень (кріп, петрушка)', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }
 		],
@@ -349,7 +351,8 @@ export const DISHES: Dish[] = [
 		},
 		groceryItems: [
 			{ name: 'Вершкове масло 82%', amount: '30 г', category: 'dairy', baseQty: 30, unit: 'г', scalable: true },
-			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy', baseQty: 200, unit: 'г', scalable: true }
+			{ name: 'Сметанка дитяча або йогурт', amount: '200 г', category: 'dairy', baseQty: 200, unit: 'г', scalable: true },
+			{ name: 'Овочева соломка (огірок, солодкий перець, морква)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true }
 		],
 		description: 'Дієтичні пельмені з філе індички без зайвих спецій у тонкому тісті.',
 		imageEmoji: '',
@@ -403,6 +406,7 @@ export const DISHES: Dish[] = [
 		groceryItems: [
 			{ name: 'Вершкове масло 82%', amount: '40 г', category: 'dairy', baseQty: 40, unit: 'г', scalable: true },
 			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
+			{ name: 'Свіжі ягоди (малина, лохина, полуниця)', amount: '150 г', category: 'produce', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Ягідне варення або мед', amount: 'за смаком', category: 'grocery', scalable: false }
 		],
 		description: 'Вареники з солодкою сирною начинкою та легким ароматом ванілі.',
@@ -442,6 +446,7 @@ export const DISHES: Dish[] = [
 			}
 		],
 		groceryItems: [
+			{ name: 'Салат зі свіжих огірків та томатів', amount: '250 г', category: 'produce', baseQty: 250, unit: 'г', scalable: true },
 			{ name: 'Томатна паста якісна', amount: '2 ст. л.', category: 'sauces', scalable: false },
 			{ name: 'Сметана 20%', amount: '150 г', category: 'dairy', baseQty: 150, unit: 'г', scalable: true },
 			{ name: 'Свіжий кріп', amount: '1 пучок', category: 'produce', baseQty: 0.5, unit: 'пуч.', scalable: true }

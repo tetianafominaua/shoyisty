@@ -15,6 +15,7 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import ChefHat from '@lucide/svelte/icons/chef-hat';
 	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import Salad from '@lucide/svelte/icons/salad';
 	import Plus from '@lucide/svelte/icons/plus';
 
 	const activeDay = $derived(planner.selectedDay);
@@ -222,11 +223,11 @@
 						{#if dish.groceryItems.length > 0}
 							<div class="grocery-hint-box">
 								<span class="hint-label">
-									<ShoppingCart size={12} />
-									<span>У супермаркет:</span>
+									<Salad size={12} />
+									<span>Раціон (з супермаркету):</span>
 								</span>
 								<span class="hint-text">
-									{dish.groceryItems.map((g) => g.name).join(', ')}
+									+ {dish.groceryItems.map((g) => g.name).join(' • ')}
 								</span>
 							</div>
 						{/if}
@@ -635,8 +636,11 @@
 
 	.hint-label {
 		font-weight: 700;
-		color: #b45309;
+		color: #15803d;
 		margin-right: 4px;
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
 	}
 
 	/* Empty Slot Button */

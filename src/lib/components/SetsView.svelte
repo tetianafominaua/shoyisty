@@ -20,6 +20,7 @@
 	import Utensils from '@lucide/svelte/icons/utensils';
 	import Users from '@lucide/svelte/icons/users';
 	import Package from '@lucide/svelte/icons/package';
+	import Salad from '@lucide/svelte/icons/salad';
 
 	const selectedSet = $derived(
 		planner.selectedSetId ? READY_MADE_SETS.find((s) => s.id === planner.selectedSetId) : null
@@ -201,6 +202,17 @@
 														</span>
 													{/if}
 												</div>
+												{#if dish.groceryItems && dish.groceryItems.length > 0}
+													<div class="meal-ration-box">
+														<span class="ration-tag">
+															<Salad size={11} />
+															<span>Раціон (з супермаркету):</span>
+														</span>
+														<span class="ration-items-text">
+															+ {dish.groceryItems.map((g) => g.name).join(' • ')}
+														</span>
+													</div>
+												{/if}
 												<div class="meal-time-info">
 													<Clock size={11} />
 													<span>
@@ -519,6 +531,35 @@
 		flex-shrink: 0;
 		white-space: nowrap;
 		margin-top: 1px;
+	}
+
+	.meal-ration-box {
+		margin-top: 5px;
+		margin-bottom: 5px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 5px;
+		font-size: 11px;
+		line-height: 1.35;
+		background: #f0fdf4;
+		border: 1px solid #bbf7d0;
+		border-radius: 6px;
+		padding: 4px 8px;
+	}
+
+	.ration-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+		font-weight: 700;
+		color: #15803d;
+		flex-shrink: 0;
+	}
+
+	.ration-items-text {
+		color: #14532d;
+		font-weight: 500;
 	}
 
 	.meal-time-info {
