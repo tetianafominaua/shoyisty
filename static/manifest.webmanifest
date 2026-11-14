@@ -1,0 +1,17 @@
+{
+	"name": "Галя Балувана — Шпаргалка меню на тиждень",
+	"short_name": "Шпаргалка меню",
+	"description": "Готові тижневі набори страв та зручний конструктор меню з домашніх напівфабрикатів",
+	"start_url": "./",
+	"display": "standalone",
+	"background_color": "#f8f6f0",
+	"theme_color": "#18432f",
+	"icons": [
+		{
+			"src": "favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any maskable"
+		}
+	]
+}
