@@ -253,3 +253,9 @@ h5 {
 	border-radius: var(--radius-full);
 	border: 1px solid #fde68a;
 }
+
+/* Accessible focus ring (WCAG 2.2 AA) */
+:focus-visible {
+	outline: 2px solid var(--color-brand-primary);
+	outline-offset: 3px;
+}

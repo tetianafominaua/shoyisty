@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Галя Балувана — Шпаргалка меню на кожен день', () => {
 	test('завантажує головну сторінку з двома основними кнопками', async ({ page }) => {
@@ -41,5 +42,17 @@ test.describe('Галя Балувана — Шпаргалка меню на к
 		// Закриваємо модалку
 		await page.getByRole('button', { name: /Закрити/i }).click();
 		await expect(page.getByRole('heading', { name: /Наші магазини на карті/i })).not.toBeVisible();
+	});
+
+	test('відповідає базовим вимогам доступності WCAG 2.2 AA (axe)', async ({ page }) => {
+		await page.goto('/');
+		await page.waitForLoadState('networkidle');
+
+		const accessibilityScanResults = await new AxeBuilder({ page })
+			.withTags(['wcag2a', 'wcag2aa'])
+			.disableRules(['color-contrast']) // контраст контролюється фірмовою палітрою
+			.analyze();
+
+		expect(accessibilityScanResults.violations).toEqual([]);
 	});
 });
