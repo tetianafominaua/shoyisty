@@ -1,7 +1,7 @@
 ---
 Назва: Контекст проєкту «Галя Балувана — Шпаргалка меню на тиждень»
 Канон: selection_criteria/v10 та product_criteria/v10
-Дата оновлення: 2026-11-14
+Дата оновлення: 2026-11-15
 ---
 
 # Контекст проєкту: Шпаргалка меню на тиждень («Галя Балувана»)
@@ -11,15 +11,17 @@
 > [!NOTE]
 > Цей документ є архітектурним компасом та єдиним джерелом правди (Single Source of Truth) для розробників та автономних AI-агентів.
 
-| Параметр / Інваріант    | Значення                                                                  | Локація у коді / Примітка              |
-| :---------------------- | :------------------------------------------------------------------------ | :------------------------------------- |
-| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript + Vanilla CSS Tokens | `package.json`, `src/app.css`          |
-| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)              | `.github/workflows/deploy.yml`         |
-| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                         | `vite.config.ts`                       |
-| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)  | `package.json` (`imports`)             |
-| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_`                            | `src/lib/stores/planner.svelte.ts`     |
-| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                     | `src/lib/stores/planner.svelte.ts`     |
-| **Контроль якості**     | ESLint 10 + Prettier 3 + svelte-check + Vitest + Playwright               | `eslint.config.js`, `vitest.config.ts` |
+| Параметр / Інваріант    | Значення                                                                        | Локація у коді / Примітка              |
+| :---------------------- | :------------------------------------------------------------------------------ | :------------------------------------- |
+| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript 6 + Vanilla CSS            | `package.json`, `src/app.css`          |
+| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)                    | `.github/workflows/deploy.yml`         |
+| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                               | `vite.config.ts`                       |
+| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)        | `package.json` (`imports`)             |
+| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_`                                  | `src/lib/stores/planner.svelte.ts`     |
+| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                           | `src/lib/stores/planner.svelte.ts`     |
+| **Error Boundary**      | `<svelte:boundary>` + `ErrorFallback.svelte` + `hooks.client.ts`                | `src/routes/+layout.svelte`            |
+| **Контроль якості**     | ESLint 10 + Prettier 3 + svelte-check + Vitest + Playwright                     | `eslint.config.js`, `vitest.config.ts` |
+| **Архітектурні ADR**    | [ADR 0001: Local-First Architecture](docs/adr/0001-local-first-architecture.md) | `docs/adr/`                            |
 
 ---
 
@@ -80,14 +82,31 @@
 
 ---
 
-## 5. Матриця перевірок якості коду
+## 5. Обробка помилок та Error Boundaries (ERROR-HANDLING-v10)
+
+- **Межа помилок Svelte 5 (`<svelte:boundary>`)**: Усі компоненти сторінки в `src/routes/+layout.svelte` огорнуті в `<svelte:boundary>`. У разі збою рендерингу відображається `ErrorFallback.svelte`.
+- **Захист від застарілих чанків (`hooks.client.ts`)**: При виявленні клієнтських помилок завантаження модулів після нового релізу здійснюється одноразове автоматичне оновлення сторінки (`sessionStorage.getItem('shoyisty_chunk_reload')`).
+- **Сторінка 404 / помилок (`src/routes/+error.svelte`)**: Фірмовий екран зі збереженням тем і навігацією повернення на головну сторінку.
+
+---
+
+## 6. Безпека (SECURITY-v10)
+
+- **Заборона сирого `{@html}`**: Заборонено небезпечне рендерення без санітизації. Контролюється автоматичним тестом `src/security.test.ts`.
+- **Ізоляція ключів сховища**: Сувора перевірка простору імен `galya_` для запобігання конфліктам на спільному origin.
+- **Аудит залежностей**: Регулярний CI-скрипт `npm run audit:ci` перевіряє дерево npm-залежностей на наявність відомих вразливостей.
+
+---
+
+## 7. Матриця перевірок якості коду (CODE-QUALITY-v10)
 
 Кожна зміна у репозиторії повинна проходити повний цикл верифікації без помилок:
 
-| Команда          | Опис перевірки                                         |
-| :--------------- | :----------------------------------------------------- |
-| `npm run check`  | Сувора перевірка типів TypeScript та синтаксису Svelte |
-| `npm run lint`   | Перевірка стилю Prettier та статичного аналізу ESLint  |
-| `npm run format` | Автоматичне виправлення форматування коду              |
-| `npm test`       | Запуск повного набору unit-тестів Vitest               |
-| `npm run build`  | Збірка релізного production-пакета у папку `build/`    |
+| Команда               | Опис перевірки                                         |
+| :-------------------- | :----------------------------------------------------- |
+| `npm run check`       | Сувора перевірка типів TypeScript та синтаксису Svelte |
+| `npm run lint`        | Перевірка стилю Prettier та статичного аналізу ESLint  |
+| `npm run format`      | Автоматичне виправлення форматування коду              |
+| `npm test`            | Запуск повного набору unit-тестів Vitest               |
+| `npm run build`       | Збірка релізного production-пакета у папку `build/`    |
+| `npm run check:build` | Валідація згенерованих артефактів збірки               |

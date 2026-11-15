@@ -2,6 +2,7 @@
 	"extends": "$app/tsconfig",
 	"compilerOptions": {
 		"strict": true,
+		"noImplicitReturns": true,
 		"skipLibCheck": true,
 		"paths": {
 			"#lib": ["./src/lib/index.js"],

@@ -3,23 +3,27 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 describe('Security Baseline (SECURITY-v10)', () => {
-	it('забороняє використання несанітизованого сирого {@html} у компонентах Svelte', () => {
-		function scanDir(dir: string, fileList: string[] = []): string[] {
-			const files = readdirSync(dir);
-			for (const file of files) {
-				const fullPath = join(dir, file);
-				if (statSync(fullPath).isDirectory()) {
-					if (!fullPath.includes('node_modules') && !fullPath.includes('.svelte-kit')) {
-						scanDir(fullPath, fileList);
-					}
-				} else if (file.endsWith('.svelte')) {
-					fileList.push(fullPath);
+	function scanDir(dir: string, fileList: string[] = []): string[] {
+		const files = readdirSync(dir);
+		for (const file of files) {
+			const fullPath = join(dir, file);
+			if (statSync(fullPath).isDirectory()) {
+				if (
+					!fullPath.includes('node_modules') &&
+					!fullPath.includes('.svelte-kit') &&
+					!fullPath.includes('build')
+				) {
+					scanDir(fullPath, fileList);
 				}
+			} else if (file.endsWith('.svelte') || file.endsWith('.ts')) {
+				fileList.push(fullPath);
 			}
-			return fileList;
 		}
+		return fileList;
+	}
 
-		const svelteFiles = scanDir('src');
+	it('забороняє використання несанітизованого сирого {@html} у компонентах Svelte', () => {
+		const svelteFiles = scanDir('src').filter((f) => f.endsWith('.svelte'));
 		expect(svelteFiles.length).toBeGreaterThan(0);
 
 		for (const file of svelteFiles) {
@@ -31,6 +35,16 @@ describe('Security Baseline (SECURITY-v10)', () => {
 					expect(match).not.toMatch(/user|input|query|url|search/i);
 				}
 			}
+		}
+	});
+
+	it('забороняє використання eval, new Function та document.write у вихідному коді', () => {
+		const sourceFiles = scanDir('src').filter((f) => !f.includes('.test.ts'));
+		for (const file of sourceFiles) {
+			const content = readFileSync(file, 'utf8');
+			expect(content).not.toMatch(/\beval\s*\(/);
+			expect(content).not.toMatch(/\bnew\s+Function\s*\(/);
+			expect(content).not.toMatch(/\bdocument\.write\s*\(/);
 		}
 	});
 
