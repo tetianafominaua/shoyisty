@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import type { Snippet } from 'svelte';
+	import ErrorFallback from '#lib/components/ErrorFallback.svelte';
 
 	let { children }: { children: Snippet } = $props();
 </script>
@@ -9,4 +10,9 @@
 	<title>Галя Балувана — Планувальник меню на тиждень</title>
 </svelte:head>
 
-{@render children()}
+<svelte:boundary>
+	{@render children()}
+	{#snippet failed(error, reset)}
+		<ErrorFallback {error} {reset} />
+	{/snippet}
+</svelte:boundary>
