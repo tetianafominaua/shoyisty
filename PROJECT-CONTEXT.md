@@ -11,18 +11,19 @@
 > [!NOTE]
 > Цей документ є архітектурним компасом та єдиним джерелом правди (Single Source of Truth) для розробників та автономних AI-агентів.
 
-| Параметр / Інваріант    | Значення                                                                        | Локація у коді / Примітка                  |
-| :---------------------- | :------------------------------------------------------------------------------ | :----------------------------------------- |
-| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript 6 + Vanilla CSS            | `package.json`, `src/app.css`              |
-| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)                    | `.github/workflows/deploy.yml`             |
-| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                               | `vite.config.ts`                           |
-| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)        | `package.json` (`imports`)                 |
-| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_`                                  | `src/lib/stores/planner.svelte.ts`         |
-| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                           | `src/lib/stores/planner.svelte.ts`         |
-| **Error Boundary**      | `<svelte:boundary>` + `ErrorFallback.svelte` + `hooks.client.ts`                | `src/routes/+layout.svelte`                |
-| **Безпека & CSP**       | Content-Security-Policy (sha256 hash mode) + Schema.org JsonLd sanitization     | `vite.config.ts`, `src/lib/security/`      |
-| **Контроль якості**     | 25 Vitest unit-тестів + Playwright E2E з @axe-core/playwright WCAG 2.2 AA       | `eslint.config.js`, `playwright.config.ts` |
-| **Архітектурні ADR**    | [ADR 0001: Local-First Architecture](docs/adr/0001-local-first-architecture.md) | `docs/adr/`                                |
+| Параметр / Інваріант    | Значення                                                                         | Локація у коді / Примітка                  |
+| :---------------------- | :------------------------------------------------------------------------------- | :----------------------------------------- |
+| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript 6 + Vanilla CSS             | `package.json`, `src/app.css`              |
+| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)                     | `.github/workflows/deploy.yml`             |
+| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                                | `vite.config.ts`                           |
+| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)         | `package.json` (`imports`)                 |
+| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_` (STORAGE-NAMESPACE-v10)           | `src/lib/stores/planner.svelte.ts`         |
+| **Портативність даних** | Сервіс експорту/імпорту JSON бекапів для масштабування між пристроями            | `src/lib/services/backup.ts`               |
+| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                            | `src/lib/stores/planner.svelte.ts`         |
+| **Error Boundary**      | `<svelte:boundary>` + `ErrorFallback.svelte` + `hooks.client.ts`                 | `src/routes/+layout.svelte`                |
+| **Безпека & CSP**       | Content-Security-Policy (sha256 hash mode) + Schema.org JsonLd sanitization      | `vite.config.ts`, `src/lib/security/`      |
+| **Контроль якості**     | 30+ Vitest unit-тестів у 8 тестових файлах + Playwright E2E з @axe-core WCAG 2.2 | `eslint.config.js`, `playwright.config.ts` |
+| **Архітектурні ADR**    | [ADR 0001: Local-First Architecture](docs/adr/0001-local-first-architecture.md)  | `docs/adr/`                                |
 
 ---
 
@@ -80,6 +81,8 @@
    - Автоматично множить потребу у порціях на коефіцієнт розміру родини (`familySize / servingsPerPack`).
    - Округлює кількість упаковок у більшу сторону (`Math.ceil`).
    - Супутні продукти агрегує без повторів: грами конвертує в кілограми при $\ge 1000$ г, мілілітри — у літри, для штук використовує правильні форми множини (`1 пачка`, `2 пачки`, `5 пачок`).
+4. **Масштабованість та експорт (`src/lib/services/backup.ts`):**
+   - Дозволяє експортувати поточне меню та список покупок у JSON-файл та імпортувати його на будь-якому іншому пристрої без потреби в хмарній реєстрації.
 
 ---
 
@@ -91,9 +94,9 @@
 
 ---
 
-## 6. Безпека (SECURITY-v10)
+## 6. Безпека (SECURITY-v10 & CSP-v10)
 
-- **Content-Security-Policy (CSP) sha256**: У `vite.config.ts` налаштовано режим `mode: 'hash'`, що блокує несанкціоновані зовнішні скрипти, підключення та форми (`form-action: none`, `base-uri: self`). Інваріант контролюється тестом `src/csp.test.ts`.
+- **Content-Security-Policy (CSP) sha256**: У `vite.config.ts` налаштовано режим `mode: 'hash'`, що блокує несанкціоновані зовнішні скрипти, підключення та форми (`form-action: none`, `base-uri: self`, `frame-ancestors: none`). Інваріант контролюється тестом `src/csp.test.ts`.
 - **Безпечна санітизація Schema.org (`jsonLdScript`)**: Екранування символів `<`, `>`, `&` та Unicode-розділювачів у `src/lib/security/jsonLd.ts` запобігає XSS-атакам через JSON-LD розмітку.
 - **Заборона сирого `{@html}`**: Заборонено небезпечне рендерення без санітизації. Контролюється автоматичним тестом `src/security.test.ts`.
 - **Ізоляція ключів сховища**: Сувора перевірка простору імен `galya_` для запобігання конфліктам на спільному origin.
@@ -101,16 +104,44 @@
 
 ---
 
-## 7. Матриця перевірок якості коду (CODE-QUALITY-v10)
+## 7. Доступність (ACCESSIBILITY-v10)
 
-Кожна зміна у репозиторії повинна проходити повний цикл верифікації без помилок:
+- **ARIA Live Region**: Сторінка транслює сповіщення тостів та зміни меню в прихований блок `role="status"` `aria-live="polite"`.
+- **Фокус та клавіатура**: Усі интерактивні картки та кнопки мають доступний фокус `:focus-visible` із контрастним контуром 2px.
+- **WCAG 2.2 AA**: Автоматизовані E2E тести Playwright використовують `@axe-core/playwright` для перевірки колірного контрасту та доступності розмітки.
 
-| Команда               | Опис перевірки                                                     |
-| :-------------------- | :----------------------------------------------------------------- |
-| `npm run check`       | Сувора перевірка типів TypeScript та синтаксису Svelte             |
-| `npm run lint`        | Перевірка стилю Prettier та статичного аналізу ESLint              |
-| `npm run format`      | Автоматичне виправлення форматування коду                          |
-| `npm test`            | Запуск повного набору unit-тестів Vitest (25 тестів у 6 файлах)    |
-| `npm run test:e2e`    | Playwright E2E тести з валідацією доступності @axe-core/playwright |
-| `npm run build`       | Збірка релізного production-пакета у папку `build/`                |
-| `npm run check:build` | Валідація згенерованих артефактів збірки                           |
+---
+
+## 8. Матриця перевірок якості коду (CODE-QUALITY-v10)
+
+| Команда               | Гейт canon.json   | Опис перевірки                                                                        |
+| :-------------------- | :---------------- | :------------------------------------------------------------------------------------ |
+| `npm run check`       | GATE-SVELTE-CHECK | Сувора перевірка типів TypeScript та синтаксису Svelte                                |
+| `npm run lint`        | GATE-ESLINT       | Перевірка стилю Prettier та статичного аналізу ESLint Flat Config                     |
+| `npm run format`      | —                 | Автоматичне виправлення форматування коду                                             |
+| `npm test`            | GATE-TEST-RUNNERS | Запуск повного набору unit-тестів Vitest (30+ тестів у 8 тестових файлах)             |
+| `npm run test:unit`   | GATE-TEST-RUNNERS | Модульні перевірки калькулятора, наборів страв, бекапів, CSP, безпеки та структури    |
+| `npm run test:e2e`    | GATE-A11Y-AXE     | Playwright E2E тести з повною валідацією доступності @axe-core/playwright WCAG 2.2 AA |
+| `npm run build`       | GATE-BUILD-OUTPUT | Збірка релізного production-пакета у папку `build/`                                   |
+| `npm run check:build` | GATE-BUILD-OUTPUT | Валідація згенерованих артефактів збірки та sitemap                                   |
+| `npm run audit:ci`    | GATE-AUDIT        | Аудит безпеки npm-залежностей на наявність відомих вразливостей                       |
+
+---
+
+## 9. Прийняті рішення (Decisions)
+
+| Питання                 | Обрано                                            | Причина                                                                                   | Дата       |
+| :---------------------- | :------------------------------------------------ | :---------------------------------------------------------------------------------------- | :--------- |
+| **Архітектура сховища** | Local-First (localStorage)                        | Забезпечення 100% приватності користувача та миттєвої роботи без обов'язкової авторизації | 2026-10-27 |
+| **Портативність даних** | JSON Import/Export (`src/lib/services/backup.ts`) | Дозволяє користувачеві переносити складене меню між смартфонами та комп'ютерами           | 2026-11-15 |
+| **Географія аудиторії** | Одеса та м. Південне                              | Специфіка фізичної присутності цехів ручної ліпки «Галя Балувана»                         | 2026-10-27 |
+| **Імпорти модулів**     | Node Subpath `#lib/*`                             | Сучасний стандарт модульності SvelteKit 3 / Node ESM                                      | 2026-10-27 |
+
+---
+
+## 10. Свідомі відхилення від канону
+
+1. **Одномовний інтерфейс українською мовою**:
+   - _Причина_: Цільовою аудиторією є виключно покупці одеських фірмових магазинів «Галя Балувана», тому англомовна локалізація не додавалася задля оптимізації розміру бандла та максимальної швидкості завантаження на мобільних пристроях.
+2. **Відсутність віддаленого сервера аутентифікації**:
+   - _Причина_: Проєкт спроєктовано як приватну утиліту-шпаргалку для господинь; відсутність бази даних на бекенді виключає витік особистих даних або смакових уподобань.

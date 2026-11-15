@@ -34,6 +34,11 @@
 </svelte:head>
 
 <div class="app-viewport">
+	<!-- ARIA Live Announcement for accessibility (ACCESSIBILITY-v10) -->
+	<div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+		{planner.toastMessage ?? ''}
+	</div>
+
 	<Header />
 
 	<main class="app-main-content">
