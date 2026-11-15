@@ -142,4 +142,60 @@ describe('PlannerStore — business logic & cart calculation', () => {
 			expect(true).toBe(true);
 		}
 	});
+
+	it("валідує всі дозволені розміри сім'ї (від 1 до 5)", () => {
+		for (const size of [1, 2, 3, 4, 5] as const) {
+			planner.setFamilySize(size);
+			expect(planner.familySize).toBe(size);
+			const cart = planner.getCartGrouped();
+			expect(cart.familySize).toBe(size);
+		}
+	});
+
+	it('коректно акумулює кількість однакових страв, обраних у різні дні', () => {
+		const dish = DISHES[0];
+		expect(dish).toBeDefined();
+
+		// Ставимо ту саму страву на понеділок і середу
+		planner.setDish('monday', 'lunch', dish.id);
+		planner.setDish('wednesday', 'lunch', dish.id);
+
+		expect(planner.totalDishesCount).toBe(2);
+
+		const cart = planner.getCartGrouped();
+		if (dish.galyaProduct) {
+			const item = cart.galyaItems.find((i) => i.product.name === dish.galyaProduct?.name);
+			expect(item).toBeDefined();
+			expect(item?.occurrences).toBe(2);
+			expect(item?.dishesNames.length).toBeGreaterThanOrEqual(1);
+		}
+	});
+
+	it('дозволяє заповнити всі 21 слот тижня без помилок', () => {
+		const dish = DISHES[0];
+		const days = [
+			'monday',
+			'tuesday',
+			'wednesday',
+			'thursday',
+			'friday',
+			'saturday',
+			'sunday'
+		] as const;
+		const meals = ['breakfast', 'lunch', 'dinner'] as const;
+
+		for (const day of days) {
+			for (const meal of meals) {
+				planner.setDish(day, meal, dish.id);
+			}
+		}
+
+		expect(planner.totalDishesCount).toBe(21);
+		for (const day of days) {
+			expect(planner.getDayDishesCount(day)).toBe(3);
+		}
+
+		const cart = planner.getCartGrouped();
+		expect(cart.totalGalyaUnits).toBeGreaterThan(0);
+	});
 });

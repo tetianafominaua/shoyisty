@@ -12,3 +12,10 @@
 - Каса / телефон замовлень: +38 050 611 85 70
 - Офіційний сайт франшизи: https://galya-baluvana.ps.me/
 - Instagram: @galyabaluvana_odesa
+
+## Технічні можливості та архітектура
+- Стек: SvelteKit 3 + Svelte 5 (Runes) + TypeScript 6 + Vanilla CSS токени
+- Local-First: автономна робота без сервера, збереження меню у localStorage (префікс `galya_planner_*`)
+- Розрахунок кошика: автоматичне множення на розмір родини (1..5 осіб) з розділенням списків покупок
+- Безпека: Content-Security-Policy (sha256 хешування), санітизація Schema.org, захист від XSS
+- Тестування: Vitest unit-тести + Playwright e2e з валідацією доступності WCAG 2.2 AA (@axe-core/playwright)

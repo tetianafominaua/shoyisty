@@ -11,17 +11,18 @@
 > [!NOTE]
 > Цей документ є архітектурним компасом та єдиним джерелом правди (Single Source of Truth) для розробників та автономних AI-агентів.
 
-| Параметр / Інваріант    | Значення                                                                        | Локація у коді / Примітка              |
-| :---------------------- | :------------------------------------------------------------------------------ | :------------------------------------- |
-| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript 6 + Vanilla CSS            | `package.json`, `src/app.css`          |
-| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)                    | `.github/workflows/deploy.yml`         |
-| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                               | `vite.config.ts`                       |
-| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)        | `package.json` (`imports`)             |
-| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_`                                  | `src/lib/stores/planner.svelte.ts`     |
-| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                           | `src/lib/stores/planner.svelte.ts`     |
-| **Error Boundary**      | `<svelte:boundary>` + `ErrorFallback.svelte` + `hooks.client.ts`                | `src/routes/+layout.svelte`            |
-| **Контроль якості**     | ESLint 10 + Prettier 3 + svelte-check + Vitest + Playwright                     | `eslint.config.js`, `vitest.config.ts` |
-| **Архітектурні ADR**    | [ADR 0001: Local-First Architecture](docs/adr/0001-local-first-architecture.md) | `docs/adr/`                            |
+| Параметр / Інваріант    | Значення                                                                        | Локація у коді / Примітка                  |
+| :---------------------- | :------------------------------------------------------------------------------ | :----------------------------------------- |
+| **Стек**                | SvelteKit 3 + Svelte 5 (виключно Runes) + TypeScript 6 + Vanilla CSS            | `package.json`, `src/app.css`              |
+| **Хостинг**             | GitHub Pages (`https://tetianafominaua.github.io/shoyisty/`)                    | `.github/workflows/deploy.yml`             |
+| **Профіль розгортання** | `@sveltejs/adapter-static` (fallback: `404.html`)                               | `vite.config.ts`                           |
+| **Імпорти модулів**     | Субпатч-імпорти Node/SvelteKit: `#lib/*` (заборонено застаріле `$lib/*`)        | `package.json` (`imports`)                 |
+| **Сховище даних**       | Local-First (`localStorage`), префікс `galya_`                                  | `src/lib/stores/planner.svelte.ts`         |
+| **Реактивне ядро**      | `PlannerStore` (Svelte 5 class: `$state`, `$derived`)                           | `src/lib/stores/planner.svelte.ts`         |
+| **Error Boundary**      | `<svelte:boundary>` + `ErrorFallback.svelte` + `hooks.client.ts`                | `src/routes/+layout.svelte`                |
+| **Безпека & CSP**       | Content-Security-Policy (sha256 hash mode) + Schema.org JsonLd sanitization     | `vite.config.ts`, `src/lib/security/`      |
+| **Контроль якості**     | 25 Vitest unit-тестів + Playwright E2E з @axe-core/playwright WCAG 2.2 AA       | `eslint.config.js`, `playwright.config.ts` |
+| **Архітектурні ADR**    | [ADR 0001: Local-First Architecture](docs/adr/0001-local-first-architecture.md) | `docs/adr/`                                |
 
 ---
 
@@ -92,6 +93,8 @@
 
 ## 6. Безпека (SECURITY-v10)
 
+- **Content-Security-Policy (CSP) sha256**: У `vite.config.ts` налаштовано режим `mode: 'hash'`, що блокує несанкціоновані зовнішні скрипти, підключення та форми (`form-action: none`, `base-uri: self`). Інваріант контролюється тестом `src/csp.test.ts`.
+- **Безпечна санітизація Schema.org (`jsonLdScript`)**: Екранування символів `<`, `>`, `&` та Unicode-розділювачів у `src/lib/security/jsonLd.ts` запобігає XSS-атакам через JSON-LD розмітку.
 - **Заборона сирого `{@html}`**: Заборонено небезпечне рендерення без санітизації. Контролюється автоматичним тестом `src/security.test.ts`.
 - **Ізоляція ключів сховища**: Сувора перевірка простору імен `galya_` для запобігання конфліктам на спільному origin.
 - **Аудит залежностей**: Регулярний CI-скрипт `npm run audit:ci` перевіряє дерево npm-залежностей на наявність відомих вразливостей.
@@ -102,11 +105,12 @@
 
 Кожна зміна у репозиторії повинна проходити повний цикл верифікації без помилок:
 
-| Команда               | Опис перевірки                                         |
-| :-------------------- | :----------------------------------------------------- |
-| `npm run check`       | Сувора перевірка типів TypeScript та синтаксису Svelte |
-| `npm run lint`        | Перевірка стилю Prettier та статичного аналізу ESLint  |
-| `npm run format`      | Автоматичне виправлення форматування коду              |
-| `npm test`            | Запуск повного набору unit-тестів Vitest               |
-| `npm run build`       | Збірка релізного production-пакета у папку `build/`    |
-| `npm run check:build` | Валідація згенерованих артефактів збірки               |
+| Команда               | Опис перевірки                                                     |
+| :-------------------- | :----------------------------------------------------------------- |
+| `npm run check`       | Сувора перевірка типів TypeScript та синтаксису Svelte             |
+| `npm run lint`        | Перевірка стилю Prettier та статичного аналізу ESLint              |
+| `npm run format`      | Автоматичне виправлення форматування коду                          |
+| `npm test`            | Запуск повного набору unit-тестів Vitest (25 тестів у 6 файлах)    |
+| `npm run test:e2e`    | Playwright E2E тести з валідацією доступності @axe-core/playwright |
+| `npm run build`       | Збірка релізного production-пакета у папку `build/`                |
+| `npm run check:build` | Валідація згенерованих артефактів збірки                           |
