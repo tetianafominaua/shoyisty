@@ -141,28 +141,47 @@
 			{@const dishIds = dayPlan ? (dayPlan[meal.key] ?? []) : []}
 
 			<div class="meal-slot-group">
-				<div class="meal-slot-header">
-					<div class="slot-title-left">
-						<span class="slot-icon-box">
-							{@render mealIcon(meal.key, 18)}
+				{#if dishIds.length === 0}
+					<!-- Single clean clickable row for empty meal slot -->
+					<button
+						type="button"
+						class="meal-slot-empty-row"
+						onclick={() => openDishPicker(meal.key)}
+						aria-label="Додати {meal.label}"
+					>
+						<div class="slot-title-left">
+							<span class="slot-icon-box">
+								{@render mealIcon(meal.key, 18)}
+							</span>
+							<span class="slot-name">{meal.label}</span>
+						</div>
+
+						<span class="add-meal-icon-circle">
+							<Plus size={18} strokeWidth={2.5} />
 						</span>
-						<span class="slot-name">{meal.label}</span>
-						{#if dishIds.length > 0}
+					</button>
+				{:else}
+					<!-- Header for meal slot with dishes -->
+					<div class="meal-slot-header">
+						<div class="slot-title-left">
+							<span class="slot-icon-box">
+								{@render mealIcon(meal.key, 18)}
+							</span>
+							<span class="slot-name">{meal.label}</span>
 							<span class="slot-count-badge">{dishIds.length}</span>
-						{/if}
+						</div>
+
+						<button
+							type="button"
+							class="add-meal-icon-btn"
+							onclick={() => openDishPicker(meal.key)}
+							aria-label="Додати до {meal.label}"
+							title="Додати страву"
+						>
+							<Plus size={18} strokeWidth={2.5} />
+						</button>
 					</div>
 
-					<button
-						class="add-meal-icon-btn"
-						onclick={() => openDishPicker(meal.key)}
-						aria-label="Додати до {meal.label}"
-						title="Додати страву"
-					>
-						<Plus size={18} strokeWidth={2.5} />
-					</button>
-				</div>
-
-				{#if dishIds.length > 0}
 					<div class="meal-dishes-stack">
 						{#each dishIds as dishId, idx (`${dishId}-${idx}`)}
 							{@const dish = planner.getDish(dishId)}
@@ -210,20 +229,7 @@
 								</div>
 							{/if}
 						{/each}
-
-						<button class="add-another-dish-btn" onclick={() => openDishPicker(meal.key)}>
-							<Plus size={15} strokeWidth={2.4} />
-							<span>+ Додати ще страву</span>
-						</button>
 					</div>
-				{:else}
-					<!-- Empty Slot Button -->
-					<button class="empty-slot-card" onclick={() => openDishPicker(meal.key)}>
-						<span class="empty-plus-circle">
-							<Plus size={16} strokeWidth={2.5} />
-						</span>
-						<span class="empty-slot-text">{t('week.addDish', locale)}</span>
-					</button>
 				{/if}
 			</div>
 		{/each}
@@ -544,7 +550,7 @@
 	.meal-slots-column {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 12px;
 	}
 
 	.meal-slot-group {
@@ -553,11 +559,37 @@
 		gap: 8px;
 	}
 
+	.meal-slot-empty-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 14px;
+		background: #ffffff;
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-lg);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+		cursor: pointer;
+		width: 100%;
+		text-align: left;
+		transition: all var(--transition-fast);
+	}
+
+	.meal-slot-empty-row:hover {
+		border-color: var(--color-brand-primary);
+		background: #f0fdf4;
+	}
+
+	.meal-slot-empty-row:hover .add-meal-icon-circle {
+		background: var(--color-brand-primary);
+		border-color: var(--color-brand-primary);
+		color: #ffffff;
+	}
+
 	.meal-slot-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 4px;
+		padding: 4px 6px;
 	}
 
 	.slot-title-left {
@@ -593,28 +625,7 @@
 		gap: 10px;
 	}
 
-	.add-another-dish-btn {
-		background: #ffffff;
-		border: 1.5px dashed #cbd5e1;
-		border-radius: var(--radius-md);
-		padding: 10px 14px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 6px;
-		font-size: 13px;
-		font-weight: 700;
-		color: #475569;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.add-another-dish-btn:hover {
-		background: #f0fdf4;
-		border-color: var(--color-brand-primary);
-		color: var(--color-brand-primary);
-	}
-
+	.add-meal-icon-circle,
 	.add-meal-icon-btn {
 		width: 32px;
 		height: 32px;
@@ -753,43 +764,6 @@
 		margin-left: auto;
 		color: #94a3b8;
 		font-size: 11px;
-	}
-
-	/* Empty Slot Button */
-	.empty-slot-card {
-		border: 1.5px dashed #cbd5e1;
-		background: #fafaf9;
-		border-radius: var(--radius-lg);
-		padding: 16px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.empty-slot-card:hover {
-		background: #f0fdf4;
-		border-color: var(--color-brand-primary);
-	}
-
-	.empty-plus-circle {
-		width: 26px;
-		height: 26px;
-		border-radius: 50%;
-		background: #ffffff;
-		border: 1px solid #cbd5e1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #64748b;
-	}
-
-	.empty-slot-text {
-		font-size: 13px;
-		font-weight: 700;
-		color: #64748b;
 	}
 
 	/* Quick Sets Section */
