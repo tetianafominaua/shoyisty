@@ -47,6 +47,13 @@ export const MEALS_LIST: MealInfo[] = [
 		icon: 'utensils',
 		suggestedTime: '18:30 - 20:30',
 		description: 'Затишна сімейна вечеря без втоми та гори брудного посуду'
+	},
+	{
+		key: 'snack',
+		label: 'Перекус',
+		icon: 'cookie',
+		suggestedTime: '16:00 - 17:30',
+		description: 'Смачний перекус: млинчики, десерти або легкі страви'
 	}
 ];
 

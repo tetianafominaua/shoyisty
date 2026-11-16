@@ -1,58 +1,47 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
+	import { getFamilySizeLabel } from '#lib/data/constants';
+	import { t } from '#lib/i18n/translations';
+	import Users from '@lucide/svelte/icons/users';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+
+	const locale = $derived(planner.locale);
+	const familySize = $derived(planner.familySize);
 
 	function handleBack() {
 		if (planner.activeTab === 'sets' && planner.selectedSetId) {
 			planner.selectedSetId = null;
 		} else {
-			planner.activeTab = 'home';
+			planner.activeTab = 'week';
 		}
 	}
-
-	const screenTitle = $derived.by(() => {
-		if (planner.activeTab === 'sets') {
-			return planner.selectedSetId ? 'Деталі набору' : 'Готові набори';
-		}
-		if (planner.activeTab === 'week') return 'На тиждень';
-		if (planner.activeTab === 'cart') return 'Список покупок';
-		return '';
-	});
 </script>
 
-<header class="app-header" class:is-home={planner.activeTab === 'home'}>
-	{#if planner.activeTab === 'home'}
-		<!-- Minimalist Home Header -->
-		<div class="home-brand-bar">
-			<h1 class="home-header-title">Шпаргалка, щоб не ламати голову</h1>
-		</div>
-	{:else}
-		<!-- Clean Subpage Top Navigation Bar -->
-		<div class="subpage-nav-bar animate-fade-in">
-			<button class="nav-back-btn" onclick={handleBack} aria-label="Назад">
+<header class="app-header">
+	<div class="header-inner">
+		{#if planner.activeTab === 'sets' && planner.selectedSetId}
+			<button class="nav-back-btn" onclick={handleBack} aria-label="Назад до наборів">
 				<ArrowLeft size={16} />
-				<span class="back-text">Назад</span>
+				<span>{t('common.back', locale)}</span>
 			</button>
-
-			<h2 class="subpage-title">{screenTitle}</h2>
-
-			<div class="nav-right-slot">
-				{#if planner.activeTab !== 'cart' && planner.totalDishesCount > 0}
-					<button
-						class="mini-cart-pill"
-						onclick={() => (planner.activeTab = 'cart')}
-						aria-label="Переглянути кошик"
-					>
-						<ShoppingCart size={14} />
-						<span class="mini-cart-num">{planner.totalDishesCount}</span>
-					</button>
-				{:else}
-					<div class="nav-spacer"></div>
-				{/if}
+		{:else}
+			<div class="brand-block">
+				<h1 class="brand-title">Галя Балувана</h1>
+				<span class="brand-badge">Меню на кожен день</span>
 			</div>
+		{/if}
+
+		<div class="header-right-slot">
+			<button
+				class="family-quick-pill"
+				onclick={() => (planner.activeTab = 'settings')}
+				title="Змінити розмір родини в налаштуваннях"
+			>
+				<Users size={14} color="var(--color-brand-primary)" />
+				<span>{getFamilySizeLabel(familySize)}</span>
+			</button>
 		</div>
-	{/if}
+	</div>
 </header>
 
 <style>
@@ -60,104 +49,74 @@
 		position: sticky;
 		top: 0;
 		z-index: 40;
-		background: rgba(255, 255, 255, 0.95);
+		background: rgba(255, 255, 255, 0.94);
 		backdrop-filter: blur(14px);
 		-webkit-backdrop-filter: blur(14px);
 		border-bottom: 1px solid var(--border-subtle);
-		padding: 12px 18px;
+		padding: 10px 16px;
 	}
 
-	.app-header.is-home {
-		padding: 14px 20px;
-	}
-
-	/* Home Brand Bar */
-	.home-brand-bar {
+	.header-inner {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		text-align: center;
+		justify-content: space-between;
+		max-width: 600px;
+		margin: 0 auto;
 	}
 
-	.home-header-title {
-		font-size: 15px;
+	.brand-block {
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+	}
+
+	.brand-title {
+		font-family: var(--font-display, inherit);
+		font-size: 17px;
 		font-weight: 800;
 		color: var(--color-brand-primary);
 		letter-spacing: -0.01em;
 		margin: 0;
-		line-height: 1.25;
+		line-height: 1.2;
 	}
 
-	/* Subpage Top Bar */
-	.subpage-nav-bar {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+	.brand-badge {
+		font-size: 11px;
+		color: #94a3b8;
+		font-weight: 600;
 	}
 
 	.nav-back-btn {
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
-		background: var(--bg-surface-alt);
+		background: #f1f5f9;
 		border: 1px solid var(--border-subtle);
 		border-radius: var(--radius-full);
-		padding: 7px 14px;
-		font-size: 13px;
+		padding: 6px 12px;
+		font-size: 12px;
 		font-weight: 700;
 		color: var(--color-brand-primary);
 		cursor: pointer;
-		transition: all var(--transition-fast);
 	}
 
-	.nav-back-btn:hover {
-		background: #eae3d4;
-		border-color: #d4ccbd;
-	}
-
-	.subpage-title {
-		font-size: 16px;
-		font-weight: 800;
-		color: var(--text-main);
-		margin: 0;
-		text-align: center;
-	}
-
-	.nav-right-slot {
-		min-width: 60px;
-		display: flex;
-		justify-content: flex-end;
-	}
-
-	.nav-spacer {
-		width: 32px;
-	}
-
-	.mini-cart-pill {
+	.family-quick-pill {
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
-		background: #ecfdf5;
-		border: 1px solid #a7f3d0;
+		background: #f0fdf4;
+		border: 1px solid #bbf7d0;
 		color: var(--color-brand-primary);
-		padding: 6px 12px;
+		padding: 5px 10px;
 		border-radius: var(--radius-full);
 		font-size: 12px;
-		font-weight: 800;
+		font-weight: 700;
 		cursor: pointer;
 		transition: all var(--transition-fast);
 	}
 
-	.mini-cart-pill:hover {
-		background: #d1fae5;
-		transform: scale(1.03);
-	}
-
-	.mini-cart-num {
-		background: var(--color-brand-primary);
-		color: #ffffff;
-		border-radius: 10px;
-		padding: 1px 6px;
-		font-size: 10px;
+	.family-quick-pill:hover {
+		background: #dcfce7;
+		transform: translateY(-1px);
 	}
 </style>

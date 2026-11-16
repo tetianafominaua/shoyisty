@@ -5,7 +5,9 @@ import type {
 	Dish,
 	FamilySize,
 	ReadyMadeSet,
-	ShoppingCartGrouped
+	ShoppingCartGrouped,
+	ActiveTab,
+	AppLocale
 } from '#lib/types';
 import { DISHES } from '#lib/data/dishes';
 import { READY_MADE_SETS } from '#lib/data/sets';
@@ -16,16 +18,18 @@ const STORAGE_KEY_SET = 'galya_planner_set_v1';
 const STORAGE_KEY_CHECKED = 'galya_planner_checked_v1';
 const STORAGE_KEY_FAMILY = 'galya_planner_family_v1';
 const STORAGE_KEY_OVERRIDES = 'galya_planner_pack_overrides_v1';
+const STORAGE_KEY_FAVORITES = 'galya_planner_favorites_v1';
+const STORAGE_KEY_LOCALE = 'galya_planner_locale_v1';
 
 function createEmptyWeek(): WeekPlan {
 	return {
-		monday: { breakfast: null, lunch: null, dinner: null },
-		tuesday: { breakfast: null, lunch: null, dinner: null },
-		wednesday: { breakfast: null, lunch: null, dinner: null },
-		thursday: { breakfast: null, lunch: null, dinner: null },
-		friday: { breakfast: null, lunch: null, dinner: null },
-		saturday: { breakfast: null, lunch: null, dinner: null },
-		sunday: { breakfast: null, lunch: null, dinner: null }
+		monday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		tuesday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		wednesday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		thursday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		friday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		saturday: { breakfast: null, lunch: null, dinner: null, snack: null },
+		sunday: { breakfast: null, lunch: null, dinner: null, snack: null }
 	};
 }
 
@@ -117,7 +121,8 @@ function calculatePlanCart(
 		const mealDishes = [
 			getDish(dayPlan.breakfast),
 			getDish(dayPlan.lunch),
-			getDish(dayPlan.dinner)
+			getDish(dayPlan.dinner),
+			getDish(dayPlan.snack ?? null)
 		].filter((d): d is Dish => d !== undefined);
 
 		const addGalyaProduct = (
@@ -255,14 +260,18 @@ class PlannerStore {
 	week = $state<WeekPlan>(createEmptyWeek());
 	familySize = $state<FamilySize>(2);
 	packOverrides = $state<Record<string, number>>({});
-	activeTab = $state<'home' | 'sets' | 'week' | 'cart'>('home');
+	activeTab = $state<ActiveTab>('inspire');
 	selectedDay = $state<DayKey>('monday');
 	activeModal = $state<{ day: DayKey; meal: MealKey } | null>(null);
 	previewSetId = $state<string | null>(null);
 	selectedSetId = $state<string | null>(null);
 	activeSetId = $state<string | null>(null);
 	checkedItems = $state<Record<string, boolean>>({});
+	favorites = $state<string[]>([]);
+	locale = $state<AppLocale>('uk');
 	isLocationsOpen = $state<boolean>(false);
+	isDayPresetOpen = $state<boolean>(false);
+	isWeekPresetOpen = $state<boolean>(false);
 	toastMessage = $state<string | null>(null);
 
 	private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -277,7 +286,19 @@ class PlannerStore {
 		try {
 			const savedWeek = localStorage.getItem(STORAGE_KEY_WEEK);
 			if (savedWeek) {
-				this.week = JSON.parse(savedWeek);
+				const parsed = JSON.parse(savedWeek);
+				const empty = createEmptyWeek();
+				for (const day of DAYS_LIST) {
+					if (parsed[day.key]) {
+						empty[day.key] = {
+							breakfast: parsed[day.key].breakfast ?? null,
+							lunch: parsed[day.key].lunch ?? null,
+							dinner: parsed[day.key].dinner ?? null,
+							snack: parsed[day.key].snack ?? null
+						};
+					}
+				}
+				this.week = empty;
 			} else {
 				this.week = createEmptyWeek();
 			}
@@ -290,6 +311,19 @@ class PlannerStore {
 			const savedChecked = localStorage.getItem(STORAGE_KEY_CHECKED);
 			if (savedChecked) {
 				this.checkedItems = JSON.parse(savedChecked);
+			}
+
+			const savedFavorites = localStorage.getItem(STORAGE_KEY_FAVORITES);
+			if (savedFavorites) {
+				const parsed = JSON.parse(savedFavorites);
+				if (Array.isArray(parsed)) {
+					this.favorites = parsed.filter((id) => typeof id === 'string');
+				}
+			}
+
+			const savedLocale = localStorage.getItem(STORAGE_KEY_LOCALE);
+			if (savedLocale === 'uk' || savedLocale === 'en') {
+				this.locale = savedLocale;
 			}
 
 			const savedFamily = localStorage.getItem(STORAGE_KEY_FAMILY);
@@ -328,6 +362,8 @@ class PlannerStore {
 				localStorage.removeItem(STORAGE_KEY_SET);
 			}
 			localStorage.setItem(STORAGE_KEY_CHECKED, JSON.stringify(this.checkedItems));
+			localStorage.setItem(STORAGE_KEY_FAVORITES, JSON.stringify(this.favorites));
+			localStorage.setItem(STORAGE_KEY_LOCALE, this.locale);
 			localStorage.setItem(STORAGE_KEY_FAMILY, String(this.familySize));
 			if (Object.keys(this.packOverrides).length > 0) {
 				localStorage.setItem(STORAGE_KEY_OVERRIDES, JSON.stringify(this.packOverrides));
@@ -337,6 +373,24 @@ class PlannerStore {
 		} catch (e) {
 			console.error('Failed to save to localStorage', e);
 		}
+	}
+
+	toggleFavorite(dishId: string) {
+		if (this.favorites.includes(dishId)) {
+			this.favorites = this.favorites.filter((id) => id !== dishId);
+		} else {
+			this.favorites = [dishId, ...this.favorites];
+		}
+		this.saveToStorage();
+	}
+
+	isFavorite(dishId: string): boolean {
+		return this.favorites.includes(dishId);
+	}
+
+	setLocale(locale: AppLocale) {
+		this.locale = locale;
+		this.saveToStorage();
 	}
 
 	showToast(message: string) {
@@ -436,7 +490,8 @@ class PlannerStore {
 				newWeek[day.key] = {
 					breakfast: dayPlan.breakfast,
 					lunch: dayPlan.lunch,
-					dinner: dayPlan.dinner
+					dinner: dayPlan.dinner,
+					snack: null
 				};
 			}
 		}
@@ -452,6 +507,34 @@ class PlannerStore {
 				`Завантажено набір «${targetSet.title}» (${getFamilySizeLabel(this.familySize)})!`
 			);
 		}
+	}
+
+	loadDayPreset(day: DayKey, presetId: 'classic' | 'express' | 'light' = 'classic') {
+		const presets = {
+			classic: {
+				breakfast: 'syrnyky-vanilla',
+				lunch: 'borscht-ukrainian',
+				dinner: 'kotlety-kyiv',
+				snack: 'mlyntsi-cherry'
+			},
+			express: {
+				breakfast: 'khachapuri-adjarian',
+				lunch: 'soup-pea-smoked',
+				dinner: 'pelmeni-classic',
+				snack: 'chebureki-crimean'
+			},
+			light: {
+				breakfast: 'varenyky-sweet-cottage-cheese',
+				lunch: 'soup-rabbit-meatballs',
+				dinner: 'varenyky-potato-mushrooms',
+				snack: 'mlyntsi-chicken-mushrooms'
+			}
+		};
+
+		const chosen = presets[presetId] ?? presets.classic;
+		this.week[day] = { ...chosen };
+		this.saveToStorage();
+		this.showToast('Завантажено збалансований набір на день!');
 	}
 
 	clearWeek() {
@@ -475,6 +558,7 @@ class PlannerStore {
 			if (this.week[day.key].breakfast) count++;
 			if (this.week[day.key].lunch) count++;
 			if (this.week[day.key].dinner) count++;
+			if (this.week[day.key].snack) count++;
 		}
 		return count;
 	}
@@ -484,6 +568,7 @@ class PlannerStore {
 		if (this.week[day].breakfast) count++;
 		if (this.week[day].lunch) count++;
 		if (this.week[day].dinner) count++;
+		if (this.week[day].snack) count++;
 		return count;
 	}
 

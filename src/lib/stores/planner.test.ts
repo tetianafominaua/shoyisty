@@ -198,4 +198,49 @@ describe('PlannerStore — business logic & cart calculation', () => {
 		const cart = planner.getCartGrouped();
 		expect(cart.totalGalyaUnits).toBeGreaterThan(0);
 	});
+
+	it('підтримує слот snack (перекус) та розраховує до 28 страв на тиждень', () => {
+		planner.clearWeek();
+		planner.setDish('monday', 'breakfast', 'syrnyky-vanilla');
+		planner.setDish('monday', 'lunch', 'borscht-ukrainian');
+		planner.setDish('monday', 'dinner', 'kotlety-kyiv');
+		planner.setDish('monday', 'snack', 'mlyntsi-cherry');
+
+		expect(planner.getDayDishesCount('monday')).toBe(4);
+		expect(planner.totalDishesCount).toBe(4);
+
+		const cart = planner.getCartGrouped();
+		expect(cart.galyaItems.length).toBe(4);
+	});
+
+	it('керує списком обраних страв через toggleFavorite та isFavorite', () => {
+		planner.favorites = [];
+		expect(planner.isFavorite('syrnyky-vanilla')).toBe(false);
+
+		planner.toggleFavorite('syrnyky-vanilla');
+		expect(planner.isFavorite('syrnyky-vanilla')).toBe(true);
+		expect(planner.favorites).toContain('syrnyky-vanilla');
+
+		planner.toggleFavorite('syrnyky-vanilla');
+		expect(planner.isFavorite('syrnyky-vanilla')).toBe(false);
+	});
+
+	it('підтримує перемикання локалі uk та en', () => {
+		planner.setLocale('en');
+		expect(planner.locale).toBe('en');
+
+		planner.setLocale('uk');
+		expect(planner.locale).toBe('uk');
+	});
+
+	it('завантажує збалансований денний набір (loadDayPreset) на 4 слоти', () => {
+		planner.clearWeek();
+		planner.loadDayPreset('tuesday', 'classic');
+
+		expect(planner.getDayDishesCount('tuesday')).toBe(4);
+		expect(planner.week.tuesday.breakfast).toBe('syrnyky-vanilla');
+		expect(planner.week.tuesday.lunch).toBe('borscht-ukrainian');
+		expect(planner.week.tuesday.dinner).toBe('kotlety-kyiv');
+		expect(planner.week.tuesday.snack).toBe('mlyntsi-cherry');
+	});
 });

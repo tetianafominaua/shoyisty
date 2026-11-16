@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
 	import { getFamilySizeLabel } from '#lib/data/constants';
+	import { t } from '#lib/i18n/translations';
 	import FamilySizeSelector from '#lib/components/FamilySizeSelector.svelte';
 	import CartGalyaList from '#lib/components/cart/CartGalyaList.svelte';
 	import CartGroceryList from '#lib/components/cart/CartGroceryList.svelte';
-	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import ShoppingBag from '@lucide/svelte/icons/shopping-bag';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import Copy from '@lucide/svelte/icons/copy';
@@ -12,6 +13,7 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
 	const cart = $derived(planner.getCartGrouped());
+	const locale = $derived(planner.locale);
 
 	async function copyToClipboard() {
 		const text = planner.generateTelegramText();
@@ -57,9 +59,9 @@
 	<!-- Cart Top Header -->
 	<div class="cart-header">
 		<div class="header-titles">
-			<h2 class="cart-title">Кошик на тиждень</h2>
+			<h2 class="cart-title">{t('shop.title', locale)}</h2>
 			<p class="cart-subtitle">
-				Два списки: що придбати у «Галя Балувана», і що докупити у супермаркеті.
+				{t('shop.subtitle', locale)}
 			</p>
 		</div>
 	</div>
@@ -68,17 +70,17 @@
 		<!-- Empty State -->
 		<div class="cart-empty-card">
 			<div class="empty-icon">
-				<ShoppingCart size={40} color="var(--color-brand-primary)" />
+				<ShoppingBag size={40} color="var(--color-brand-primary)" />
 			</div>
-			<h3>Ваш кошик ще порожній</h3>
-			<p>Оберіть один із готових наборів або додайте страви у планувальник по днях тижня.</p>
+			<h3>{t('shop.emptyTitle', locale)}</h3>
+			<p>{t('shop.emptySubtitle', locale)}</p>
 			<div class="empty-actions">
-				<button class="btn-primary" onclick={() => (planner.activeTab = 'sets')}>
-					<span>Обрати готовий набір</span>
+				<button class="btn-primary" onclick={() => (planner.activeTab = 'inspire')}>
+					<span>{t('shop.goToInspire', locale)}</span>
 					<Sparkles size={16} />
 				</button>
 				<button class="btn-secondary" onclick={() => (planner.activeTab = 'week')}>
-					<span>Скласти по днях</span>
+					<span>{t('shop.goToWeek', locale)}</span>
 					<Calendar size={16} />
 				</button>
 			</div>

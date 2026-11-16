@@ -1,7 +1,11 @@
 export type DayKey =
 	'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
-export type MealKey = 'breakfast' | 'lunch' | 'dinner';
+export type MealKey = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+
+export type ActiveTab = 'inspire' | 'week' | 'shop' | 'settings' | 'home' | 'sets' | 'cart';
+
+export type AppLocale = 'uk' | 'en';
 
 export type FamilySize = 1 | 2 | 3 | 4 | 5;
 
@@ -51,7 +55,7 @@ export interface GroceryItem {
 export interface Dish {
 	id: string;
 	name: string;
-	category: 'breakfast' | 'lunch' | 'dinner' | 'universal';
+	category: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'universal';
 	availableMeals: MealKey[];
 	prepTimeMinutes: number;
 	calories: number;
@@ -71,6 +75,7 @@ export interface DayMeals {
 	breakfast: string | null;
 	lunch: string | null;
 	dinner: string | null;
+	snack: string | null;
 }
 
 export type WeekPlan = Record<DayKey, DayMeals>;
@@ -87,7 +92,7 @@ export interface ReadyMadeSet {
 	idealFor: string;
 	totalDishesCount: number;
 	galyaDishesCount: number;
-	plan: Record<DayKey, { breakfast: string; lunch: string; dinner: string }>;
+	plan: Record<DayKey, { breakfast: string; lunch: string; dinner: string; snack?: string | null }>;
 }
 
 export interface CartGalyaItem {

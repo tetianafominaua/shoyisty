@@ -1,706 +1,978 @@
 <script lang="ts">
 	import { planner } from '#lib/stores/planner.svelte';
-	import { DAYS_LIST, MEALS_LIST, getFamilySizeLabel } from '#lib/data/constants';
-	import type { DayKey, MealKey } from '#lib/types';
-	import FamilySizeSelector from '#lib/components/FamilySizeSelector.svelte';
+	import { DAYS_LIST, MEALS_LIST } from '#lib/data/constants';
+	import { READY_MADE_SETS } from '#lib/data/sets';
+	import { t } from '#lib/i18n/translations';
+	import type { DayKey, MealKey, Dish } from '#lib/types';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Sun from '@lucide/svelte/icons/sun';
 	import Soup from '@lucide/svelte/icons/soup';
 	import Utensils from '@lucide/svelte/icons/utensils';
+	import Cookie from '@lucide/svelte/icons/cookie';
 	import Clock from '@lucide/svelte/icons/clock';
-	import Flame from '@lucide/svelte/icons/flame';
 	import Users from '@lucide/svelte/icons/users';
-	import Edit2 from '@lucide/svelte/icons/edit-2';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import ChefHat from '@lucide/svelte/icons/chef-hat';
-	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
 	import Plus from '@lucide/svelte/icons/plus';
+	import MoreHorizontal from '@lucide/svelte/icons/more-horizontal';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import Edit2 from '@lucide/svelte/icons/edit-2';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import X from '@lucide/svelte/icons/x';
 
 	const activeDay = $derived(planner.selectedDay);
-	const activeDayInfo = $derived(DAYS_LIST.find((d) => d.key === activeDay) || DAYS_LIST[0]);
+	const activeDayIndex = $derived(DAYS_LIST.findIndex((d) => d.key === activeDay));
 	const dayPlan = $derived(planner.week[activeDay]);
-	const cart = $derived(planner.getCartGrouped());
+	const locale = $derived(planner.locale);
 
-	function selectDay(dayKey: DayKey) {
-		planner.selectedDay = dayKey;
+	// Modals
+	let showDayPresetModal = $state(false);
+	let showWeekPresetModal = $state(false);
+	let dishActionMenu = $state<{ meal: MealKey; dish: Dish } | null>(null);
+
+	// Horizontal calendar day numbers (starting from current date)
+	const weekDates = $derived.by(() => {
+		const now = new Date();
+		// Find Monday of current week
+		const dayOfWeek = now.getDay(); // 0 is Sun, 1 is Mon
+		const distanceToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+		const mondayDate = new Date(now);
+		mondayDate.setDate(now.getDate() + distanceToMon);
+
+		return DAYS_LIST.map((day, idx) => {
+			const d = new Date(mondayDate);
+			d.setDate(mondayDate.getDate() + idx);
+			return {
+				...day,
+				dateNum: d.getDate(),
+				isToday: d.toDateString() === now.toDateString()
+			};
+		});
+	});
+
+	function selectDay(key: DayKey) {
+		planner.selectedDay = key;
+	}
+
+	function prevDay() {
+		const nextIdx = (activeDayIndex - 1 + DAYS_LIST.length) % DAYS_LIST.length;
+		planner.selectedDay = DAYS_LIST[nextIdx].key;
+	}
+
+	function nextDay() {
+		const nextIdx = (activeDayIndex + 1) % DAYS_LIST.length;
+		planner.selectedDay = DAYS_LIST[nextIdx].key;
 	}
 
 	function openDishPicker(mealKey: MealKey) {
 		planner.activeModal = { day: activeDay, meal: mealKey };
 	}
 
-	function removeDish(mealKey: MealKey) {
+	function removeMeal(mealKey: MealKey) {
 		planner.setDish(activeDay, mealKey, null);
+		dishActionMenu = null;
 	}
 
-	function nextDay() {
-		const currentIndex = DAYS_LIST.findIndex((d) => d.key === activeDay);
-		const nextIndex = (currentIndex + 1) % DAYS_LIST.length;
-		planner.selectedDay = DAYS_LIST[nextIndex].key;
+	function replaceMeal(mealKey: MealKey) {
+		dishActionMenu = null;
+		openDishPicker(mealKey);
 	}
 
-	function prevDay() {
-		const currentIndex = DAYS_LIST.findIndex((d) => d.key === activeDay);
-		const prevIndex = (currentIndex - 1 + DAYS_LIST.length) % DAYS_LIST.length;
-		planner.selectedDay = DAYS_LIST[prevIndex].key;
+	function applyDayPreset(presetId: 'classic' | 'express' | 'light') {
+		planner.loadDayPreset(activeDay, presetId);
+		showDayPresetModal = false;
+	}
+
+	function applyWeekPreset(setId: string) {
+		planner.loadSet(setId);
+		showWeekPresetModal = false;
 	}
 </script>
 
-{#snippet mealIcon(key: string, size = 16)}
+{#snippet mealIcon(key: string, size = 18)}
 	{#if key === 'breakfast'}
-		<Sun {size} />
+		<Sun {size} color="#f59e0b" />
 	{:else if key === 'lunch'}
-		<Soup {size} />
+		<Soup {size} color="#ea580c" />
+	{:else if key === 'dinner'}
+		<Utensils {size} color="#18432f" />
 	{:else}
-		<Utensils {size} />
+		<Cookie {size} color="#b45309" />
 	{/if}
 {/snippet}
 
-<div class="week-planner-container animate-fade-in">
-	<!-- Header Titles -->
-	<div class="planner-header">
-		<div class="header-titles">
-			<h2 class="planner-title">Конструктор на тиждень</h2>
-			<p class="planner-subtitle">Обирай день тижня та наповнюй сніданки, обіди і вечері.</p>
+<div class="planner-screen-container animate-fade-in">
+	<!-- Top Month / Navigation Bar (as in reference) -->
+	<div class="month-selector-bar">
+		<button class="arrow-nav-btn" onclick={prevDay} aria-label="Попередній день">
+			<ChevronLeft size={22} />
+		</button>
+		<div class="month-label-wrap">
+			<span class="month-year-title">{t('week.monthLabel', locale)}</span>
 		</div>
+		<button class="arrow-nav-btn" onclick={nextDay} aria-label="Наступний день">
+			<ChevronRight size={22} />
+		</button>
 	</div>
 
-	<FamilySizeSelector subtitle="У кошику порахуємо упаковки для обраної родини" />
-
-	<!-- 7 Days Button Menu (Понеділок .. Неділя) -->
-	<nav class="days-nav-bar" aria-label="Вибір дня тижня">
-		{#each DAYS_LIST as day (day.key)}
-			{@const count = planner.getDayDishesCount(day.key)}
-			{@const isActive = activeDay === day.key}
-
+	<!-- Horizontal Day Scrubber (as in reference: Sun 15, Mon 16...) -->
+	<div class="day-scrubber-bar" role="tablist">
+		{#each weekDates as d (d.key)}
+			{@const isSelected = activeDay === d.key}
 			<button
-				class="day-nav-btn"
-				class:active={isActive}
-				class:complete={count === 3}
-				onclick={() => selectDay(day.key)}
-				aria-label={day.fullName}
+				type="button"
+				class="scrubber-pill"
+				class:selected={isSelected}
+				onclick={() => selectDay(d.key)}
+				aria-selected={isSelected}
+				role="tab"
 			>
-				<span class="day-short">{day.shortName}</span>
-				<div class="day-status-dots">
-					<span class="mini-dot" class:filled={!!planner.week[day.key].breakfast}></span>
-					<span class="mini-dot" class:filled={!!planner.week[day.key].lunch}></span>
-					<span class="mini-dot" class:filled={!!planner.week[day.key].dinner}></span>
-				</div>
+				<span class="scrubber-day-name">{d.shortName}</span>
+				<span class="scrubber-date-circle" class:is-today={d.isToday}>
+					{d.dateNum}
+				</span>
 			</button>
 		{/each}
-	</nav>
-
-	<!-- Current Day Status Banner -->
-	<div class="current-day-banner">
-		<div class="day-banner-left">
-			<button class="nav-arrow-btn" onclick={prevDay} aria-label="Попередній день">
-				<ChevronLeft size={18} />
-			</button>
-			<div class="day-heading-box">
-				<div>
-					<h3 class="day-title">{activeDayInfo.fullName}</h3>
-					<span class="day-status-text">
-						Заповнено {planner.getDayDishesCount(activeDay)} з 3 страв
-					</span>
-				</div>
-			</div>
-			<button class="nav-arrow-btn" onclick={nextDay} aria-label="Наступний день">
-				<ChevronRight size={18} />
-			</button>
-		</div>
-
-		{#if planner.getDayDishesCount(activeDay) > 0}
-			<button
-				class="clear-day-btn"
-				onclick={() => {
-					planner.setDish(activeDay, 'breakfast', null);
-					planner.setDish(activeDay, 'lunch', null);
-					planner.setDish(activeDay, 'dinner', null);
-				}}
-				title="Очистити страви цього дня"
-			>
-				Очистити день
-			</button>
-		{/if}
 	</div>
 
-	<!-- 3 Meal Slots: Сніданок, Обід, Вечеря -->
-	<div class="meal-slots-list">
+	<!-- Meal Slots (Breakfast, Lunch, Dinner, Snack) -->
+	<div class="meal-slots-column">
 		{#each MEALS_LIST as meal (meal.key)}
 			{@const dishId = dayPlan[meal.key]}
 			{@const dish = planner.getDish(dishId)}
 
-			<div class="meal-slot-wrapper">
-				<div class="slot-header">
-					<div class="slot-badge">
-						<span class="slot-icon">
-							{@render mealIcon(meal.key, 15)}
+			<div class="meal-slot-group">
+				<div class="meal-slot-header">
+					<div class="slot-title-left">
+						<span class="slot-icon-box">
+							{@render mealIcon(meal.key, 18)}
 						</span>
-						<span class="slot-title">{meal.label}</span>
+						<span class="slot-name">{meal.label}</span>
 					</div>
-					<span class="slot-time">{meal.suggestedTime}</span>
+
+					{#if !dish}
+						<button
+							class="add-meal-icon-btn"
+							onclick={() => openDishPicker(meal.key)}
+							aria-label="Додати {meal.label}"
+						>
+							<Plus size={18} strokeWidth={2.5} />
+						</button>
+					{/if}
 				</div>
 
 				{#if dish}
-					<!-- Filled Dish Card -->
-					<div class="filled-dish-card animate-fade-in">
-						<div class="dish-card-main">
-							<div class="dish-card-left">
-								<div class="dish-icon-box">
-									<Utensils size={20} color="var(--color-brand-primary)" />
-								</div>
-								<div class="dish-info-box">
-									<div class="dish-heading-row">
-										<h4 class="dish-heading">{dish.name}</h4>
-										{#if dish.sideCompanion}
-											<span class="companion-pill">+ {dish.sideCompanion}</span>
-										{/if}
-									</div>
-									<div class="dish-pills-row">
-										<span class="dish-pill">
-											<Clock size={11} />
-											<span>{dish.prepTimeMinutes} хв</span>
-										</span>
-										<span class="dish-pill">
-											<Flame size={11} />
-											<span>{dish.calories} ккал</span>
-										</span>
-										<span class="dish-pill">
-											<Users size={11} />
-											<span>{dish.servings} порц./уп.</span>
-										</span>
-									</div>
-								</div>
-							</div>
-
-							<!-- Action Buttons -->
-							<div class="dish-actions">
-								<button
-									class="icon-action-btn edit"
-									onclick={() => openDishPicker(meal.key)}
-									title="Замінити страву"
-									aria-label="Замінити страву"
-								>
-									<Edit2 size={14} />
-								</button>
-								<button
-									class="icon-action-btn delete"
-									onclick={() => removeDish(meal.key)}
-									title="Видалити"
-									aria-label="Видалити страву"
-								>
-									<Trash2 size={14} />
-								</button>
-							</div>
+					<!-- Dish Card (styled like reference) -->
+					<div class="dish-plan-card animate-scale-in">
+						<div class="dish-card-banner">
+							<span class="dish-badge">{dish.galyaProduct?.badge || 'Ручна ліпка'}</span>
+							<span class="dish-price-tag">~{dish.galyaProduct?.priceUah} ₴</span>
 						</div>
 
-						<!-- Galya Baluvana Badge -->
-						{#if dish.isGalyaProduct && dish.galyaProduct}
-							<div class="galya-slot-bar">
-								<div class="galya-logo-title">
-									<ChefHat size={14} color="var(--color-brand-primary)" />
-									<strong>Галя Балувана</strong>
-									<span class="galya-badge-pill">{dish.galyaProduct.badge}</span>
-									<span class="galya-pack-rec">
-										Для {getFamilySizeLabel(planner.familySize)}: {planner.getDishPackHint(dish)}
-									</span>
-								</div>
-								<div class="galya-details-row">
-									<span>{dish.galyaProduct.name}</span> &bull;
-									<span>{dish.galyaProduct.weightText}</span> &bull;
-									<strong>~{dish.galyaProduct.priceUah} ₴/уп.</strong>
-								</div>
-								{#if dish.extraGalyaProducts?.length}
-									{#each dish.extraGalyaProducts as extra (extra.product.name)}
-										<div class="galya-extra-row">
-											+ <strong>{extra.product.name}</strong> &bull; {extra.product.weightText} &bull;
-											~{extra.product.priceUah} ₴/уп.
-										</div>
-									{/each}
-								{/if}
+						<div class="dish-card-content">
+							<div class="dish-header-row">
+								<h4 class="dish-title">{dish.name}</h4>
+								<button
+									class="dish-menu-trigger"
+									onclick={() => (dishActionMenu = { meal: meal.key, dish })}
+									aria-label="Дії зі стравою"
+								>
+									<MoreHorizontal size={18} />
+								</button>
 							</div>
-						{/if}
+
+							{#if dish.sideCompanion}
+								<div class="dish-side-info">
+									<span class="side-label">Гарнір / Докупити:</span>
+									<span class="side-value">{dish.sideCompanion}</span>
+								</div>
+							{/if}
+
+							<div class="dish-meta-row">
+								<span class="meta-tag">
+									<Clock size={13} />
+									<span>{dish.prepTimeMinutes} {t('common.minutes', locale)}</span>
+								</span>
+								<span class="meta-tag">
+									<Users size={13} />
+									<span>{dish.servings} {t('common.servings', locale)}</span>
+								</span>
+								<span class="meta-tag pack-tag">
+									{dish.galyaProduct?.weightText}
+								</span>
+							</div>
+						</div>
 					</div>
 				{:else}
-					<!-- Empty Slot Card -->
-					<button
-						class="empty-slot-btn"
-						onclick={() => openDishPicker(meal.key)}
-						aria-label="Обрати страву на {meal.label}"
-					>
-						<span class="add-circle">
-							<Plus size={16} />
+					<!-- Empty Slot Button -->
+					<button class="empty-slot-card" onclick={() => openDishPicker(meal.key)}>
+						<span class="empty-plus-circle">
+							<Plus size={16} strokeWidth={2.5} />
 						</span>
-						<div class="empty-slot-text">
-							<strong>Обрати страву на {meal.label.toLowerCase()}</strong>
-							<span>{meal.description}</span>
-						</div>
+						<span class="empty-slot-text">{t('week.addDish', locale)}</span>
 					</button>
 				{/if}
 			</div>
 		{/each}
 	</div>
 
-	<!-- Bottom Cart Float Action -->
-	<div class="planner-bottom-bar">
-		<button
-			class="btn-primary full-width"
-			onclick={() => (planner.activeTab = 'cart')}
-			aria-label="Переглянути кошик"
+	<!-- Divider & Quick Sets Section (User's specific requirement!) -->
+	<div class="quick-sets-divider"></div>
+
+	<section class="quick-sets-section">
+		<div class="sets-section-title-row">
+			<Sparkles size={16} color="var(--color-brand-primary)" />
+			<h3 class="sets-section-title">{t('week.quickSetsTitle', locale)}</h3>
+		</div>
+
+		<div class="sets-buttons-grid">
+			<!-- Button 1: Набір на день -->
+			<button class="set-action-card" onclick={() => (showDayPresetModal = true)}>
+				<div class="set-icon-bubble day-bubble">
+					<Sun size={20} color="#b45309" />
+				</div>
+				<div class="set-card-texts">
+					<strong class="set-card-title">{t('week.setForDay', locale)}</strong>
+					<span class="set-card-sub">{t('week.setForDaySub', locale)}</span>
+				</div>
+				<Plus size={16} class="set-arrow" />
+			</button>
+
+			<!-- Button 2: Набір на тиждень -->
+			<button class="set-action-card" onclick={() => (showWeekPresetModal = true)}>
+				<div class="set-icon-bubble week-bubble">
+					<Calendar size={20} color="var(--color-brand-primary)" />
+				</div>
+				<div class="set-card-texts">
+					<strong class="set-card-title">{t('week.setForWeek', locale)}</strong>
+					<span class="set-card-sub">{t('week.setForWeekSub', locale)}</span>
+				</div>
+				<Sparkles size={16} class="set-arrow" />
+			</button>
+		</div>
+	</section>
+
+	<!-- Action Sheet for Dish (Edit / Remove) -->
+	{#if dishActionMenu}
+		<div
+			class="modal-backdrop animate-fade-in"
+			onclick={() => (dishActionMenu = null)}
+			onkeydown={(e) => {
+				if (e.key === 'Escape') dishActionMenu = null;
+			}}
+			role="button"
+			tabindex="0"
+			aria-label="Закрити вікно"
 		>
-			<span>
-				Переглянути кошик ({planner.totalDishesCount} страв{#if planner.totalDishesCount > 0}
-					&bull; {cart.totalGalyaUnits} уп.{/if})
-			</span>
-			<ShoppingCart size={16} />
-		</button>
-	</div>
+			<div
+				class="modal-sheet animate-slide-up"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => e.stopPropagation()}
+				role="dialog"
+				aria-modal="true"
+				tabindex="-1"
+			>
+				<div class="sheet-top-title">
+					<h4>«{dishActionMenu.dish.name}»</h4>
+					<button class="sheet-close" onclick={() => (dishActionMenu = null)} aria-label="Закрити">
+						<X size={18} />
+					</button>
+				</div>
+
+				<div class="sheet-actions-list">
+					<button class="sheet-action-item" onclick={() => replaceMeal(dishActionMenu!.meal)}>
+						<Edit2 size={16} />
+						<span>{t('week.replaceDish', locale)}</span>
+					</button>
+					<button class="sheet-action-item danger" onclick={() => removeMeal(dishActionMenu!.meal)}>
+						<Trash2 size={16} />
+						<span>{t('week.removeDish', locale)}</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Modal: Набір на день -->
+	{#if showDayPresetModal}
+		<div
+			class="modal-backdrop animate-fade-in"
+			onclick={() => (showDayPresetModal = false)}
+			onkeydown={(e) => {
+				if (e.key === 'Escape') showDayPresetModal = false;
+			}}
+			role="button"
+			tabindex="0"
+			aria-label="Закрити вікно"
+		>
+			<div
+				class="modal-sheet animate-slide-up"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => e.stopPropagation()}
+				role="dialog"
+				aria-modal="true"
+				tabindex="-1"
+			>
+				<div class="sheet-top-title">
+					<h4>{t('week.setForDay', locale)}</h4>
+					<button
+						class="sheet-close"
+						onclick={() => (showDayPresetModal = false)}
+						aria-label="Закрити"
+					>
+						<X size={18} />
+					</button>
+				</div>
+
+				<p class="preset-help-text">Оберіть готове меню на 4 прийоми їжі для поточного дня:</p>
+
+				<div class="presets-choice-list">
+					<button class="preset-item-card" onclick={() => applyDayPreset('classic')}>
+						<div class="preset-card-head">
+							<strong>Класичний домашній</strong>
+							<span class="tag-accent">Хіт</span>
+						</div>
+						<span class="preset-menu-preview">
+							Сирники • Борщ український • Котлета по-київськи • Млинці з вишнею
+						</span>
+					</button>
+
+					<button class="preset-item-card" onclick={() => applyDayPreset('express')}>
+						<div class="preset-card-head">
+							<strong>Швидкий експрес (15 хв)</strong>
+							<span class="tag-accent">Швидко</span>
+						</div>
+						<span class="preset-menu-preview">
+							Хачапурі • Гороховий суп • Пельмені класичні • Чебурек кримський
+						</span>
+					</button>
+
+					<button class="preset-item-card" onclick={() => applyDayPreset('light')}>
+						<div class="preset-card-head">
+							<strong>Легкий та дитячий</strong>
+							<span class="tag-accent">Корисно</span>
+						</div>
+						<span class="preset-menu-preview">
+							Вареники з сиром • Суп з фрикадельками кролика • Вареники з картоплею • Млинці з
+							куркою
+						</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Modal: Набір на тиждень -->
+	{#if showWeekPresetModal}
+		<div
+			class="modal-backdrop animate-fade-in"
+			onclick={() => (showWeekPresetModal = false)}
+			onkeydown={(e) => {
+				if (e.key === 'Escape') showWeekPresetModal = false;
+			}}
+			role="button"
+			tabindex="0"
+			aria-label="Закрити вікно"
+		>
+			<div
+				class="modal-sheet animate-slide-up"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => e.stopPropagation()}
+				role="dialog"
+				aria-modal="true"
+				tabindex="-1"
+			>
+				<div class="sheet-top-title">
+					<h4>{t('week.setForWeek', locale)}</h4>
+					<button
+						class="sheet-close"
+						onclick={() => (showWeekPresetModal = false)}
+						aria-label="Закрити"
+					>
+						<X size={18} />
+					</button>
+				</div>
+
+				<p class="preset-help-text">
+					Завантажте повне меню на 7 днів (Пн–Нд). Усі 21 страву буде розкладено по днях:
+				</p>
+
+				<div class="presets-choice-list">
+					{#each READY_MADE_SETS as set (set.id)}
+						<button class="preset-item-card" onclick={() => applyWeekPreset(set.id)}>
+							<div class="preset-card-head">
+								<strong>{set.title}</strong>
+								<span class="tag-accent">{set.badge}</span>
+							</div>
+							<span class="preset-menu-desc">{set.subtitle}</span>
+							<span class="preset-menu-ideal">{set.idealFor}</span>
+						</button>
+					{/each}
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
 
 <style>
-	.week-planner-container {
-		padding: 16px 16px 40px 16px;
+	.planner-screen-container {
+		padding: 16px 16px 90px 16px;
+		max-width: 540px;
+		margin: 0 auto;
+		width: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 18px;
+		gap: 16px;
 	}
 
-	.planner-title {
-		font-size: 24px;
-		font-weight: 800;
-		margin-bottom: 4px;
-	}
-
-	.planner-subtitle {
-		font-size: 13px;
-		color: var(--text-muted);
-		line-height: 1.4;
-	}
-
-	/* 7 Days Button Nav Bar */
-	.days-nav-bar {
-		display: grid;
-		grid-template-columns: repeat(7, 1fr);
-		gap: 6px;
-		background: var(--bg-surface-alt);
-		padding: 6px;
-		border-radius: var(--radius-lg);
-		border: 1px solid var(--border-subtle);
-	}
-
-	.day-nav-btn {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 10px 2px;
-		background: transparent;
-		border: 1.5px solid transparent;
-		border-radius: var(--radius-md);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.day-nav-btn:hover {
-		background: rgba(255, 255, 255, 0.6);
-	}
-
-	.day-nav-btn.active {
-		background: #ffffff;
-		border-color: var(--color-brand-primary);
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-	}
-
-	.day-short {
-		font-size: 14px;
-		font-weight: 800;
-		color: var(--text-main);
-	}
-
-	.day-nav-btn.active .day-short {
-		color: var(--color-brand-primary);
-	}
-
-	.day-status-dots {
-		display: flex;
-		gap: 3px;
-		margin-top: 5px;
-	}
-
-	.mini-dot {
-		width: 4px;
-		height: 4px;
-		border-radius: 50%;
-		background: #d1c8b8;
-		transition: all var(--transition-fast);
-	}
-
-	.mini-dot.filled {
-		background: #10b981;
-		box-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
-	}
-
-	/* Current Day Banner */
-	.current-day-banner {
+	/* Month Selector Bar (Reference style) */
+	.month-selector-bar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background: linear-gradient(135deg, #ffffff 0%, var(--bg-surface-alt) 100%);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-md);
-		padding: 12px 16px;
+		padding: 6px 4px;
 	}
 
-	.day-banner-left {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-	}
-
-	.nav-arrow-btn {
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		border: 1px solid var(--border-subtle);
-		background: #ffffff;
-		font-size: 18px;
-		line-height: 1;
-		font-weight: 700;
+	.arrow-nav-btn {
+		background: transparent;
+		border: none;
+		color: #334155;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: var(--text-main);
-		transition: background var(--transition-fast);
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		transition: all var(--transition-fast);
 	}
 
-	.nav-arrow-btn:hover {
-		background: var(--bg-surface-alt);
+	.arrow-nav-btn:hover {
+		background: #f1f5f9;
 	}
 
-	.day-heading-box {
+	.month-label-wrap {
 		display: flex;
-		align-items: center;
-		gap: 10px;
+		align-items: baseline;
+		gap: 8px;
 	}
 
-	.day-title {
-		font-size: 17px;
+	.month-year-title {
+		font-family: var(--font-display, inherit);
+		font-size: 22px;
 		font-weight: 800;
-		margin: 0;
+		color: #c25e2e;
+		letter-spacing: -0.01em;
 	}
 
-	.day-status-text {
-		font-size: 11px;
-		color: var(--text-muted);
-		font-weight: 600;
+	/* Day Scrubber Bar */
+	.day-scrubber-bar {
+		display: flex;
+		justify-content: space-between;
+		gap: 4px;
+		padding-bottom: 6px;
 	}
 
-	.clear-day-btn {
-		background: none;
-		border: none;
-		color: #ef4444;
-		font-size: 11px;
-		font-weight: 700;
-		cursor: pointer;
-		padding: 4px 8px;
-		border-radius: var(--radius-sm);
-	}
-
-	.clear-day-btn:hover {
-		background: #fef2f2;
-	}
-
-	/* Meal Slots */
-	.meal-slots-list {
+	.scrubber-pill {
+		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 14px;
+		align-items: center;
+		gap: 6px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 6px 2px;
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
 	}
 
-	.meal-slot-wrapper {
+	.scrubber-day-name {
+		font-size: 11px;
+		font-weight: 700;
+		color: #94a3b8;
+		text-transform: uppercase;
+	}
+
+	.scrubber-date-circle {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 15px;
+		font-weight: 800;
+		color: var(--text-main);
+		transition: all var(--transition-fast);
+	}
+
+	.scrubber-pill.selected .scrubber-date-circle {
+		background: var(--color-brand-primary);
+		color: #ffffff;
+		box-shadow: 0 4px 12px rgba(24, 67, 47, 0.3);
+	}
+
+	.scrubber-pill.selected .scrubber-day-name {
+		color: var(--color-brand-primary);
+		font-weight: 800;
+	}
+
+	.scrubber-date-circle.is-today:not(.selected) {
+		border: 2px solid var(--color-brand-primary);
+	}
+
+	/* Meal Slots Column */
+	.meal-slots-column {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.meal-slot-group {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		height: 100%;
 	}
 
-	@media (min-width: 720px) {
-		.meal-slots-list {
-			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 14px;
-			align-items: stretch;
-		}
-	}
-
-	.slot-header {
+	.meal-slot-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0 4px;
 	}
 
-	.slot-badge {
+	.slot-title-left {
 		display: flex;
 		align-items: center;
-		gap: 6px;
+		gap: 8px;
+	}
+
+	.slot-icon-box {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.slot-name {
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--text-main);
+	}
+
+	.add-meal-icon-btn {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		border: 1.5px solid #cbd5e1;
+		background: #ffffff;
+		color: #475569;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.add-meal-icon-btn:hover {
+		background: #f0fdf4;
+		border-color: var(--color-brand-primary);
+		color: var(--color-brand-primary);
+	}
+
+	/* Dish Plan Card (styled like reference) */
+	.dish-plan-card {
+		background: #ffffff;
+		border-radius: var(--radius-lg);
+		border: 1.5px solid var(--border-subtle);
+		overflow: hidden;
+		box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+		transition: all var(--transition-fast);
+	}
+
+	.dish-plan-card:hover {
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+	}
+
+	.dish-card-banner {
+		height: 48px;
+		background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 14px;
+		border-bottom: 1px solid rgba(24, 67, 47, 0.1);
+	}
+
+	.dish-badge {
+		font-size: 11px;
+		font-weight: 800;
+		color: var(--color-brand-primary);
+		background: #ffffff;
+		padding: 3px 8px;
+		border-radius: var(--radius-full);
+	}
+
+	.dish-price-tag {
 		font-size: 13px;
 		font-weight: 800;
 		color: var(--color-brand-primary);
 	}
 
-	.slot-icon {
-		font-size: 16px;
-	}
-
-	.slot-time {
-		font-size: 11px;
-		font-weight: 600;
-		color: var(--text-subtle);
-	}
-
-	/* Filled Dish Card */
-	.filled-dish-card {
-		flex: 1;
-		background: #ffffff;
-		border: 1.5px solid var(--border-subtle);
-		border-radius: var(--radius-md);
-		padding: 14px;
+	.dish-card-content {
+		padding: 14px 14px 12px 14px;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
-		box-shadow: var(--shadow-sm);
+		gap: 8px;
 	}
 
-	.dish-card-main {
+	.dish-header-row {
 		display: flex;
+		align-items: flex-start;
 		justify-content: space-between;
-		align-items: flex-start;
 		gap: 10px;
 	}
 
-	.dish-card-left {
-		display: flex;
-		gap: 10px;
-		align-items: flex-start;
-		flex: 1;
-	}
-
-	.dish-icon-box {
-		width: 42px;
-		height: 42px;
-		border-radius: 12px;
-		background: var(--bg-surface-alt);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 24px;
-		flex-shrink: 0;
-	}
-
-	.dish-info-box {
-		flex: 1;
-	}
-
-	.dish-heading-row {
-		display: flex;
-		align-items: baseline;
-		flex-wrap: wrap;
-		gap: 6px;
-		margin-bottom: 5px;
-	}
-
-	.dish-heading {
-		font-size: 14px;
+	.dish-title {
+		font-size: 16px;
 		font-weight: 800;
-		line-height: 1.35;
-		margin-bottom: 0;
+		color: var(--text-main);
+		margin: 0;
+		line-height: 1.3;
 	}
 
-	.companion-pill {
-		display: inline-flex;
-		align-items: center;
-		font-size: 11.5px;
-		font-weight: 600;
-		color: #92400e;
-		background: #fef3c7;
-		border: 1px solid #fde68a;
-		padding: 1px 7px;
-		border-radius: 6px;
-		line-height: 1.25;
-	}
-
-	.slot-icon {
-		display: flex;
-		align-items: center;
-		color: var(--color-brand-primary);
-	}
-
-	.dish-pills-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 5px;
-	}
-
-	.dish-pill {
-		display: inline-flex;
-		align-items: center;
-		gap: 3px;
-		font-size: 11px;
-		color: var(--text-muted);
-		background: var(--bg-surface-alt);
-		padding: 2px 7px;
-		border-radius: 6px;
-		font-weight: 600;
-	}
-
-	.dish-actions {
-		display: flex;
-		gap: 6px;
-	}
-
-	.icon-action-btn {
-		width: 32px;
-		height: 32px;
-		border-radius: 8px;
+	.dish-menu-trigger {
+		background: #f8fafc;
 		border: 1px solid var(--border-subtle);
-		background: var(--bg-surface-alt);
-		cursor: pointer;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 14px;
+		color: #64748b;
+		cursor: pointer;
 		transition: all var(--transition-fast);
 	}
 
-	.icon-action-btn:hover {
-		background: #eae2d1;
+	.dish-menu-trigger:hover {
+		background: #f1f5f9;
+		color: var(--text-main);
 	}
 
-	.icon-action-btn.delete:hover {
-		background: #fee2e2;
-		border-color: #fca5a5;
-	}
-
-	/* Galya Slot Bar */
-	.galya-slot-bar {
-		background: #f0fdf4;
-		border: 1px solid #bbf7d0;
+	.dish-side-info {
+		background: #fffbeb;
+		border: 1px solid #fef3c7;
 		border-radius: var(--radius-sm);
-		padding: 8px 10px;
+		padding: 5px 8px;
 		font-size: 11px;
-		color: #166534;
-	}
-
-	.galya-logo-title {
 		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
 		gap: 6px;
-		margin-bottom: 3px;
 	}
 
-	.galya-logo-title strong {
-		white-space: nowrap;
-		flex-shrink: 0;
-	}
-
-	.galya-badge-pill {
-		background: #dcfce7;
-		padding: 1px 6px;
-		border-radius: var(--radius-full);
-		font-size: 10px;
-		font-weight: 700;
-	}
-
-	.galya-pack-rec {
-		margin-left: auto;
-		font-size: 10.5px;
+	.side-label {
 		font-weight: 800;
-		color: #14532d;
-		background: #ffffff;
-		border: 1px solid #bbf7d0;
-		padding: 1px 7px;
-		border-radius: var(--radius-full);
+		color: #b45309;
 	}
 
-	.galya-details-row {
-		color: #15803d;
+	.side-value {
+		color: #78350f;
 	}
 
-	.galya-extra-row {
-		margin-top: 3px;
-		color: #14532d;
-		font-weight: 600;
-	}
-
-	/* Empty Slot Button */
-	.empty-slot-btn {
-		background: #ffffff;
-		border: 1.5px dashed var(--border-subtle);
-		border-radius: var(--radius-md);
-		padding: 16px;
+	.dish-meta-row {
 		display: flex;
 		align-items: center;
 		gap: 12px;
-		cursor: pointer;
-		text-align: left;
-		transition: all var(--transition-fast);
-		width: 100%;
+		font-size: 12px;
+		color: #64748b;
+		padding-top: 4px;
 	}
 
-	.empty-slot-btn:hover {
-		border-color: var(--color-brand-primary);
-		background: rgba(24, 67, 47, 0.02);
+	.meta-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 	}
 
-	.add-circle {
-		width: 36px;
-		height: 36px;
-		border-radius: 50%;
-		background: var(--bg-surface-alt);
-		color: var(--color-brand-primary);
+	.pack-tag {
+		margin-left: auto;
+		color: #94a3b8;
+		font-size: 11px;
+	}
+
+	/* Empty Slot Button */
+	.empty-slot-card {
+		border: 1.5px dashed #cbd5e1;
+		background: #fafaf9;
+		border-radius: var(--radius-lg);
+		padding: 16px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 18px;
+		gap: 8px;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.empty-slot-card:hover {
+		background: #f0fdf4;
+		border-color: var(--color-brand-primary);
+	}
+
+	.empty-plus-circle {
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		background: #ffffff;
+		border: 1px solid #cbd5e1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #64748b;
+	}
+
+	.empty-slot-text {
+		font-size: 13px;
+		font-weight: 700;
+		color: #64748b;
+	}
+
+	/* Quick Sets Section */
+	.quick-sets-divider {
+		height: 1px;
+		background: var(--border-subtle);
+		margin: 8px 0;
+	}
+
+	.quick-sets-section {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.sets-section-title-row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.sets-section-title {
+		font-size: 14px;
 		font-weight: 800;
+		color: var(--text-main);
+		margin: 0;
+	}
+
+	.sets-buttons-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 10px;
+	}
+
+	.set-action-card {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 14px 16px;
+		border-radius: var(--radius-lg);
+		background: #ffffff;
+		border: 1.5px solid var(--border-subtle);
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+		cursor: pointer;
+		text-align: left;
+		transition: all var(--transition-fast);
+	}
+
+	.set-action-card:hover {
+		border-color: var(--color-brand-primary);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+	}
+
+	.set-icon-bubble {
+		width: 40px;
+		height: 40px;
+		border-radius: var(--radius-md);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		flex-shrink: 0;
 	}
 
-	.empty-slot-btn:hover .add-circle {
-		background: var(--color-brand-primary);
-		color: #ffffff;
+	.day-bubble {
+		background: #fef3c7;
 	}
 
-	.empty-slot-text strong {
-		font-size: 13px;
+	.week-bubble {
+		background: #dcfce7;
+	}
+
+	.set-card-texts {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		flex: 1;
+	}
+
+	.set-card-title {
+		font-size: 14px;
+		font-weight: 800;
 		color: var(--text-main);
-		display: block;
 	}
 
-	.empty-slot-text span {
-		font-size: 11px;
+	.set-card-sub {
+		font-size: 12px;
 		color: var(--text-muted);
-		display: block;
 	}
 
-	/* Bottom Bar */
-	.planner-bottom-bar {
-		position: sticky;
-		bottom: 12px;
-		width: 100%;
-		max-width: 540px;
-		margin: 10px auto 0 auto;
-		z-index: 30;
+	:global(.set-arrow) {
+		color: #94a3b8;
 	}
 
-	.full-width {
+	/* Modal Sheets */
+	.modal-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		background: rgba(0, 0, 0, 0.45);
+		backdrop-filter: blur(4px);
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	.modal-sheet {
+		background: #ffffff;
+		border-radius: 20px 20px 0 0;
 		width: 100%;
-		padding: 14px 20px;
-		font-size: 15px;
-		box-shadow: 0 8px 24px rgba(24, 67, 47, 0.35);
+		max-width: 500px;
+		padding: 20px;
+		box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		max-height: 85vh;
+		overflow-y: auto;
+	}
+
+	.sheet-top-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid var(--border-subtle);
+		padding-bottom: 12px;
+	}
+
+	.sheet-top-title h4 {
+		font-size: 16px;
+		font-weight: 800;
+		color: var(--text-main);
+		margin: 0;
+	}
+
+	.sheet-close {
+		background: #f1f5f9;
+		border: none;
+		border-radius: 50%;
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		color: #64748b;
+	}
+
+	.sheet-actions-list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.sheet-action-item {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 14px;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border-subtle);
+		background: #ffffff;
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-main);
+		cursor: pointer;
+	}
+
+	.sheet-action-item:hover {
+		background: #f8fafc;
+	}
+
+	.sheet-action-item.danger {
+		color: #ef4444;
+		border-color: #fee2e2;
+		background: #fff5f5;
+	}
+
+	.preset-help-text {
+		font-size: 13px;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	.presets-choice-list {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.preset-item-card {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		padding: 14px;
+		border-radius: var(--radius-md);
+		border: 1.5px solid var(--border-subtle);
+		background: #ffffff;
+		text-align: left;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.preset-item-card:hover {
+		border-color: var(--color-brand-primary);
+		background: #f0fdf4;
+	}
+
+	.preset-card-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.tag-accent {
+		font-size: 11px;
+		font-weight: 800;
+		background: #ecfdf5;
+		color: var(--color-brand-primary);
+		padding: 2px 8px;
+		border-radius: var(--radius-full);
+	}
+
+	.preset-menu-preview {
+		font-size: 12px;
+		color: #64748b;
+		line-height: 1.4;
+	}
+
+	.preset-menu-desc {
+		font-size: 12px;
+		color: #475569;
+	}
+
+	.preset-menu-ideal {
+		font-size: 11px;
+		color: #94a3b8;
+		font-style: italic;
 	}
 </style>

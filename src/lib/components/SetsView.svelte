@@ -184,7 +184,7 @@
 
 							<div class="day-meals-stack">
 								{#each MEALS_LIST as meal (meal.key)}
-									{@const dishId = dayPlan ? dayPlan[meal.key] : null}
+									{@const dishId = dayPlan ? (dayPlan[meal.key] ?? null) : null}
 									{@const dish = planner.getDish(dishId)}
 									{#if dish}
 										<div class="meal-item-row">
