@@ -13,8 +13,8 @@ describe('PlannerStore — business logic & cart calculation', () => {
 		expect(planner.totalDishesCount).toBe(0);
 		expect(planner.activeSetId).toBeNull();
 		expect(Object.keys(planner.checkedItems).length).toBe(0);
-		expect(planner.week.monday.breakfast).toBeNull();
-		expect(planner.week.sunday.dinner).toBeNull();
+		expect(planner.week.monday.breakfast).toEqual([]);
+		expect(planner.week.sunday.dinner).toEqual([]);
 	});
 
 	it('успішно завантажує готовий набір «Сімейний затишок» (21 страва на 7 днів)', () => {
@@ -110,12 +110,12 @@ describe('PlannerStore — business logic & cart calculation', () => {
 		expect(dish).toBeDefined();
 
 		planner.setDish('wednesday', 'dinner', dish.id);
-		expect(planner.week.wednesday.dinner).toBe(dish.id);
+		expect(planner.week.wednesday.dinner).toEqual([dish.id]);
 		expect(planner.getDayDishesCount('wednesday')).toBe(1);
 
-		// Видалення (встановлення null)
+		// Видалення (встановлення null очищає слот)
 		planner.setDish('wednesday', 'dinner', null);
-		expect(planner.week.wednesday.dinner).toBeNull();
+		expect(planner.week.wednesday.dinner).toEqual([]);
 		expect(planner.getDayDishesCount('wednesday')).toBe(0);
 	});
 
@@ -238,9 +238,33 @@ describe('PlannerStore — business logic & cart calculation', () => {
 		planner.loadDayPreset('tuesday', 'classic');
 
 		expect(planner.getDayDishesCount('tuesday')).toBe(4);
-		expect(planner.week.tuesday.breakfast).toBe('syrnyky-vanilla');
-		expect(planner.week.tuesday.lunch).toBe('borscht-ukrainian');
-		expect(planner.week.tuesday.dinner).toBe('kotlety-kyiv');
-		expect(planner.week.tuesday.snack).toBe('mlyntsi-cherry');
+		expect(planner.week.tuesday.breakfast).toEqual(['syrnyky-vanilla']);
+		expect(planner.week.tuesday.lunch).toEqual(['borscht-ukrainian']);
+		expect(planner.week.tuesday.dinner).toEqual(['kotlety-kyiv']);
+		expect(planner.week.tuesday.snack).toEqual(['mlyntsi-cherry']);
+	});
+
+	it('дозволяє додавати необмежену кількість страв у той самий прийом їжі', () => {
+		planner.clearWeek();
+		planner.addDish('monday', 'breakfast', 'syrnyky-vanilla');
+		planner.addDish('monday', 'breakfast', 'mlyntsi-cherry');
+		planner.addDish('monday', 'breakfast', 'varenyky-cottage-cheese');
+
+		expect(planner.week.monday.breakfast).toEqual([
+			'syrnyky-vanilla',
+			'mlyntsi-cherry',
+			'varenyky-cottage-cheese'
+		]);
+		expect(planner.getDayDishesCount('monday')).toBe(3);
+		expect(planner.totalDishesCount).toBe(3);
+
+		// Заміна другої страви
+		planner.replaceDishAt('monday', 'breakfast', 1, 'pelmeni-classic');
+		expect(planner.week.monday.breakfast[1]).toBe('pelmeni-classic');
+
+		// Видалення страви за індексом
+		planner.removeDishAt('monday', 'breakfast', 0);
+		expect(planner.week.monday.breakfast).toEqual(['pelmeni-classic', 'varenyky-cottage-cheese']);
+		expect(planner.getDayDishesCount('monday')).toBe(2);
 	});
 });

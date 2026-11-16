@@ -23,14 +23,24 @@ const STORAGE_KEY_LOCALE = 'galya_planner_locale_v1';
 
 function createEmptyWeek(): WeekPlan {
 	return {
-		monday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		tuesday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		wednesday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		thursday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		friday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		saturday: { breakfast: null, lunch: null, dinner: null, snack: null },
-		sunday: { breakfast: null, lunch: null, dinner: null, snack: null }
+		monday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		tuesday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		wednesday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		thursday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		friday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		saturday: { breakfast: [], lunch: [], dinner: [], snack: [] },
+		sunday: { breakfast: [], lunch: [], dinner: [], snack: [] }
 	};
+}
+
+function normalizeSlotDishes(slot: unknown): string[] {
+	if (Array.isArray(slot)) {
+		return slot.filter((id): id is string => typeof id === 'string' && id.trim().length > 0);
+	}
+	if (typeof slot === 'string' && slot.trim().length > 0) {
+		return [slot];
+	}
+	return [];
 }
 
 function pluralUa(n: number, one: string, few: string, many: string): string {
@@ -118,12 +128,16 @@ function calculatePlanCart(
 		const dayPlan = plan[day.key];
 		if (!dayPlan) continue;
 
-		const mealDishes = [
-			getDish(dayPlan.breakfast),
-			getDish(dayPlan.lunch),
-			getDish(dayPlan.dinner),
-			getDish(dayPlan.snack ?? null)
-		].filter((d): d is Dish => d !== undefined);
+		const slotDishes: string[] = [
+			...normalizeSlotDishes(dayPlan.breakfast),
+			...normalizeSlotDishes(dayPlan.lunch),
+			...normalizeSlotDishes(dayPlan.dinner),
+			...normalizeSlotDishes('snack' in dayPlan ? dayPlan.snack : null)
+		];
+
+		const mealDishes = slotDishes
+			.map((id) => getDish(id))
+			.filter((d): d is Dish => d !== undefined);
 
 		const addGalyaProduct = (
 			prod: NonNullable<Dish['galyaProduct']>,
@@ -262,7 +276,7 @@ class PlannerStore {
 	packOverrides = $state<Record<string, number>>({});
 	activeTab = $state<ActiveTab>('inspire');
 	selectedDay = $state<DayKey>('monday');
-	activeModal = $state<{ day: DayKey; meal: MealKey } | null>(null);
+	activeModal = $state<{ day: DayKey; meal: MealKey; replaceIndex?: number } | null>(null);
 	previewSetId = $state<string | null>(null);
 	selectedSetId = $state<string | null>(null);
 	activeSetId = $state<string | null>(null);
@@ -291,10 +305,10 @@ class PlannerStore {
 				for (const day of DAYS_LIST) {
 					if (parsed[day.key]) {
 						empty[day.key] = {
-							breakfast: parsed[day.key].breakfast ?? null,
-							lunch: parsed[day.key].lunch ?? null,
-							dinner: parsed[day.key].dinner ?? null,
-							snack: parsed[day.key].snack ?? null
+							breakfast: normalizeSlotDishes(parsed[day.key].breakfast),
+							lunch: normalizeSlotDishes(parsed[day.key].lunch),
+							dinner: normalizeSlotDishes(parsed[day.key].dinner),
+							snack: normalizeSlotDishes(parsed[day.key].snack)
 						};
 					}
 				}
@@ -452,17 +466,13 @@ class PlannerStore {
 		return `~${approx} уп. / прийом`;
 	}
 
-	setDish(day: DayKey, meal: MealKey, dishId: string | null) {
-		const prevDish = this.getDish(this.week[day][meal]);
-		const nextDish = this.getDish(dishId);
-
-		// Reset overrides for affected products so weekly totals recalculate automatically
-		const affectedNames = [
-			prevDish?.galyaProduct?.name,
-			...(prevDish?.extraGalyaProducts?.map((e) => e.product.name) ?? []),
-			nextDish?.galyaProduct?.name,
-			...(nextDish?.extraGalyaProducts?.map((e) => e.product.name) ?? [])
-		].filter((name): name is string => Boolean(name));
+	private clearOverridesForProducts(dishes: (Dish | undefined)[]) {
+		const affectedNames = dishes
+			.flatMap((d) => [
+				d?.galyaProduct?.name,
+				...(d?.extraGalyaProducts?.map((e) => e.product.name) ?? [])
+			])
+			.filter((name): name is string => Boolean(name));
 
 		if (affectedNames.length > 0) {
 			const nextOverrides = { ...this.packOverrides };
@@ -471,11 +481,59 @@ class PlannerStore {
 			}
 			this.packOverrides = nextOverrides;
 		}
+	}
 
-		this.week[day][meal] = dishId;
+	addDish(day: DayKey, meal: MealKey, dishId: string) {
+		const nextDish = this.getDish(dishId);
+		this.clearOverridesForProducts([nextDish]);
+		this.week[day][meal] = [...this.week[day][meal], dishId];
 		this.saveToStorage();
 		if (nextDish) {
 			this.showToast(`Додано: «${nextDish.name}»`);
+		}
+	}
+
+	removeDishAt(day: DayKey, meal: MealKey, index: number) {
+		const current = this.week[day][meal];
+		if (index < 0 || index >= current.length) return;
+		const removedDish = this.getDish(current[index]);
+		this.clearOverridesForProducts([removedDish]);
+		this.week[day][meal] = current.filter((_, idx) => idx !== index);
+		this.saveToStorage();
+		if (removedDish) {
+			this.showToast(`Прибрано: «${removedDish.name}»`);
+		}
+	}
+
+	replaceDishAt(day: DayKey, meal: MealKey, index: number, newDishId: string) {
+		const current = this.week[day][meal];
+		if (index < 0 || index >= current.length) return;
+		const oldDish = this.getDish(current[index]);
+		const newDish = this.getDish(newDishId);
+		this.clearOverridesForProducts([oldDish, newDish]);
+		const updated = [...current];
+		updated[index] = newDishId;
+		this.week[day][meal] = updated;
+		this.saveToStorage();
+		if (newDish) {
+			this.showToast(`Замінено на: «${newDish.name}»`);
+		}
+	}
+
+	setDish(day: DayKey, meal: MealKey, dishId: string | null) {
+		if (dishId === null) {
+			const oldDishes = this.week[day][meal].map((id) => this.getDish(id));
+			this.clearOverridesForProducts(oldDishes);
+			this.week[day][meal] = [];
+			this.saveToStorage();
+			return;
+		}
+
+		// Backward compatibility: if empty, set single, otherwise append
+		if (this.week[day][meal].length === 0) {
+			this.addDish(day, meal, dishId);
+		} else {
+			this.addDish(day, meal, dishId);
 		}
 	}
 
@@ -488,10 +546,10 @@ class PlannerStore {
 			const dayPlan = targetSet.plan[day.key];
 			if (dayPlan) {
 				newWeek[day.key] = {
-					breakfast: dayPlan.breakfast,
-					lunch: dayPlan.lunch,
-					dinner: dayPlan.dinner,
-					snack: null
+					breakfast: dayPlan.breakfast ? [dayPlan.breakfast] : [],
+					lunch: dayPlan.lunch ? [dayPlan.lunch] : [],
+					dinner: dayPlan.dinner ? [dayPlan.dinner] : [],
+					snack: dayPlan.snack ? [dayPlan.snack] : []
 				};
 			}
 		}
@@ -532,7 +590,12 @@ class PlannerStore {
 		};
 
 		const chosen = presets[presetId] ?? presets.classic;
-		this.week[day] = { ...chosen };
+		this.week[day] = {
+			breakfast: [chosen.breakfast],
+			lunch: [chosen.lunch],
+			dinner: [chosen.dinner],
+			snack: [chosen.snack]
+		};
 		this.saveToStorage();
 		this.showToast('Завантажено збалансований набір на день!');
 	}
@@ -555,21 +618,21 @@ class PlannerStore {
 	get totalDishesCount(): number {
 		let count = 0;
 		for (const day of DAYS_LIST) {
-			if (this.week[day.key].breakfast) count++;
-			if (this.week[day.key].lunch) count++;
-			if (this.week[day.key].dinner) count++;
-			if (this.week[day.key].snack) count++;
+			count += this.week[day.key].breakfast.length;
+			count += this.week[day.key].lunch.length;
+			count += this.week[day.key].dinner.length;
+			count += this.week[day.key].snack.length;
 		}
 		return count;
 	}
 
 	getDayDishesCount(day: DayKey): number {
-		let count = 0;
-		if (this.week[day].breakfast) count++;
-		if (this.week[day].lunch) count++;
-		if (this.week[day].dinner) count++;
-		if (this.week[day].snack) count++;
-		return count;
+		return (
+			this.week[day].breakfast.length +
+			this.week[day].lunch.length +
+			this.week[day].dinner.length +
+			this.week[day].snack.length
+		);
 	}
 
 	getSetSummary(set: ReadyMadeSet, size: FamilySize = this.familySize): ShoppingCartGrouped {

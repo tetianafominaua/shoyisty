@@ -28,7 +28,7 @@
 	// Modals
 	let showDayPresetModal = $state(false);
 	let showWeekPresetModal = $state(false);
-	let dishActionMenu = $state<{ meal: MealKey; dish: Dish } | null>(null);
+	let dishActionMenu = $state<{ meal: MealKey; dish: Dish; index: number } | null>(null);
 
 	// Horizontal calendar day numbers (starting from current date)
 	const weekDates = $derived.by(() => {
@@ -64,18 +64,18 @@
 		planner.selectedDay = DAYS_LIST[nextIdx].key;
 	}
 
-	function openDishPicker(mealKey: MealKey) {
-		planner.activeModal = { day: activeDay, meal: mealKey };
+	function openDishPicker(mealKey: MealKey, replaceIndex?: number) {
+		planner.activeModal = { day: activeDay, meal: mealKey, replaceIndex };
 	}
 
-	function removeMeal(mealKey: MealKey) {
-		planner.setDish(activeDay, mealKey, null);
+	function removeMeal(mealKey: MealKey, index: number) {
+		planner.removeDishAt(activeDay, mealKey, index);
 		dishActionMenu = null;
 	}
 
-	function replaceMeal(mealKey: MealKey) {
+	function replaceMeal(mealKey: MealKey, index: number) {
 		dishActionMenu = null;
-		openDishPicker(mealKey);
+		openDishPicker(mealKey, index);
 	}
 
 	function applyDayPreset(presetId: 'classic' | 'express' | 'light') {
@@ -138,8 +138,7 @@
 	<!-- Meal Slots (Breakfast, Lunch, Dinner, Snack) -->
 	<div class="meal-slots-column">
 		{#each MEALS_LIST as meal (meal.key)}
-			{@const dishId = dayPlan[meal.key]}
-			{@const dish = planner.getDish(dishId)}
+			{@const dishIds = dayPlan ? (dayPlan[meal.key] ?? []) : []}
 
 			<div class="meal-slot-group">
 				<div class="meal-slot-header">
@@ -148,60 +147,74 @@
 							{@render mealIcon(meal.key, 18)}
 						</span>
 						<span class="slot-name">{meal.label}</span>
+						{#if dishIds.length > 0}
+							<span class="slot-count-badge">{dishIds.length}</span>
+						{/if}
 					</div>
 
-					{#if !dish}
-						<button
-							class="add-meal-icon-btn"
-							onclick={() => openDishPicker(meal.key)}
-							aria-label="Додати {meal.label}"
-						>
-							<Plus size={18} strokeWidth={2.5} />
-						</button>
-					{/if}
+					<button
+						class="add-meal-icon-btn"
+						onclick={() => openDishPicker(meal.key)}
+						aria-label="Додати до {meal.label}"
+						title="Додати страву"
+					>
+						<Plus size={18} strokeWidth={2.5} />
+					</button>
 				</div>
 
-				{#if dish}
-					<!-- Dish Card (styled like reference) -->
-					<div class="dish-plan-card animate-scale-in">
-						<div class="dish-card-banner">
-							<span class="dish-badge">{dish.galyaProduct?.badge || 'Ручна ліпка'}</span>
-							<span class="dish-price-tag">~{dish.galyaProduct?.priceUah} ₴</span>
-						</div>
+				{#if dishIds.length > 0}
+					<div class="meal-dishes-stack">
+						{#each dishIds as dishId, idx (`${dishId}-${idx}`)}
+							{@const dish = planner.getDish(dishId)}
+							{#if dish}
+								<!-- Dish Card (styled like reference) -->
+								<div class="dish-plan-card animate-scale-in">
+									<div class="dish-card-banner">
+										<span class="dish-badge">{dish.galyaProduct?.badge || 'Ручна ліпка'}</span>
+										<span class="dish-price-tag">~{dish.galyaProduct?.priceUah} ₴</span>
+									</div>
 
-						<div class="dish-card-content">
-							<div class="dish-header-row">
-								<h4 class="dish-title">{dish.name}</h4>
-								<button
-									class="dish-menu-trigger"
-									onclick={() => (dishActionMenu = { meal: meal.key, dish })}
-									aria-label="Дії зі стравою"
-								>
-									<MoreHorizontal size={18} />
-								</button>
-							</div>
+									<div class="dish-card-content">
+										<div class="dish-header-row">
+											<h4 class="dish-title">{dish.name}</h4>
+											<button
+												class="dish-menu-trigger"
+												onclick={() => (dishActionMenu = { meal: meal.key, dish, index: idx })}
+												aria-label="Дії зі стравою"
+											>
+												<MoreHorizontal size={18} />
+											</button>
+										</div>
 
-							{#if dish.sideCompanion}
-								<div class="dish-side-info">
-									<span class="side-label">Гарнір / Докупити:</span>
-									<span class="side-value">{dish.sideCompanion}</span>
+										{#if dish.sideCompanion}
+											<div class="dish-side-info">
+												<span class="side-label">Гарнір / Докупити:</span>
+												<span class="side-value">{dish.sideCompanion}</span>
+											</div>
+										{/if}
+
+										<div class="dish-meta-row">
+											<span class="meta-tag">
+												<Clock size={13} />
+												<span>{dish.prepTimeMinutes} {t('common.minutes', locale)}</span>
+											</span>
+											<span class="meta-tag">
+												<Users size={13} />
+												<span>{dish.servings} {t('common.servings', locale)}</span>
+											</span>
+											<span class="meta-tag pack-tag">
+												{dish.galyaProduct?.weightText}
+											</span>
+										</div>
+									</div>
 								</div>
 							{/if}
+						{/each}
 
-							<div class="dish-meta-row">
-								<span class="meta-tag">
-									<Clock size={13} />
-									<span>{dish.prepTimeMinutes} {t('common.minutes', locale)}</span>
-								</span>
-								<span class="meta-tag">
-									<Users size={13} />
-									<span>{dish.servings} {t('common.servings', locale)}</span>
-								</span>
-								<span class="meta-tag pack-tag">
-									{dish.galyaProduct?.weightText}
-								</span>
-							</div>
-						</div>
+						<button class="add-another-dish-btn" onclick={() => openDishPicker(meal.key)}>
+							<Plus size={15} strokeWidth={2.4} />
+							<span>+ Додати ще страву</span>
+						</button>
 					</div>
 				{:else}
 					<!-- Empty Slot Button -->
@@ -280,11 +293,17 @@
 				</div>
 
 				<div class="sheet-actions-list">
-					<button class="sheet-action-item" onclick={() => replaceMeal(dishActionMenu!.meal)}>
+					<button
+						class="sheet-action-item"
+						onclick={() => replaceMeal(dishActionMenu!.meal, dishActionMenu!.index)}
+					>
 						<Edit2 size={16} />
 						<span>{t('week.replaceDish', locale)}</span>
 					</button>
-					<button class="sheet-action-item danger" onclick={() => removeMeal(dishActionMenu!.meal)}>
+					<button
+						class="sheet-action-item danger"
+						onclick={() => removeMeal(dishActionMenu!.meal, dishActionMenu!.index)}
+					>
 						<Trash2 size={16} />
 						<span>{t('week.removeDish', locale)}</span>
 					</button>
@@ -558,6 +577,43 @@
 		font-size: 15px;
 		font-weight: 700;
 		color: var(--text-main);
+	}
+
+	.slot-count-badge {
+		font-size: 11px;
+		font-weight: 700;
+		color: var(--color-brand-primary);
+		background: #dcfce7;
+		padding: 2px 7px;
+		border-radius: var(--radius-full);
+	}
+
+	.meal-dishes-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.add-another-dish-btn {
+		background: #ffffff;
+		border: 1.5px dashed #cbd5e1;
+		border-radius: var(--radius-md);
+		padding: 10px 14px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		font-size: 13px;
+		font-weight: 700;
+		color: #475569;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.add-another-dish-btn:hover {
+		background: #f0fdf4;
+		border-color: var(--color-brand-primary);
+		color: var(--color-brand-primary);
 	}
 
 	.add-meal-icon-btn {

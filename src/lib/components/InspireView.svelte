@@ -75,7 +75,7 @@
 
 	function confirmAddToPlan() {
 		if (!modalDish) return;
-		planner.setDish(targetDay, targetMeal, modalDish.id);
+		planner.addDish(targetDay, targetMeal, modalDish.id);
 		modalDish = null;
 	}
 </script>

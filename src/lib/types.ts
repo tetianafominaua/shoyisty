@@ -72,10 +72,10 @@ export interface Dish {
 }
 
 export interface DayMeals {
-	breakfast: string | null;
-	lunch: string | null;
-	dinner: string | null;
-	snack: string | null;
+	breakfast: string[];
+	lunch: string[];
+	dinner: string[];
+	snack: string[];
 }
 
 export type WeekPlan = Record<DayKey, DayMeals>;

@@ -69,7 +69,11 @@
 
 	function handleSelect(dish: Dish) {
 		if (!activeModal) return;
-		planner.setDish(activeModal.day, activeModal.meal, dish.id);
+		if (typeof activeModal.replaceIndex === 'number') {
+			planner.replaceDishAt(activeModal.day, activeModal.meal, activeModal.replaceIndex, dish.id);
+		} else {
+			planner.addDish(activeModal.day, activeModal.meal, dish.id);
+		}
 		planner.activeModal = null;
 	}
 
@@ -115,7 +119,9 @@
 								<span>{activeMealInfo.label}</span>
 							</span>
 						</div>
-						<h3 class="sheet-heading">Оберіть страву</h3>
+						<h3 class="sheet-heading">
+							{typeof activeModal.replaceIndex === 'number' ? 'Замініть страву' : 'Оберіть страву'}
+						</h3>
 					</div>
 					<button class="sheet-close-btn" onclick={handleClose} aria-label="Закрити">
 						<X size={18} />
