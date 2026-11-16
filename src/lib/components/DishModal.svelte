@@ -314,18 +314,23 @@
 	.modal-backdrop {
 		position: fixed;
 		inset: 0;
+		width: 100%;
+		height: 100%;
+		height: 100dvh;
 		z-index: 60;
 		background: rgba(15, 28, 20, 0.6);
 		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
+		padding-bottom: env(safe-area-inset-bottom, 0px);
 	}
 
 	.modal-sheet {
 		width: 100%;
 		max-width: 960px;
-		max-height: 85vh;
+		max-height: 85dvh;
 		background: #ffffff;
 		border-radius: 24px 24px 0 0;
 		display: flex;

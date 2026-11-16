@@ -755,27 +755,31 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		height: 100%;
+		height: 100dvh;
 		z-index: 100;
 		background: rgba(0, 0, 0, 0.45);
 		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;
+		padding: 12px;
+		padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
 	}
 
 	.modal-sheet {
 		background: #ffffff;
-		border-radius: 20px 20px 0 0;
+		border-radius: 20px;
 		width: 100%;
 		max-width: 500px;
-		padding: 20px 20px max(24px, env(safe-area-inset-bottom)) 20px;
-		box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+		padding: 20px;
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
-		max-height: 90vh;
+		max-height: 85dvh;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 	}
