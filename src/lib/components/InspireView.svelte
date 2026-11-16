@@ -270,86 +270,86 @@
 			</div>
 		{/if}
 	</section>
+</div>
 
-	<!-- Quick Add to Plan Modal -->
-	{#if modalDish}
+<!-- Quick Add to Plan Modal -->
+{#if modalDish}
+	<div
+		class="modal-backdrop animate-fade-in"
+		onclick={() => (modalDish = null)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') modalDish = null;
+		}}
+		role="button"
+		tabindex="0"
+		aria-label="Закрити вікно"
+	>
 		<div
-			class="modal-backdrop animate-fade-in"
-			onclick={() => (modalDish = null)}
-			onkeydown={(e) => {
-				if (e.key === 'Escape') modalDish = null;
-			}}
-			role="button"
-			tabindex="0"
-			aria-label="Закрити вікно"
+			class="modal-sheet animate-slide-up"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
 		>
-			<div
-				class="modal-sheet animate-slide-up"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				tabindex="-1"
-			>
-				<div class="sheet-header">
-					<div>
-						<h3 class="sheet-title">{t('inspire.selectDayAndMeal', locale)}</h3>
-						<span class="sheet-subtitle">«{modalDish.name}»</span>
-					</div>
-					<button class="close-sheet-btn" onclick={() => (modalDish = null)} aria-label="Закрити">
-						<X size={18} />
-					</button>
+			<div class="sheet-header">
+				<div>
+					<h3 class="sheet-title">{t('inspire.selectDayAndMeal', locale)}</h3>
+					<span class="sheet-subtitle">«{modalDish.name}»</span>
 				</div>
+				<button class="close-sheet-btn" onclick={() => (modalDish = null)} aria-label="Закрити">
+					<X size={18} />
+				</button>
+			</div>
 
-				<div class="sheet-body">
-					<!-- Day Selector -->
-					<div class="form-group">
-						<span class="form-label">{t('inspire.day', locale)}:</span>
-						<div class="days-pill-grid">
-							{#each DAYS_LIST as day (day.key)}
-								<button
-									type="button"
-									class="day-btn"
-									class:selected={targetDay === day.key}
-									onclick={() => (targetDay = day.key)}
-								>
-									{day.shortName}
-								</button>
-							{/each}
-						</div>
-					</div>
-
-					<!-- Meal Selector -->
-					<div class="form-group">
-						<span class="form-label">{t('inspire.meal', locale)}:</span>
-						<div class="meals-pill-grid">
-							{#each MEALS_LIST as meal (meal.key)}
-								<button
-									type="button"
-									class="meal-btn"
-									class:selected={targetMeal === meal.key}
-									onclick={() => (targetMeal = meal.key)}
-								>
-									{meal.label}
-								</button>
-							{/each}
-						</div>
+			<div class="sheet-body">
+				<!-- Day Selector -->
+				<div class="form-group">
+					<span class="form-label">{t('inspire.day', locale)}:</span>
+					<div class="days-pill-grid">
+						{#each DAYS_LIST as day (day.key)}
+							<button
+								type="button"
+								class="day-btn"
+								class:selected={targetDay === day.key}
+								onclick={() => (targetDay = day.key)}
+							>
+								{day.shortName}
+							</button>
+						{/each}
 					</div>
 				</div>
 
-				<div class="sheet-footer">
-					<button class="btn-cancel" onclick={() => (modalDish = null)}>
-						{t('common.cancel', locale)}
-					</button>
-					<button class="btn-confirm" onclick={confirmAddToPlan}>
-						<Check size={16} strokeWidth={2.5} />
-						<span>{t('common.confirm', locale)}</span>
-					</button>
+				<!-- Meal Selector -->
+				<div class="form-group">
+					<span class="form-label">{t('inspire.meal', locale)}:</span>
+					<div class="meals-pill-grid">
+						{#each MEALS_LIST as meal (meal.key)}
+							<button
+								type="button"
+								class="meal-btn"
+								class:selected={targetMeal === meal.key}
+								onclick={() => (targetMeal = meal.key)}
+							>
+								{meal.label}
+							</button>
+						{/each}
+					</div>
 				</div>
 			</div>
+
+			<div class="sheet-footer">
+				<button class="btn-cancel" onclick={() => (modalDish = null)}>
+					{t('common.cancel', locale)}
+				</button>
+				<button class="btn-confirm" onclick={confirmAddToPlan}>
+					<Check size={16} strokeWidth={2.5} />
+					<span>{t('common.confirm', locale)}</span>
+				</button>
+			</div>
 		</div>
-	{/if}
-</div>
+	</div>
+{/if}
 
 <style>
 	.inspire-container {
@@ -751,7 +751,12 @@
 	/* Modal Sheet */
 	.modal-backdrop {
 		position: fixed;
-		inset: 0;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100vw;
+		height: 100vh;
 		z-index: 100;
 		background: rgba(0, 0, 0, 0.45);
 		backdrop-filter: blur(4px);
@@ -765,13 +770,14 @@
 		border-radius: 20px 20px 0 0;
 		width: 100%;
 		max-width: 500px;
-		padding: 20px;
+		padding: 20px 20px max(24px, env(safe-area-inset-bottom)) 20px;
 		box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
 		max-height: 90vh;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 	}
 
 	.sheet-header {

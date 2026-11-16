@@ -264,174 +264,173 @@
 			</button>
 		</div>
 	</section>
-
-	<!-- Action Sheet for Dish (Edit / Remove) -->
-	{#if dishActionMenu}
-		<div
-			class="modal-backdrop animate-fade-in"
-			onclick={() => (dishActionMenu = null)}
-			onkeydown={(e) => {
-				if (e.key === 'Escape') dishActionMenu = null;
-			}}
-			role="button"
-			tabindex="0"
-			aria-label="Закрити вікно"
-		>
-			<div
-				class="modal-sheet animate-slide-up"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				tabindex="-1"
-			>
-				<div class="sheet-top-title">
-					<h4>«{dishActionMenu.dish.name}»</h4>
-					<button class="sheet-close" onclick={() => (dishActionMenu = null)} aria-label="Закрити">
-						<X size={18} />
-					</button>
-				</div>
-
-				<div class="sheet-actions-list">
-					<button
-						class="sheet-action-item"
-						onclick={() => replaceMeal(dishActionMenu!.meal, dishActionMenu!.index)}
-					>
-						<Edit2 size={16} />
-						<span>{t('week.replaceDish', locale)}</span>
-					</button>
-					<button
-						class="sheet-action-item danger"
-						onclick={() => removeMeal(dishActionMenu!.meal, dishActionMenu!.index)}
-					>
-						<Trash2 size={16} />
-						<span>{t('week.removeDish', locale)}</span>
-					</button>
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Modal: Набір на день -->
-	{#if showDayPresetModal}
-		<div
-			class="modal-backdrop animate-fade-in"
-			onclick={() => (showDayPresetModal = false)}
-			onkeydown={(e) => {
-				if (e.key === 'Escape') showDayPresetModal = false;
-			}}
-			role="button"
-			tabindex="0"
-			aria-label="Закрити вікно"
-		>
-			<div
-				class="modal-sheet animate-slide-up"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				tabindex="-1"
-			>
-				<div class="sheet-top-title">
-					<h4>{t('week.setForDay', locale)}</h4>
-					<button
-						class="sheet-close"
-						onclick={() => (showDayPresetModal = false)}
-						aria-label="Закрити"
-					>
-						<X size={18} />
-					</button>
-				</div>
-
-				<p class="preset-help-text">Оберіть готове меню на 4 прийоми їжі для поточного дня:</p>
-
-				<div class="presets-choice-list">
-					<button class="preset-item-card" onclick={() => applyDayPreset('classic')}>
-						<div class="preset-card-head">
-							<strong>Класичний домашній</strong>
-							<span class="tag-accent">Хіт</span>
-						</div>
-						<span class="preset-menu-preview">
-							Сирники • Борщ український • Котлета по-київськи • Млинці з вишнею
-						</span>
-					</button>
-
-					<button class="preset-item-card" onclick={() => applyDayPreset('express')}>
-						<div class="preset-card-head">
-							<strong>Швидкий експрес (15 хв)</strong>
-							<span class="tag-accent">Швидко</span>
-						</div>
-						<span class="preset-menu-preview">
-							Хачапурі • Гороховий суп • Пельмені класичні • Чебурек кримський
-						</span>
-					</button>
-
-					<button class="preset-item-card" onclick={() => applyDayPreset('light')}>
-						<div class="preset-card-head">
-							<strong>Легкий та дитячий</strong>
-							<span class="tag-accent">Корисно</span>
-						</div>
-						<span class="preset-menu-preview">
-							Вареники з сиром • Суп з фрикадельками кролика • Вареники з картоплею • Млинці з
-							куркою
-						</span>
-					</button>
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Modal: Набір на тиждень -->
-	{#if showWeekPresetModal}
-		<div
-			class="modal-backdrop animate-fade-in"
-			onclick={() => (showWeekPresetModal = false)}
-			onkeydown={(e) => {
-				if (e.key === 'Escape') showWeekPresetModal = false;
-			}}
-			role="button"
-			tabindex="0"
-			aria-label="Закрити вікно"
-		>
-			<div
-				class="modal-sheet animate-slide-up"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={(e) => e.stopPropagation()}
-				role="dialog"
-				aria-modal="true"
-				tabindex="-1"
-			>
-				<div class="sheet-top-title">
-					<h4>{t('week.setForWeek', locale)}</h4>
-					<button
-						class="sheet-close"
-						onclick={() => (showWeekPresetModal = false)}
-						aria-label="Закрити"
-					>
-						<X size={18} />
-					</button>
-				</div>
-
-				<p class="preset-help-text">
-					Завантажте повне меню на 7 днів (Пн–Нд). Усі 21 страву буде розкладено по днях:
-				</p>
-
-				<div class="presets-choice-list">
-					{#each READY_MADE_SETS as set (set.id)}
-						<button class="preset-item-card" onclick={() => applyWeekPreset(set.id)}>
-							<div class="preset-card-head">
-								<strong>{set.title}</strong>
-								<span class="tag-accent">{set.badge}</span>
-							</div>
-							<span class="preset-menu-desc">{set.subtitle}</span>
-							<span class="preset-menu-ideal">{set.idealFor}</span>
-						</button>
-					{/each}
-				</div>
-			</div>
-		</div>
-	{/if}
 </div>
+
+<!-- Action Sheet for Dish (Edit / Remove) -->
+{#if dishActionMenu}
+	<div
+		class="modal-backdrop animate-fade-in"
+		onclick={() => (dishActionMenu = null)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') dishActionMenu = null;
+		}}
+		role="button"
+		tabindex="0"
+		aria-label="Закрити вікно"
+	>
+		<div
+			class="modal-sheet animate-slide-up"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="sheet-top-title">
+				<h4>«{dishActionMenu.dish.name}»</h4>
+				<button class="sheet-close" onclick={() => (dishActionMenu = null)} aria-label="Закрити">
+					<X size={18} />
+				</button>
+			</div>
+
+			<div class="sheet-actions-list">
+				<button
+					class="sheet-action-item"
+					onclick={() => replaceMeal(dishActionMenu!.meal, dishActionMenu!.index)}
+				>
+					<Edit2 size={16} />
+					<span>{t('week.replaceDish', locale)}</span>
+				</button>
+				<button
+					class="sheet-action-item danger"
+					onclick={() => removeMeal(dishActionMenu!.meal, dishActionMenu!.index)}
+				>
+					<Trash2 size={16} />
+					<span>{t('week.removeDish', locale)}</span>
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Modal: Набір на день -->
+{#if showDayPresetModal}
+	<div
+		class="modal-backdrop animate-fade-in"
+		onclick={() => (showDayPresetModal = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') showDayPresetModal = false;
+		}}
+		role="button"
+		tabindex="0"
+		aria-label="Закрити вікно"
+	>
+		<div
+			class="modal-sheet animate-slide-up"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="sheet-top-title">
+				<h4>{t('week.setForDay', locale)}</h4>
+				<button
+					class="sheet-close"
+					onclick={() => (showDayPresetModal = false)}
+					aria-label="Закрити"
+				>
+					<X size={18} />
+				</button>
+			</div>
+
+			<p class="preset-help-text">Оберіть готове меню на 4 прийоми їжі для поточного дня:</p>
+
+			<div class="presets-choice-list">
+				<button class="preset-item-card" onclick={() => applyDayPreset('classic')}>
+					<div class="preset-card-head">
+						<strong>Класичний домашній</strong>
+						<span class="tag-accent">Хіт</span>
+					</div>
+					<span class="preset-menu-preview">
+						Сирники • Борщ український • Котлета по-київськи • Млинці з вишнею
+					</span>
+				</button>
+
+				<button class="preset-item-card" onclick={() => applyDayPreset('express')}>
+					<div class="preset-card-head">
+						<strong>Швидкий експрес (15 хв)</strong>
+						<span class="tag-accent">Швидко</span>
+					</div>
+					<span class="preset-menu-preview">
+						Хачапурі • Гороховий суп • Пельмені класичні • Чебурек кримський
+					</span>
+				</button>
+
+				<button class="preset-item-card" onclick={() => applyDayPreset('light')}>
+					<div class="preset-card-head">
+						<strong>Легкий та дитячий</strong>
+						<span class="tag-accent">Корисно</span>
+					</div>
+					<span class="preset-menu-preview">
+						Вареники з сиром • Суп з фрикадельками кролика • Вареники з картоплею • Млинці з куркою
+					</span>
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Modal: Набір на тиждень -->
+{#if showWeekPresetModal}
+	<div
+		class="modal-backdrop animate-fade-in"
+		onclick={() => (showWeekPresetModal = false)}
+		onkeydown={(e) => {
+			if (e.key === 'Escape') showWeekPresetModal = false;
+		}}
+		role="button"
+		tabindex="0"
+		aria-label="Закрити вікно"
+	>
+		<div
+			class="modal-sheet animate-slide-up"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="sheet-top-title">
+				<h4>{t('week.setForWeek', locale)}</h4>
+				<button
+					class="sheet-close"
+					onclick={() => (showWeekPresetModal = false)}
+					aria-label="Закрити"
+				>
+					<X size={18} />
+				</button>
+			</div>
+
+			<p class="preset-help-text">
+				Завантажте повне меню на 7 днів (Пн–Нд). Усі 21 страву буде розкладено по днях:
+			</p>
+
+			<div class="presets-choice-list">
+				{#each READY_MADE_SETS as set (set.id)}
+					<button class="preset-item-card" onclick={() => applyWeekPreset(set.id)}>
+						<div class="preset-card-head">
+							<strong>{set.title}</strong>
+							<span class="tag-accent">{set.badge}</span>
+						</div>
+						<span class="preset-menu-desc">{set.subtitle}</span>
+						<span class="preset-menu-ideal">{set.idealFor}</span>
+					</button>
+				{/each}
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.planner-screen-container {
@@ -888,7 +887,12 @@
 	/* Modal Sheets */
 	.modal-backdrop {
 		position: fixed;
-		inset: 0;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100vw;
+		height: 100vh;
 		z-index: 100;
 		background: rgba(0, 0, 0, 0.45);
 		backdrop-filter: blur(4px);
@@ -902,13 +906,14 @@
 		border-radius: 20px 20px 0 0;
 		width: 100%;
 		max-width: 500px;
-		padding: 20px;
+		padding: 20px 20px max(24px, env(safe-area-inset-bottom)) 20px;
 		box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
 		max-height: 85vh;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 	}
 
 	.sheet-top-title {
