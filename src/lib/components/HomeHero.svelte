@@ -90,7 +90,7 @@
 		justify-content: center;
 		padding: 24px 20px 48px 20px;
 		gap: 28px;
-		min-height: calc(100vh - 180px);
+		min-height: calc(100dvh - 180px);
 	}
 
 	.home-intro {

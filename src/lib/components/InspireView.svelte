@@ -832,7 +832,7 @@
 
 	.days-pill-grid {
 		display: grid;
-		grid-template-columns: repeat(7, 1fr);
+		grid-template-columns: repeat(7, minmax(0, 1fr));
 		gap: 6px;
 	}
 
@@ -856,7 +856,7 @@
 
 	.meals-pill-grid {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 8px;
 	}
 

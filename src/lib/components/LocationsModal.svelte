@@ -282,7 +282,7 @@
 		border: 1.5px solid #a7f3d0;
 		border-radius: var(--radius-md);
 		color: #166534;
-		font-size: clamp(11.5px, 3.4vw, 13px);
+		font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.8125rem);
 		font-weight: 700;
 		text-decoration: none;
 		white-space: nowrap;
